@@ -1,0 +1,20 @@
+language: java
+jdk:
+  - openjdk11
+
+cache:
+  directories:
+    - '$HOME/.gradle'
+
+dist: trusty
+services:
+  - mysql
+  - redis-server
+
+before-install:
+  - mysql -e "CREATE DATABASE draft;"
+  - mysql -e "CREATE USER 'draft-admin'@'localhost' IDENTIFIED BY 'draft-pw';"
+  - mysql -e "GRANT ALL PRIVILEGES ON *.* to 'draft-admin'@'localhost';"
+
+script:
+  - ./gradlew clean build
