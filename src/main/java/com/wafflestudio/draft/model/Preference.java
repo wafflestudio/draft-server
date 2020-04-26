@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,10 +21,10 @@ public class Preference {
     private Long id;
 
     @Column
-    private Integer startAt;
+    private LocalDateTime startAt;
 
     @Column
-    private Integer endAt;
+    private LocalDateTime endAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id",referencedColumnName = "id")
