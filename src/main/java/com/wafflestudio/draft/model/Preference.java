@@ -26,11 +26,11 @@ public class Preference {
     private Integer endAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "region_id",referencedColumnName = "region_id")
+    @JoinColumn(name = "region_id",referencedColumnName = "id")
     private Region region;
 
     @Column
