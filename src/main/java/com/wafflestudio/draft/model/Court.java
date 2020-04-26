@@ -19,7 +19,7 @@ public class Court {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "region_id")
+    @JoinColumn(name = "region_id",referencedColumnName = "region_id")
     private Region region;
 
     @Column
