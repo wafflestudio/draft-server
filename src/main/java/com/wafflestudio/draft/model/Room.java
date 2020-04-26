@@ -15,12 +15,11 @@ public class Room extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
 
     private LocalDateTime startTime;
 
     // TODO: court_id
-
 }
