@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,18 +19,17 @@ public class Region {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
     private String depth1;
 
-    @Column
     private String depth2;
 
-    @Column
     private String depth3;
 
-    @Column
     private Polygon polygon;
 
-    @Column
+    @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "region", cascade = CascadeType.ALL)
+    private List<User> users;
 }

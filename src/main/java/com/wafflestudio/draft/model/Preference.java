@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,21 +20,19 @@ public class Preference {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private LocalDateTime startAt;
-
-    @Column
-    private LocalDateTime endAt;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "region_id",referencedColumnName = "id")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "region_id", referencedColumnName = "id")
     private Region region;
 
-    @Column
+    private LocalTime startAt;
+
+    private LocalTime endAt;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private DayOfWeek dayOfWeek;
 }
