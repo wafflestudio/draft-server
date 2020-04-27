@@ -11,4 +11,8 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Room> rooms;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "region_id", referencedColumnName = "id")
+    private Region region;
 }
