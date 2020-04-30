@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://localhost:3306/draft?serverTimezone=UTC
+    username: draft-admin
+    password: draft-pw
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    database: mysql
+  security:
+    oauth2:
+      client:
+        registration:
+          facebook:
+            client-id: 219934009309804
+            client-secret: 5446456756fdb87dbcce0fea45c648da
+app:
+  jwt:
+    jwt-secret-key: kekekekek
+    jwt-expiration-in-ms: 10
