@@ -27,9 +27,9 @@ public class AuthUser implements UserDetails {
     public static AuthUser fromUser(User user) {
         return new AuthUser(
                 user.getId(),
-                user.getName(),
+                user.getUsername(),
                 user.getEmail(),
-                user.getPasswd(),
+                user.getPassword(),
                 Set.of(new SimpleGrantedAuthority("Temporary"))
         );
     }

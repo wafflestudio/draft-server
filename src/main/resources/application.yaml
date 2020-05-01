@@ -13,9 +13,9 @@ spring:
       client:
         registration:
           facebook:
-            client-id: 219934009309804
-            client-secret: 5446456756fdb87dbcce0fea45c648da
+            client-id: facebookid
+            client-secret: facebooksecret
 app:
   jwt:
     jwt-secret-key: kekekekek
-    jwt-expiration-in-ms: 11
+    jwt-expiration-in-ms: 11000

@@ -19,13 +19,13 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Column(unique = true)
-    private String name;
+    private String username;
 
     @Column(unique = true)
     private String email;
 
     @Column
-    private String passwd;
+    private String password;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Room> rooms;
