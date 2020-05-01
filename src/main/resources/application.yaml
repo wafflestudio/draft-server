@@ -18,4 +18,4 @@ spring:
 app:
   jwt:
     jwt-secret-key: kekekekek
-    jwt-expiration-in-ms: 10
+    jwt-expiration-in-ms: 11

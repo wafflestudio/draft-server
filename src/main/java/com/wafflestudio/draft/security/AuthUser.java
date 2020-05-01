@@ -6,7 +6,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class AuthUser implements UserDetails {
     private Long id;
@@ -24,43 +25,64 @@ public class AuthUser implements UserDetails {
     }
 
     public static AuthUser fromUser(User user) {
-        return null;
+        return new AuthUser(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getPasswd(),
+                Set.of(new SimpleGrantedAuthority("Temporary"))
+        );
     }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        return null;
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AuthUser that = (AuthUser) o;
+        return Objects.equals(id, that.id);
     }
 }

@@ -1,56 +1,63 @@
 package com.wafflestudio.draft.config;
 
-import com.nimbusds.oauth2.sdk.auth.JWTAuthentication;
+import com.wafflestudio.draft.security.AuthUserService;
+import com.wafflestudio.draft.security.JwtAuthFilter;
 import com.wafflestudio.draft.security.JwtAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        securedEnabled = false
-        // Role 에 따라 서비스, 컨트롤러 접근을 제한할 수 있는 annotation을 제공합니다.
-        // 우선은 전부 false로 지정했습니다.
-)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    AuthUserService authUserService;
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
 
-//    @Bean
-//    pubilc JwtAuthenticationFilter jwtAuthenticationFilter() {
-//        return new JWTAuthenticationFilter();
-//    }
+    @Autowired
+    private JwtAuthFilter jwtAuthFilter;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(authUserService)
+                .passwordEncoder(new BCryptPasswordEncoder());
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors()
-                    .and()
+                .and()
                 .csrf()
-                    .disable()
+                .disable()
+                .httpBasic()
+                .disable()
                 .exceptionHandling()
-                    .authenticationEntryPoint(unauthorizedHandler)
-                    .and()
+                .authenticationEntryPoint(unauthorizedHandler)
+                .and()
                 .sessionManagement()
-                    .and()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeRequests()
-                    .antMatchers("/",
+                .antMatchers("/",
                         "/**/*.jpg",
                         "/**/*.png",
                         "/**/*.gif",
                         "/**/*.css",
                         "/**/*.html").permitAll()
-                .anyRequest().authenticated()
-            .and()
-                .oauth2Login();
+                .anyRequest().authenticated();
 
-        super.configure(http);
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

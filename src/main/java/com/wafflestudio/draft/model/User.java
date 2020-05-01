@@ -1,17 +1,32 @@
 package com.wafflestudio.draft.model;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.List;
 
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = {"rooms", "region"})
 public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String name;
+
+    @Column(unique = true)
+    private String email;
+
+    @Column
+    private String passwd;
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Room> rooms;
 
