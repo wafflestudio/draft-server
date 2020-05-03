@@ -14,8 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
-@Configuration
-@EnableWebSecurity
+ @Configuration
+ @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -36,28 +36,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .cors()
-                .and()
-                .csrf()
-                .disable()
-                .httpBasic()
-                .disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(unauthorizedHandler)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/",
-                        "/**/*.jpg",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.css",
-                        "/**/*.html").permitAll()
-                .anyRequest().authenticated();
-
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+          http.csrf().disable();
+//        http
+//                .cors()
+//                .and()
+//                .csrf()
+//                .disable()
+//                .httpBasic()
+//                .disable()
+//                .exceptionHandling()
+//                .authenticationEntryPoint(unauthorizedHandler)
+//                .and()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .authorizeRequests()
+//                .antMatchers("/",
+//                        "/**/*.jpg",
+//                        "/**/*.png",
+//                        "/**/*.gif",
+//                        "/**/*.css",
+//                        "/**/*.html").permitAll()
+//                .anyRequest().authenticated();
+//
+//        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
