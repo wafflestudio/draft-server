@@ -14,9 +14,9 @@ public class Room extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "varchar(32) default 'waiting'")
     @Enumerated(EnumType.STRING)
-    private RoomStatus status;
+    private RoomStatus status = RoomStatus.WAITING;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id", referencedColumnName = "id")

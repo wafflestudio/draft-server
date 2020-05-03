@@ -1,6 +1,8 @@
 package com.wafflestudio.draft.service;
 
+import com.wafflestudio.draft.model.Region;
 import com.wafflestudio.draft.model.Room;
+import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.repository.RoomRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,16 +22,19 @@ class RoomServiceTest {
     @Autowired RoomRepository roomRepository;
 
     @Test
-    void create() {
+    void create() throws Exception {
+        // given
         Room room = new Room();
+        Region region = new Region();
+        region.setName("Gwanak");
+        User user = new User();
+        user.setRegion(region);
+        room.setOwner(user);
 
-    }
+        // when
+        Long savedId = roomService.create(room);
 
-    @Test
-    void findRooms() {
-    }
-
-    @Test
-    void findOne() {
+        // then
+        assertEquals(room, roomRepository.findOne(savedId));
     }
 }
