@@ -1,11 +1,14 @@
 package com.wafflestudio.draft.model;
 
 import com.wafflestudio.draft.model.enums.RoomStatus;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter @Setter
 public class Room extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
