@@ -13,20 +13,37 @@ repositories {
 }
 
 dependencies {
+	// Default setting from template
 	implementation 'org.springframework.boot:spring-boot-starter-tomcat'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Database
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'mysql:mysql-connector-java'
+
+	// Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	// Geometry
+	implementation 'com.vividsolutions:jts:1.13'
+
+	// Logger
+	implementation 'org.slf4j:slf4j-api:1.7.25'
+
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor('org.projectlombok:lombok')
+	testAnnotationProcessor('org.projectlombok:lombok')
+	implementation 'org.projectlombok:lombok'
+
+
+	// Testing instrument
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	annotationProcessor('org.projectlombok:lombok')
-	testAnnotationProcessor('org.projectlombok:lombok')
-	
-	implementation 'com.vividsolutions:jts:1.13'
-
 }
 
 test {
