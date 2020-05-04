@@ -1,3 +1,5 @@
+# Test settings will be ready in future
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -5,9 +7,12 @@ spring:
     username: draft-admin
     password: draft-pw
   jpa:
-    show-sql: true
-    generate-ddl: true
-    database: mysql
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true
   security:
     oauth2:
       client:
@@ -15,6 +20,12 @@ spring:
           facebook:
             client-id: facebookid
             client-secret: facebooksecret
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+
 app:
   jwt:
     jwt-secret-key: kekekekek

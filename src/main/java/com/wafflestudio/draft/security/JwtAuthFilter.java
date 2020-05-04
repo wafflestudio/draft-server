@@ -42,7 +42,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         } catch (Exception e) {
-            logger.error("Jwt token is not validate");
+            // logger.error("Jwt token is not validate");
         }
 
         filterChain.doFilter(request, response);
