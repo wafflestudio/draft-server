@@ -1,16 +1,15 @@
 package com.wafflestudio.draft.model;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 
 @Entity
 @Getter
+@RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(exclude = {"rooms", "region"})
 public class User extends BaseTimeEntity {
@@ -18,14 +17,18 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @NonNull
     @Column(unique = true)
     private String username;
 
+    @NotBlank
+    @NonNull
     @Column(unique = true)
     private String email;
 
     @Column
-    private String password;
+    private String roles;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Room> rooms;

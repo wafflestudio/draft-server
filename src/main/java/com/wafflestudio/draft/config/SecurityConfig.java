@@ -1,63 +1,71 @@
 package com.wafflestudio.draft.config;
 
-import com.wafflestudio.draft.security.AuthUserService;
-import com.wafflestudio.draft.security.JwtAuthFilter;
-import com.wafflestudio.draft.security.JwtAuthenticationEntryPoint;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.wafflestudio.draft.repository.UserRepository;
+import com.wafflestudio.draft.security.*;
+import com.wafflestudio.draft.security.oauth2.OAuth2Provider;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    AuthUserService authUserService;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final JwtProperties jwtProperties;
 
-    @Autowired
-    private JwtAuthFilter jwtAuthFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    public SecurityConfig(UserRepository userRepository, JwtProperties properties, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+        this.userRepository = userRepository;
+        this.jwtProperties = properties;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+    }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .userDetailsService(authUserService)
-                .passwordEncoder(new BCryptPasswordEncoder());
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(authenticationProvider());
+    }
+
+    @Bean
+    public AuthenticationManager customAuthenticationManager() throws Exception {
+        return authenticationManager();
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    OAuth2Provider authenticationProvider() {
+        return new OAuth2Provider();
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .csrf()
-                .disable()
-                .httpBasic()
-                .disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(unauthorizedHandler)
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtProperties))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository, jwtProperties))
                 .authorizeRequests()
-                .antMatchers("/",
-                        "/**/*.jpg",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.css",
-                        "/**/*.html").permitAll()
+                .antMatchers("/user/auth").permitAll()
+                .antMatchers("/unsecured").permitAll()
                 .anyRequest().authenticated();
 
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

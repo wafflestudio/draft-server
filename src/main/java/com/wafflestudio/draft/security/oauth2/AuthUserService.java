@@ -1,7 +1,8 @@
-package com.wafflestudio.draft.security;
+package com.wafflestudio.draft.security.oauth2;
 
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.repository.UserRepository;
+import com.wafflestudio.draft.security.AuthUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,17 +10,22 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
-public class AuthUserService implements UserDetailsService {
+public class AuthUserService {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Cannot found user with email :" + username));
-        return AuthUser.fromUser(user);
+    public Optional<User> loadUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
+
+    public boolean checkUserExists(String username) {
+        return userRepository.findByEmail(username).isPresent();
+    }
+
+    public User saveUser(User user) { return userRepository.save(user); }
 }
