@@ -8,9 +8,9 @@ import java.util.List;
 
 
 @Entity
-@Getter
+@Getter @Setter
 @RequiredArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @ToString(exclude = {"rooms", "region"})
 public class User extends BaseTimeEntity {
     @Id
