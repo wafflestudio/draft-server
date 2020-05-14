@@ -2,7 +2,6 @@ package com.wafflestudio.draft.security.oauth2;
 
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.repository.UserRepository;
-import com.wafflestudio.draft.security.AuthUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -17,49 +17,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
-    private UserRepository userRepository;
-    private JwtProperties jwtProperties;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository, JwtProperties jwtProperties) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
         super(authenticationManager);
-        this.userRepository = userRepository;
-        this.jwtProperties = jwtProperties;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String header = request.getHeader(jwtProperties.getHeaderString());
-        if (header == null || !header.startsWith(jwtProperties.getTokenPrefix())) {
+        String token = request.getHeader(jwtTokenProvider.headerString);
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        Authentication authentication = getUsernamePasswordAuthentication(request);
+        Authentication authentication = jwtTokenProvider.getUsernameTokenFromJwt(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         filterChain.doFilter(request, response);
-    }
-
-    private Authentication getUsernamePasswordAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(jwtProperties.getHeaderString())
-                .replace(jwtProperties.getTokenPrefix(), "")
-                .trim();
-
-        String username = Jwts.parser()
-                .setSigningKey(jwtProperties.getJwtSecretKey())
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-
-        if (username != null) {
-            User user = userRepository.findByEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("Cannot found user with email :" + username));
-            AuthUser authUser = new AuthUser(user);
-            return new UsernamePasswordAuthenticationToken(username, null, authUser.getAuthorities());
-        }
-
-        return null;
     }
 }

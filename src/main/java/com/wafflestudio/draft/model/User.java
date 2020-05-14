@@ -1,10 +1,16 @@
 package com.wafflestudio.draft.model;
 
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -33,7 +39,15 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Room> rooms;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "region_id", referencedColumnName = "id")
     private Region region;
+
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.roles == null) return new ArrayList<>();
+
+        List<String> roles = Arrays.asList(this.roles.split(","));
+        return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    }
 }

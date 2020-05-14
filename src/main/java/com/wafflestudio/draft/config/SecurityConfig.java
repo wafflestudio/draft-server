@@ -6,12 +6,7 @@ import com.wafflestudio.draft.security.oauth2.OAuth2Provider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import com.wafflestudio.draft.security.AuthUserService;
-import com.wafflestudio.draft.security.JwtAuthFilter;
 import com.wafflestudio.draft.security.JwtAuthenticationEntryPoint;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,23 +14,27 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserRepository userRepository;
-
-    private final JwtProperties jwtProperties;
-
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public SecurityConfig(UserRepository userRepository, JwtProperties properties, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
-        this.userRepository = userRepository;
-        this.jwtProperties = properties;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    private static final String[] AUTH_WHITELIST_SWAGGER = {
+            // -- swagger ui
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**"
+    };
+
+    public SecurityConfig(UserRepository userRepository, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtTokenProvider jwtTokenProvider) {
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -66,11 +65,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtProperties))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository, jwtProperties))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), jwtTokenProvider))
                 .authorizeRequests()
-                .antMatchers("/user/auth").permitAll()
+                .antMatchers(AUTH_WHITELIST_SWAGGER).permitAll()     // Swagger document
+                .antMatchers("/api/v1/user/auth").permitAll()   // Auth entrypoint
                 .antMatchers("/unsecured").permitAll()
+                .antMatchers("/api/v1/test").hasRole("TEST_AUTH")
                 .anyRequest().authenticated();
 
     }

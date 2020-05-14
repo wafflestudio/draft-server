@@ -27,4 +27,4 @@ logging:
 app:
   jwt:
     jwt-secret-key: kekekekek
-    jwt-expiration-in-ms: 11000
+    jwt-expiration-in-ms: 11000000
