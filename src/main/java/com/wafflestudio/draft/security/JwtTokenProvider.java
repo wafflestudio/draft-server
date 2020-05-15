@@ -2,12 +2,11 @@ package com.wafflestudio.draft.security;
 
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.security.oauth2.AuthUserService;
+import com.wafflestudio.draft.security.oauth2.OAuth2Token;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -63,7 +62,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Authentication getUsernameTokenFromJwt(String token) {
+    public Authentication getOAuth2TokenFromJwt(String token) {
         token = removePrefix(token);
 
         Claims claims = Jwts.parser()
@@ -84,7 +83,7 @@ public class JwtTokenProvider {
                 orElseThrow(() -> new UsernameNotFoundException(email + " is not valid email, check token is expired"));
 
         // Make token with parsed data
-        return new UsernamePasswordAuthenticationToken(currentUser, null, authorises);
+        return new OAuth2Token(currentUser, null, authorises);
     }
 
     public boolean validateToken(String authToken) {

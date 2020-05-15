@@ -1,5 +1,6 @@
 package com.wafflestudio.draft.security.oauth2.client;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -9,6 +10,6 @@ public class TestOAuth2Client implements OAuth2Client {
 
     @Override
     public OAuth2Response userInfo(String accessToken) {
-        return new OAuth2Response("TEST", "testuser@test.com", "testprofile/urls");
+        return new OAuth2Response("TEST", accessToken + "@test.com", HttpStatus.OK);
     }
 }

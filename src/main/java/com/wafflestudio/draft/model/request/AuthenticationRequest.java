@@ -1,13 +1,19 @@
-package com.wafflestudio.draft.security.oauth2;
+package com.wafflestudio.draft.model.request;
 
 import lombok.Data;
 import org.springframework.lang.Nullable;
 
 @Data
 public class AuthenticationRequest {
+    private String grantType;
+
+    @Nullable
     private String accessToken;
+    @Nullable
     private String authProvider;
 
     @Nullable
-    private int id;
+    private String email;
+    @Nullable
+    private String password;
 }

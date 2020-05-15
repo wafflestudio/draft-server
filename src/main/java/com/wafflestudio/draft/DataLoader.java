@@ -6,6 +6,7 @@ import com.wafflestudio.draft.repository.RegionRepository;
 import com.wafflestudio.draft.repository.UserRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,8 +22,13 @@ public class DataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        User testuser = new User("TEST", "testuser@test.com");
-        testuser.setRoles("TEST_API");
-        userRepository.save(testuser);
+        User oauth2User = new User("OAUTH2_TESTUSER", "authuser@test.com");
+        oauth2User.setRoles("TEST_API");
+        userRepository.save(oauth2User);
+
+        User passwordUser = new User("PASSWORD_TESTUSER", "passworduser@test.com");
+        passwordUser.setRoles("TEST_API");
+        passwordUser.setPassword(new BCryptPasswordEncoder().encode("testpassword"));
+        userRepository.save(passwordUser);
     }
 }

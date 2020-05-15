@@ -1,13 +1,14 @@
 package com.wafflestudio.draft.security.oauth2;
 
 import com.wafflestudio.draft.model.User;
+import com.wafflestudio.draft.model.request.AuthenticationRequest;
 import com.wafflestudio.draft.security.oauth2.client.KakaoOAuth2Client;
 import com.wafflestudio.draft.security.oauth2.client.OAuth2Client;
 import com.wafflestudio.draft.security.oauth2.client.OAuth2Response;
 import com.wafflestudio.draft.security.oauth2.client.TestOAuth2Client;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,41 +25,50 @@ public class OAuth2Provider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        AuthenticationRequest credentials = (AuthenticationRequest) authentication.getCredentials();
+        AuthenticationRequest request = (AuthenticationRequest) authentication.getCredentials();
+        OAuth2Response response;
         User currentUser;
 
-        // Access by access token
+        System.out.println("YAY" + request.toString());
+
+        // Request authenticate to auth server by access token
+        response = requestAuthentication(request);
+        if (response.getStatus() != HttpStatus.OK)
+            throw new UsernameNotFoundException("User token failed to authenticate on " + request.getAuthProvider());
+
         // If success, save user in Database
-        System.out.println(credentials.getAuthProvider().toUpperCase());
-        System.out.println(TestOAuth2Client.OAUTH_TOKEN_PREFIX);
-        switch (credentials.getAuthProvider().toUpperCase()) {
+        currentUser = loadAndUpdate(response);
+
+        return new OAuth2Token(currentUser, null, currentUser.getAuthorities());
+    }
+
+    public OAuth2Response requestAuthentication(AuthenticationRequest request) {
+        OAuth2Client authServer;
+
+        switch (request.getAuthProvider().toUpperCase()) {
             case KakaoOAuth2Client.OAUTH_TOKEN_PREFIX:
-                currentUser = loadAndUpdate(kakaoOAuth2Client, credentials);
+                authServer = kakaoOAuth2Client;
                 break;
             case TestOAuth2Client.OAUTH_TOKEN_PREFIX:
-                currentUser = loadAndUpdate(testOAuth2Client, credentials);
+                authServer = testOAuth2Client;
                 break;
             default:
-                throw new UsernameNotFoundException("Unknown OAuth2 provider : " + credentials.getAuthProvider());
+                throw new UsernameNotFoundException(String.format("Unknown OAuth2 provider '%s'", request.getAuthProvider()));
         }
-        return new UsernamePasswordAuthenticationToken(currentUser, credentials, currentUser.getAuthorities());
+        return authServer.userInfo(request.getAccessToken());
+    }
+
+    // Fetch User data from oauth2 server and update database
+    private User loadAndUpdate(OAuth2Response response) {
+        User user = authUserService.loadUserByEmail(response.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Authentication success, but user email '%s' is not found in database", response.getEmail())));
+
+        // TODO: Update user info by response
+        return authUserService.saveUser(user);
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication.equals(UsernamePasswordAuthenticationToken.class);
-    }
-
-    // Fetch User data from oauth2 server and update database
-    private User loadAndUpdate(OAuth2Client oAuth2Client, AuthenticationRequest credentials) {
-        // Fetch User data from oauth2 server
-        OAuth2Response response = oAuth2Client.userInfo(credentials.getAccessToken());
-
-        User user = authUserService.loadUserByEmail(response.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException(credentials.getAuthProvider() + "'s authentication success, but user not found in database"));
-
-        // TODO: Update user info by response
-
-        return authUserService.saveUser(user);
+        return authentication.equals(OAuth2Token.class);
     }
 }

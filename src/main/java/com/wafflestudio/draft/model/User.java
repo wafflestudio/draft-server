@@ -34,6 +34,9 @@ public class User extends BaseTimeEntity {
     private String email;
 
     @Column
+    private String password;
+
+    @Column
     private String roles;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
