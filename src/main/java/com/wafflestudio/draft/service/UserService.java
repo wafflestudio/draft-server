@@ -15,6 +15,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public Optional<User> findUser(String email){
+        return userRepository.findByEmail(email);
+    }
+
     public Optional<User> currentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth instanceof AnonymousAuthenticationToken) {

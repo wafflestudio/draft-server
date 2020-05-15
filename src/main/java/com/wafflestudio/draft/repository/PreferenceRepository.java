@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PreferenceRepository extends JpaRepository<Preference, Long> {
     void deleteAllByUser(User user);
-    //TODO: use other method with better performance
+    //TODO: use other method for better performance
 }
