@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource("classpath:/application.yaml")
+@PropertySource("classpath:/application.yml")
 public class DataSourceConfig {
 
     @Bean

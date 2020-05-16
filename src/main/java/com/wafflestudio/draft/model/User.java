@@ -1,17 +1,14 @@
 package com.wafflestudio.draft.model;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 
 @Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter @Setter
+@NoArgsConstructor
 @ToString(exclude = {"rooms", "region"})
 public class User extends BaseTimeEntity {
     @Id
