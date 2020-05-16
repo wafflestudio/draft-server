@@ -22,13 +22,24 @@ public class DataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        Region testRegion = new Region();
+        testRegion.setName("TEST_REGION");
+        regionRepository.save(testRegion);
+
         User oauth2User = new User("OAUTH2_TESTUSER", "authuser@test.com");
-        oauth2User.setRoles("TEST_API");
+        oauth2User.addRole("TEST_API");
+        oauth2User.addRole("ROLE_USER");
+        oauth2User.addRole("USER");
+        oauth2User.setRegion(testRegion);
         userRepository.save(oauth2User);
 
         User passwordUser = new User("PASSWORD_TESTUSER", "passworduser@test.com");
-        passwordUser.setRoles("TEST_API");
+        passwordUser.addRole("TEST_API");
+        passwordUser.addRole("ROLE_USER");
+        passwordUser.addRole("USER");
+        passwordUser.setRegion(testRegion);
         passwordUser.setPassword(new BCryptPasswordEncoder().encode("testpassword"));
         userRepository.save(passwordUser);
+
     }
 }

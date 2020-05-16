@@ -1,10 +1,15 @@
 package com.wafflestudio.draft.security.password;
 
 import com.wafflestudio.draft.model.User;
-import lombok.NonNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserPrincipal extends User implements UserDetails {
 
@@ -14,6 +19,15 @@ public class UserPrincipal extends User implements UserDetails {
         super.setPassword(user.getPassword());
         super.setRoles(user.getRoles());
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (super.getRoles() == null) return new ArrayList<>();
+
+        List<String> roles = Arrays.asList(super.getRoles().split(","));
+        return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    }
+
 
     @Override
     public String getPassword() {

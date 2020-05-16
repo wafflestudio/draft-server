@@ -2,10 +2,9 @@ package com.wafflestudio.draft.security.oauth2;
 
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.model.request.AuthenticationRequest;
-import com.wafflestudio.draft.security.oauth2.client.KakaoOAuth2Client;
 import com.wafflestudio.draft.security.oauth2.client.OAuth2Client;
 import com.wafflestudio.draft.security.oauth2.client.OAuth2Response;
-import com.wafflestudio.draft.security.oauth2.client.TestOAuth2Client;
+import com.wafflestudio.draft.security.password.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -33,8 +32,9 @@ public class OAuth2Provider implements AuthenticationProvider {
             throw new UsernameNotFoundException("User token failed to authenticate on " + request.getAuthProvider());
 
         currentUser = loadAndUpdate(response);
+        UserPrincipal userPrincipal = new UserPrincipal(currentUser);
 
-        return new OAuth2Token(currentUser, null, currentUser.getAuthorities());
+        return new OAuth2Token(userPrincipal, null, userPrincipal.getAuthorities());
     }
 
     // Request authenticate to auth server by access token
