@@ -9,3 +9,4 @@ mysql -e "GRANT ALL PRIVILEGES ON *.* to 'draft-admin'@'localhost';"
 ./gradlew clean build
 ./gradlew bootRun
 ```
+
