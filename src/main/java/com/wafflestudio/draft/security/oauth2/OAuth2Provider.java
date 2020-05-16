@@ -13,15 +13,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class OAuth2Provider implements AuthenticationProvider {
     @Autowired
-    private KakaoOAuth2Client kakaoOAuth2Client;
-
-    @Autowired
-    private TestOAuth2Client testOAuth2Client;
-
-    @Autowired
     private AuthUserService authUserService;
+
+    private Map<String, OAuth2Client> oAuth2ClientMap = new HashMap<>();
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -29,35 +28,29 @@ public class OAuth2Provider implements AuthenticationProvider {
         OAuth2Response response;
         User currentUser;
 
-        System.out.println("YAY" + request.toString());
-
-        // Request authenticate to auth server by access token
         response = requestAuthentication(request);
         if (response.getStatus() != HttpStatus.OK)
             throw new UsernameNotFoundException("User token failed to authenticate on " + request.getAuthProvider());
 
-        // If success, save user in Database
         currentUser = loadAndUpdate(response);
 
         return new OAuth2Token(currentUser, null, currentUser.getAuthorities());
     }
 
+    // Request authenticate to auth server by access token
     public OAuth2Response requestAuthentication(AuthenticationRequest request) {
-        OAuth2Client authServer;
+        if (request.getAuthProvider() == null)
+            throw new UsernameNotFoundException("authServer is not given");
 
-        switch (request.getAuthProvider().toUpperCase()) {
-            case KakaoOAuth2Client.OAUTH_TOKEN_PREFIX:
-                authServer = kakaoOAuth2Client;
-                break;
-            case TestOAuth2Client.OAUTH_TOKEN_PREFIX:
-                authServer = testOAuth2Client;
-                break;
-            default:
-                throw new UsernameNotFoundException(String.format("Unknown OAuth2 provider '%s'", request.getAuthProvider()));
-        }
+        OAuth2Client authServer = oAuth2ClientMap.get(request.getAuthProvider().toUpperCase());
+
+        if (authServer == null)
+            throw new UsernameNotFoundException(String.format("Unknown OAuth2 provider '%s'", request.getAuthProvider()));
+
         return authServer.userInfo(request.getAccessToken());
     }
 
+    // If authentication from request succeed, check user exist in Database. If not, throw error
     // Fetch User data from oauth2 server and update database
     private User loadAndUpdate(OAuth2Response response) {
         User user = authUserService.loadUserByEmail(response.getEmail())
@@ -65,6 +58,11 @@ public class OAuth2Provider implements AuthenticationProvider {
 
         // TODO: Update user info by response
         return authUserService.saveUser(user);
+    }
+
+    // Add source of authentication
+    public void addOAuth2Client(String key, OAuth2Client client) {
+        oAuth2ClientMap.put(key, client);
     }
 
     @Override

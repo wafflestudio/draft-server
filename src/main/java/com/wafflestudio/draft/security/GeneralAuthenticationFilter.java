@@ -39,7 +39,8 @@ public class GeneralAuthenticationFilter extends UsernamePasswordAuthenticationF
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        super.unsuccessfulAuthentication(request, response, failed);
+//        super.unsuccessfulAuthentication(request, response, failed);
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, failed.getMessage());
     }
 
     @Override
@@ -61,7 +62,6 @@ public class GeneralAuthenticationFilter extends UsernamePasswordAuthenticationF
                 authRequest = new OAuth2Token(null, parsedRequest);
                 break;
             case "PASSWORD":
-                System.out.println("REQUEST " + parsedRequest.getEmail() + parsedRequest.getPassword());
                 authRequest = new UsernamePasswordAuthenticationToken(parsedRequest.getEmail(), parsedRequest.getPassword());
                 break;
             default:

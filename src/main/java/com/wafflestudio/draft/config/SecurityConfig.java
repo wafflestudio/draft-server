@@ -1,12 +1,15 @@
 package com.wafflestudio.draft.config;
 
-import com.wafflestudio.draft.repository.UserRepository;
-import com.wafflestudio.draft.security.*;
+import com.wafflestudio.draft.security.GeneralAuthenticationFilter;
+import com.wafflestudio.draft.security.JwtAuthenticationEntryPoint;
+import com.wafflestudio.draft.security.JwtAuthorizationFilter;
+import com.wafflestudio.draft.security.JwtTokenProvider;
 import com.wafflestudio.draft.security.oauth2.OAuth2Provider;
+import com.wafflestudio.draft.security.oauth2.client.KakaoOAuth2Client;
+import com.wafflestudio.draft.security.oauth2.client.TestOAuth2Client;
 import com.wafflestudio.draft.security.password.UserPrincipalDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.wafflestudio.draft.security.JwtAuthenticationEntryPoint;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,6 +31,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserPrincipalDetailService userPrincipalDetailService;
 
+    private final KakaoOAuth2Client kakaoOAuth2Client;
+
+    private final TestOAuth2Client testOAuth2Client;
+
     private static final String[] AUTH_WHITELIST_SWAGGER = {
             // -- swagger ui
             "/swagger-resources/**",
@@ -36,10 +43,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/webjars/**"
     };
 
-    public SecurityConfig(UserRepository userRepository, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtTokenProvider jwtTokenProvider, UserPrincipalDetailService userPrincipalDetailService) {
+    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtTokenProvider jwtTokenProvider, UserPrincipalDetailService userPrincipalDetailService, KakaoOAuth2Client kakaoOAuth2Client, TestOAuth2Client testOAuth2Client) {
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userPrincipalDetailService = userPrincipalDetailService;
+        this.kakaoOAuth2Client = kakaoOAuth2Client;
+        this.testOAuth2Client = testOAuth2Client;
     }
 
     @Override
@@ -56,7 +65,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     OAuth2Provider oAuth2AuthenticationProvider() {
-        return new OAuth2Provider();
+        OAuth2Provider provider = new OAuth2Provider();
+        provider.addOAuth2Client(KakaoOAuth2Client.OAUTH_TOKEN_PREFIX, kakaoOAuth2Client);
+        provider.addOAuth2Client(TestOAuth2Client.OAUTH_TOKEN_PREFIX, testOAuth2Client);
+        return provider;
     }
 
     @Bean

@@ -11,7 +11,7 @@ public class AuthenticationRequest {
     private String accessToken;
     @Nullable
     private String authProvider;
-
+///
     @Nullable
     private String email;
     @Nullable

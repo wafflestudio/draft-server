@@ -27,7 +27,7 @@ public class Region {
 
     private Polygon polygon;
 
-    @Column(nullable = false)
+    @Column(unique = true)
     private String name;
 
     @OneToMany(mappedBy = "region", cascade = CascadeType.ALL)
