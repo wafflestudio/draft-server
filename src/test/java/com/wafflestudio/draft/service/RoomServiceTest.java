@@ -27,7 +27,7 @@ class RoomServiceTest {
         Room room = new Room();
         Region region = new Region();
         region.setName("Gwanak");
-        User user = new User();
+        User user = new User("ROOMTEST", "roomtestuser@test.com");
         user.setRegion(region);
         room.setOwner(user);
 

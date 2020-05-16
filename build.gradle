@@ -21,6 +21,19 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'mysql:mysql-connector-java'
+
+	// Spring Security
+//	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	// Geometry
+	implementation 'com.vividsolutions:jts:1.13'
+
+	// Logger
+	implementation 'org.slf4j:slf4j-api:1.7.25'
+
+	// Lombok
 	runtimeOnly 'com.h2database:h2'
 
 	// Spring Security
@@ -38,6 +51,11 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor('org.projectlombok:lombok')
 	testAnnotationProcessor('org.projectlombok:lombok')
+	implementation 'org.projectlombok:lombok'
+
+	// Swagger
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
 	implementation 'org.projectlombok:lombok'
 
 

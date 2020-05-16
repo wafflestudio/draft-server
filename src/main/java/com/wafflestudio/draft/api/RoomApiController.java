@@ -24,7 +24,7 @@ public class RoomApiController {
         Room room = new Room();
         Region region = new Region();
         region.setName("Gwanak");
-        User user = new User();
+        User user = new User("ROOMTESTER", "roomtestuser@test.com");
         user.setRegion(region);
         room.setOwner(user);
 
