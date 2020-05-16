@@ -53,15 +53,15 @@ public class UserApiController {
                     return null;
                 }
 
-                user = new User(signUpRequest.getUserName(), oAuth2Response.getEmail());
+                user = new User(signUpRequest.getUsername(), oAuth2Response.getEmail());
                 break;
             case "PASSWORD":
-                if (signUpRequest.getUserName() == null || signUpRequest.getEmail() == null || signUpRequest.getPassword() == null) {
+                if (signUpRequest.getUsername() == null || signUpRequest.getEmail() == null || signUpRequest.getPassword() == null) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     return null;
                 }
 
-                user = new User(signUpRequest.getUserName(), signUpRequest.getEmail());
+                user = new User(signUpRequest.getUsername(), signUpRequest.getEmail());
                 user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
                 break;
             default:

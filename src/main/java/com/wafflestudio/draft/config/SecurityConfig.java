@@ -94,8 +94,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), jwtTokenProvider))
                 .authorizeRequests()
                 .antMatchers(AUTH_WHITELIST_SWAGGER).permitAll()     // Swagger document
-                .antMatchers("/auth").permitAll()   // Auth entrypoint
-                .antMatchers("/api/v1/user/signup").permitAll() // SignUp user
+                .antMatchers("/api/v1/user/signin/").permitAll()   // Auth entrypoint
+                .antMatchers("/api/v1/user/signup/").permitAll() // SignUp user
                 .anyRequest().authenticated();
     }
 
