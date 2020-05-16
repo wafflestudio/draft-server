@@ -8,10 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -27,7 +25,7 @@ public class GeneralAuthenticationFilter extends UsernamePasswordAuthenticationF
     public GeneralAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
         super();
         this.setAuthenticationManager(authenticationManager);
-        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/auth", "POST"));
+        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/v1/user/signin/", "POST"));
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
