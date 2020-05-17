@@ -1,20 +1,28 @@
 language: java
-jdk:
-  - openjdk11
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
 cache:
   directories:
-    - '$HOME/.gradle'
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 
-dist: trusty
+os: linux
+dist: xenial
+jdk: openjdk11
 services:
   - mysql
-  - redis-server
+  - redis
 
 before-install:
   - mysql -e "CREATE DATABASE draft;"
   - mysql -e "CREATE USER 'draft-admin'@'localhost' IDENTIFIED BY 'draft-pw';"
   - mysql -e "GRANT ALL PRIVILEGES ON *.* to 'draft-admin'@'localhost';"
+
+install:
+  - ./gradlew assemble
 
 script:
   - ./gradlew clean build
