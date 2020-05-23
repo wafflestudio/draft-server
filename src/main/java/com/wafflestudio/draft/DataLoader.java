@@ -1,7 +1,9 @@
 package com.wafflestudio.draft;
 
+import com.wafflestudio.draft.model.Device;
 import com.wafflestudio.draft.model.Region;
 import com.wafflestudio.draft.model.User;
+import com.wafflestudio.draft.repository.DeviceRepository;
 import com.wafflestudio.draft.repository.RegionRepository;
 import com.wafflestudio.draft.repository.UserRepository;
 import org.springframework.boot.ApplicationArguments;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class DataLoader implements ApplicationRunner {
     UserRepository userRepository;
     RegionRepository regionRepository;
+    DeviceRepository deviceRepository;
 
     public DataLoader(UserRepository userRepository, RegionRepository regionRepository) {
         this.userRepository = userRepository;
@@ -40,6 +43,10 @@ public class DataLoader implements ApplicationRunner {
         passwordUser.setRegion(testRegion);
         passwordUser.setPassword(new BCryptPasswordEncoder().encode("testpassword"));
         userRepository.save(passwordUser);
+
+        Device testDevice = new Device();
+        testDevice.setDeviceToken("euSJRfcqJTc:APA91bFIUxmYZX68KWUZSZPW0sMhCl1tJKdH8L-lvhUv71DbePYmA8RI-QrVGGAqBzoxfklsl-i7NdgazQAHGQXlFkCnaCIpP3B_oDCCkpTR_HxxUVeNoG8_DeNODrwxEMfardoz_4Ym");
+        testDevice.setUser(passwordUser);
 
     }
 }

@@ -13,6 +13,7 @@ import com.wafflestudio.draft.security.password.UserPrincipal;
 import com.wafflestudio.draft.service.PreferenceService;
 import com.wafflestudio.draft.service.RegionService;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -42,7 +45,7 @@ public class UserApiController {
     }
 
     @PostMapping("/signup/")
-    public ResponseEntity createUser(@RequestBody SignUpRequest signUpRequest, HttpServletResponse response) throws IOException {
+    public ResponseEntity<User> createUser(@RequestBody SignUpRequest signUpRequest, HttpServletResponse response) throws IOException {
         User user;
 
         switch (signUpRequest.getGrantType()) {
@@ -71,7 +74,7 @@ public class UserApiController {
 
         authUserService.saveUser(user);
 
-        return new ResponseEntity(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     //    @PreAuthorize("hasRole('ROLE_USER')")
@@ -83,18 +86,36 @@ public class UserApiController {
 
     //    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/info/")
-    public void setPreferences(@Valid @RequestBody List<PreferenceRequest> preferenceRequestList, @CurrentUser UserPrincipal currentUser) {
+    public void setPreferences(@Valid @RequestBody List<SetPreferenceRequest> preferenceRequestList, @CurrentUser UserPrincipal currentUser) {
 
-        for (UserApiController.PreferenceRequest preferenceRequest : preferenceRequestList) {
+        for (SetPreferenceRequest preferenceRequest : preferenceRequestList) {
             Region duplicatedRegion = regionService.getRegionByName(preferenceRequest.getRegionName());
             preferenceService.setPreferences(currentUser, duplicatedRegion, preferenceRequest.preferences);
         }
     }
 
+    @GetMapping("/pref/")
+    public List<Long> getUsersByPreference(@Valid @ModelAttribute GetUsersByPreferenceRequest getUsersByPreferenceRequest) {
+        String regionName = getUsersByPreferenceRequest.getRegionName();
+        DayOfWeek dayOfWeek = getUsersByPreferenceRequest.getDayOfWeek();
+        LocalTime startTime = getUsersByPreferenceRequest.getStartTime();
+        LocalTime endTime = getUsersByPreferenceRequest.getEndTime();
+        return preferenceService.getUsersApproachable(regionName, dayOfWeek, startTime, endTime);
+    }
+
     @Data
-    static class PreferenceRequest {
+    static class SetPreferenceRequest {
         private String regionName;
         private List<Preference> preferences;
     }
 
+    @Data
+    static class GetUsersByPreferenceRequest {
+        private String regionName;
+        private DayOfWeek dayOfWeek;
+        @DateTimeFormat(pattern = "HHmmss")
+        private LocalTime startTime;
+        @DateTimeFormat(pattern = "HHmmss")
+        private LocalTime endTime;
+    }
 }
