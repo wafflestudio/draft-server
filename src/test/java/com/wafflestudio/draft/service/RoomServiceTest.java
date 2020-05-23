@@ -1,6 +1,5 @@
 package com.wafflestudio.draft.service;
 
-import com.wafflestudio.draft.model.Region;
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.repository.RoomRepository;
@@ -25,10 +24,7 @@ class RoomServiceTest {
     void create() throws Exception {
         // given
         Room room = new Room();
-        Region region = new Region();
-        region.setName("Gwanak");
-        User user = new User();
-        user.setRegion(region);
+        User user = new User("ROOMTEST", "roomtestuser@test.com");
         room.setOwner(user);
 
         // when

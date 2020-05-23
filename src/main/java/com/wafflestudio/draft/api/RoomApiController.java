@@ -1,6 +1,5 @@
 package com.wafflestudio.draft.api;
 
-import com.wafflestudio.draft.model.Region;
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.service.RoomService;
@@ -22,10 +21,7 @@ public class RoomApiController {
     public CreateRoomResponse saveRoomV1() {
         // FIXME: These codes are temporary until basic User APIs are implemented.
         Room room = new Room();
-        Region region = new Region();
-        region.setName("Gwanak");
-        User user = new User();
-        user.setRegion(region);
+        User user = new User("ROOMTESTER", "roomtestuser@test.com");
         room.setOwner(user);
 
         Long id = roomService.create(room);
