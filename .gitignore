@@ -163,4 +163,7 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
+# firebase account key
+draftServiceAccountKey.json
+
 # End of https://www.gitignore.io/api/java,macos,gradle,intellij

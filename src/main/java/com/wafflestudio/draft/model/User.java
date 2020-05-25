@@ -36,7 +36,7 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Room> rooms;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Device> devices;
 
     @ManyToOne(fetch = FetchType.LAZY)

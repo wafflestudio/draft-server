@@ -6,22 +6,18 @@ import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.repository.DeviceRepository;
 import com.wafflestudio.draft.repository.RegionRepository;
 import com.wafflestudio.draft.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class DataLoader implements ApplicationRunner {
-    UserRepository userRepository;
-    RegionRepository regionRepository;
-    DeviceRepository deviceRepository;
-
-    public DataLoader(UserRepository userRepository, RegionRepository regionRepository) {
-        this.userRepository = userRepository;
-        this.regionRepository = regionRepository;
-    }
-
+    final UserRepository userRepository;
+    final RegionRepository regionRepository;
+    final DeviceRepository deviceRepository;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -44,9 +40,8 @@ public class DataLoader implements ApplicationRunner {
         passwordUser.setPassword(new BCryptPasswordEncoder().encode("testpassword"));
         userRepository.save(passwordUser);
 
-        Device testDevice = new Device();
-        testDevice.setDeviceToken("euSJRfcqJTc:APA91bFIUxmYZX68KWUZSZPW0sMhCl1tJKdH8L-lvhUv71DbePYmA8RI-QrVGGAqBzoxfklsl-i7NdgazQAHGQXlFkCnaCIpP3B_oDCCkpTR_HxxUVeNoG8_DeNODrwxEMfardoz_4Ym");
+        Device testDevice = new Device("euSJRfcqJTc:APA91bFIUxmYZX68KWUZSZPW0sMhCl1tJKdH8L-lvhUv71DbePYmA8RI-QrVGGAqBzoxfklsl-i7NdgazQAHGQXlFkCnaCIpP3B_oDCCkpTR_HxxUVeNoG8_DeNODrwxEMfardoz_4Ym");
         testDevice.setUser(passwordUser);
-
+        deviceRepository.save(testDevice);
     }
 }

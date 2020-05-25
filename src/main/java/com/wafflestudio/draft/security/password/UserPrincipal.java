@@ -18,6 +18,7 @@ public class UserPrincipal extends User implements UserDetails {
         super.setId(user.getId());
         super.setPassword(user.getPassword());
         super.setRoles(user.getRoles());
+        super.setDevices(user.getDevices());
     }
 
     @Override

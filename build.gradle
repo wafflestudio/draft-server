@@ -59,7 +59,7 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 
 	//firebase
-	implementation 'com.google.firebase:firebase-admin:6.5.0'
+	implementation 'com.google.firebase:firebase-admin:6.8.1'
 
 	// Testing instrument
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
