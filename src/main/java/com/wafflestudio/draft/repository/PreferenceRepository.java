@@ -17,7 +17,7 @@ public interface PreferenceRepository extends JpaRepository<Preference, Long> {
     void deleteAllByUser(User user);
 
 
-    @Query("SELECT DISTINCT u.id,u.username,u. from Preference p " +
+    @Query("SELECT DISTINCT u.id from Preference p " +
             "INNER JOIN p.region r " +
             "INNER JOIN p.user u " +
             "WHERE r.name = :region " +
@@ -29,4 +29,5 @@ public interface PreferenceRepository extends JpaRepository<Preference, Long> {
             @Param("day_of_week") DayOfWeek dayOfWeek,
             @Param("start_time") LocalTime start,
             @Param("end_time") LocalTime end);
+
 }

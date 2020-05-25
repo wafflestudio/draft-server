@@ -117,5 +117,6 @@ public class UserApiController {
         private LocalTime startTime;
         @DateTimeFormat(pattern = "HHmmss")
         private LocalTime endTime;
+
     }
 }

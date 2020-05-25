@@ -22,14 +22,15 @@ public class PreferenceService {
 
     public void setPreferences(User user, Region region, List<Preference> preferences) {
         preferenceRepository.deleteAllByUser(user);
-        for (Preference preference: preferences) {
+        for (Preference preference : preferences) {
             preference.setRegion(region);
             preference.setUser(user);
             preferenceRepository.save(preference);
         }
     }
 
-    public List<Long> getUsersApproachable(String region, DayOfWeek dayOfWeek, LocalTime start, LocalTime end){
+    public List<Long> getUsersApproachable(String region, DayOfWeek dayOfWeek, LocalTime start, LocalTime end) {
         return preferenceRepository.getUsersApproachable(region, dayOfWeek, start, end);
     }
+
 }
