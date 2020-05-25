@@ -32,5 +32,4 @@ public class PreferenceService {
     public List<Long> getUsersApproachable(String region, DayOfWeek dayOfWeek, LocalTime start, LocalTime end) {
         return preferenceRepository.getUsersApproachable(region, dayOfWeek, start, end);
     }
-
 }

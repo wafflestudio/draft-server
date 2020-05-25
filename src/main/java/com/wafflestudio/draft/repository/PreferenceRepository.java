@@ -29,5 +29,4 @@ public interface PreferenceRepository extends JpaRepository<Preference, Long> {
             @Param("day_of_week") DayOfWeek dayOfWeek,
             @Param("start_time") LocalTime start,
             @Param("end_time") LocalTime end);
-
 }
