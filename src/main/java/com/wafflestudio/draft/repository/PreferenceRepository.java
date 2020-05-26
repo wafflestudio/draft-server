@@ -24,7 +24,7 @@ public interface PreferenceRepository extends JpaRepository<Preference, Long> {
             "AND p.dayOfWeek = :day_of_week " +
             "AND p.startAt <= :start_time " +
             "AND p.endAt >= :end_time")
-    List<Long> getUsersApproachable(
+    List<Long> getPlayableUsers(
             @Param("region") String region,
             @Param("day_of_week") DayOfWeek dayOfWeek,
             @Param("start_time") LocalTime start,

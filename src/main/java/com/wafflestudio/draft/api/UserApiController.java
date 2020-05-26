@@ -94,13 +94,13 @@ public class UserApiController {
         }
     }
 
-    @GetMapping("/pref/")
-    public List<Long> getUsersByPreference(@Valid @ModelAttribute GetUsersByPreferenceRequest getUsersByPreferenceRequest) {
+    @GetMapping("/playable/")
+    public List<Long> getPlayableUsers(@Valid @ModelAttribute GetUsersByPreferenceRequest getUsersByPreferenceRequest) {
         String regionName = getUsersByPreferenceRequest.getRegionName();
         DayOfWeek dayOfWeek = getUsersByPreferenceRequest.getDayOfWeek();
         LocalTime startTime = getUsersByPreferenceRequest.getStartTime();
         LocalTime endTime = getUsersByPreferenceRequest.getEndTime();
-        return preferenceService.getUsersApproachable(regionName, dayOfWeek, startTime, endTime);
+        return preferenceService.getPlayableUsers(regionName, dayOfWeek, startTime, endTime);
     }
 
     @Data

@@ -14,7 +14,6 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -25,6 +24,7 @@ public class PreferenceService {
 
     public void setPreferences(User user, Region region, List<Preference> preferences) {
         preferenceRepository.deleteAllByUser(user);
+        // TODO: Add unsubscribing logic
 
         List<String> registrationTokens = user.getDevices().stream()
                 .map(Device::getDeviceToken)
@@ -37,7 +37,7 @@ public class PreferenceService {
         }
     }
 
-    public List<Long> getUsersApproachable(String region, DayOfWeek dayOfWeek, LocalTime start, LocalTime end) {
-        return preferenceRepository.getUsersApproachable(region, dayOfWeek, start, end);
+    public List<Long> getPlayableUsers(String region, DayOfWeek dayOfWeek, LocalTime start, LocalTime end) {
+        return preferenceRepository.getPlayableUsers(region, dayOfWeek, start, end);
     }
 }
