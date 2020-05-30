@@ -29,6 +29,7 @@ mysql -u root -e "GRANT ALL PRIVILEGES ON *.* to 'draft-admin'@'localhost';"
 - prod: not yet
 
 ### API documentation
+- **https://draft-waffle.atlassian.net/wiki/spaces/DRAFTWAFFL/pages/33108/API+Documentation**
 - http://ec2-15-165-158-156.ap-northeast-2.compute.amazonaws.com/swagger-ui.html
 - https://github.com/wafflestudio/draft-server/wiki/Api-Specification
 
