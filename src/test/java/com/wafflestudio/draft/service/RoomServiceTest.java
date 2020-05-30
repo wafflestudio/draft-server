@@ -18,13 +18,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class RoomServiceTest {
 
     @Autowired RoomService roomService;
+    @Autowired UserService userService;
     @Autowired RoomRepository roomRepository;
 
     @Test
     void create() throws Exception {
         // given
         Room room = new Room();
-        User user = new User("ROOMTEST", "roomtestuser@test.com");
+        User user = userService.findUser("authuser@test.com").get();
         room.setOwner(user);
 
         // when
