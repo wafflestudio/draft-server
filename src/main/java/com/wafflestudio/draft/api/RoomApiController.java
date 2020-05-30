@@ -2,18 +2,19 @@ package com.wafflestudio.draft.api;
 
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
+import com.wafflestudio.draft.service.FCMService;
 import com.wafflestudio.draft.service.RoomService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
 public class RoomApiController {
+
+    private final FCMService fcmService;
+    // FIXME: Use fcmService.send(message) when room create
 
     private final RoomService roomService;
 
