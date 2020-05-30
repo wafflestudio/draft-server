@@ -33,7 +33,7 @@ public class User extends BaseTimeEntity {
     @Column
     private String roles;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner")
     private List<Room> rooms;
 
     @ManyToOne(fetch = FetchType.LAZY)
