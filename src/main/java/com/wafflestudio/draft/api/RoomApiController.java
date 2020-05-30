@@ -2,11 +2,14 @@ package com.wafflestudio.draft.api;
 
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
+import com.wafflestudio.draft.service.FCMService;
 import com.wafflestudio.draft.model.enums.RoomStatus;
 import com.wafflestudio.draft.security.CurrentUser;
 import com.wafflestudio.draft.service.RoomService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
