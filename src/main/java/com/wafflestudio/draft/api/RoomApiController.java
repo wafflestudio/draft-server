@@ -25,6 +25,7 @@ public class RoomApiController {
     private final RoomService roomService;
 
     @PostMapping("/")
+    @ResponseStatus(HttpStatus.CREATED)
     public CreateRoomResponse saveRoomV1(@RequestBody @Valid CreateRoomRequest request, @CurrentUser User currentUser) {
         Room room = new Room();
         room.setOwner(currentUser);
