@@ -22,6 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomApiController {
 
+    private final FCMService fcmService;
+    // FIXME: Use fcmService.send(message) when room create
+
     private final RoomService roomService;
 
     @PostMapping("/")
