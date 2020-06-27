@@ -26,5 +26,7 @@ public class Room extends BaseTimeEntity {
 
     private LocalDateTime endTime;
 
+    private String name;
+
     // TODO: court_id
 }
