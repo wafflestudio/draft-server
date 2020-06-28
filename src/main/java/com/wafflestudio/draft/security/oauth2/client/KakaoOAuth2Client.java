@@ -29,7 +29,7 @@ public class KakaoOAuth2Client implements OAuth2Client {
         RestTemplate template = new RestTemplate();
 
         MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add("Authorization", TOKEN_PREFIX + accessToken);
+        headers.add("Authorization", TOKEN_PREFIX + " " + accessToken);
         headers.add("property_keys", "[\"kakao_account.email\"]");
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(headers);
@@ -40,12 +40,24 @@ public class KakaoOAuth2Client implements OAuth2Client {
         ResponseEntity<HashMap<String, Object>> response =
                 template.exchange(KAKAO_HOST + "/v2/user/me", HttpMethod.GET, entity, responseType);
 
-        if (response.getStatusCode() != HttpStatus.OK || !response.hasBody()) {
+        if (response.getStatusCode() != HttpStatus.OK ||
+                !response.hasBody() ||
+                !response.getBody().containsKey("kakao_account") ||
+                !(response.getBody().get("kakao_account") instanceof HashMap)) {
             throw new UsernameNotFoundException("Cannot retrieve user info from KAKAO Auth server");
         }
 
+        HashMap<String, Object> account = (HashMap<String, Object>) response.getBody().get("kakao_account");
+
+        if (!(boolean) account.get("is_email_valid")) {
+            throw new UsernameNotFoundException("Email information not exist or not agreed");
+        }
+
+        System.out.println(account.get("email").toString());
+        System.out.println(response.toString());
+
 
         // TODO: Make up kakao response
-        return null;
+        return new OAuth2Response(OAUTH_TOKEN_PREFIX, account.get("email").toString(), response.getStatusCode());
     }
 }
