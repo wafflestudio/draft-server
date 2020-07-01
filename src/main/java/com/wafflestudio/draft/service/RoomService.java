@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,6 +24,10 @@ public class RoomService {
 
     public List<Room> findRooms() {
         return roomRepository.findAll();
+    }
+
+    public List<Room> findRooms(String name, LocalDateTime startTime, LocalDateTime endTime) {
+        return roomRepository.findAll(name, startTime, endTime);
     }
 
     public Room findOne(Long roomId) {
