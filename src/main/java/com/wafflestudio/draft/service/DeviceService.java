@@ -1,11 +1,11 @@
 package com.wafflestudio.draft.service;
 
 import com.wafflestudio.draft.model.Device;
-import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.repository.DeviceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DeviceService {
@@ -13,9 +13,10 @@ public class DeviceService {
 
     private DeviceRepository deviceRepository;
 
-    public void initializeDevice(Device device) {
+    @Transactional
+    public Long create(Device device) {
         deviceRepository.save(device);
+        return device.getId();
     }
-    public void setUser(User user){
-    }
+
 }
