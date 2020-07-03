@@ -14,7 +14,9 @@ import com.wafflestudio.draft.security.password.UserPrincipal;
 import com.wafflestudio.draft.service.DeviceService;
 import com.wafflestudio.draft.service.PreferenceService;
 import com.wafflestudio.draft.service.RegionService;
+import jdk.nashorn.internal.objects.annotations.Constructor;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -107,7 +109,7 @@ public class UserApiController {
         Device device = new Device();
         device.setUser(currentUser);
         device.setDeviceToken(request.deviceToken);
-        Long id = deviceService.create(device);
+        deviceService.create(device);
         return new DeviceResponse(device);
     }
 
@@ -118,12 +120,10 @@ public class UserApiController {
     }
 
     @Data
+    @RequiredArgsConstructor
     static class GetUserInformationResponse {
+        @NonNull
         private String email;
-
-        public GetUserInformationResponse(String email) {
-            this.email = email;
-        }
     }
 
     @Data
@@ -148,12 +148,12 @@ public class UserApiController {
     static class DeviceResponse {
         private Long id;
         private String deviceToken;
-        private User user;
+        private String email;
 
         public DeviceResponse(Device device) {
             this.id = device.getId();
             this.deviceToken = device.getDeviceToken();
-            this.user = device.getUser();
+            this.email = device.getUser().getEmail();
         }
     }
 }
