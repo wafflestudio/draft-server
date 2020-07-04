@@ -19,7 +19,7 @@ public class OAuth2Provider implements AuthenticationProvider {
     @Autowired
     private AuthUserService authUserService;
 
-    private Map<String, OAuth2Client> oAuth2ClientMap = new HashMap<>();
+    private final Map<String, OAuth2Client> oAuth2ClientMap = new HashMap<>();
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
