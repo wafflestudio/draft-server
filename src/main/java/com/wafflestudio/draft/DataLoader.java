@@ -57,11 +57,12 @@ public class DataLoader implements ApplicationRunner {
         testDevice.setUser(passwordUser);
         deviceRepository.save(testDevice);
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 1; i <= 5; i++) {
             Room room = new Room();
             room.setOwner(oauth2User);
             room.setCourt(testCourt);
-            roomService.create(room);
+            room.setName("TEST_ROOM_" + i);
+            roomService.save(room);
         }
     }
 }
