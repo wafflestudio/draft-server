@@ -22,11 +22,6 @@ public class RoomRepository {
         return em.find(Room.class, id);
     }
 
-    public List<Room> findAll() {
-        return em.createQuery("SELECT r FROM Room r", Room.class)
-                .getResultList();
-    }
-
     public List<Room> findRooms(String name, Long courtId, LocalDateTime startTime, LocalDateTime endTime) {
         // FIXME: we should find a smarter way...
         if (courtId == null) {
