@@ -26,8 +26,8 @@ public class RoomService {
         return roomRepository.findAll();
     }
 
-    public List<Room> findRooms(String name, LocalDateTime startTime, LocalDateTime endTime) {
-        return roomRepository.findAll(name, startTime, endTime);
+    public List<Room> findRooms(String name, Long courtId, LocalDateTime startTime, LocalDateTime endTime) {
+        return roomRepository.findRooms(name, courtId, startTime, endTime);
     }
 
     public Room findOne(Long roomId) {
