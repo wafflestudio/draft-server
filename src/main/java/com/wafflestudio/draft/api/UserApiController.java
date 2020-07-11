@@ -2,10 +2,14 @@ package com.wafflestudio.draft.api;
 
 
 import com.wafflestudio.draft.model.Device;
-import com.wafflestudio.draft.model.Preference;
 import com.wafflestudio.draft.model.Region;
 import com.wafflestudio.draft.model.User;
-import com.wafflestudio.draft.model.request.SignUpRequest;
+import com.wafflestudio.draft.dto.request.GetUsersByPreferenceRequest;
+import com.wafflestudio.draft.dto.request.SetDeviceRequest;
+import com.wafflestudio.draft.dto.request.SetPreferenceRequest;
+import com.wafflestudio.draft.dto.request.SignUpRequest;
+import com.wafflestudio.draft.dto.response.DeviceResponse;
+import com.wafflestudio.draft.dto.response.GetUserInformationResponse;
 import com.wafflestudio.draft.security.CurrentUser;
 import com.wafflestudio.draft.security.oauth2.AuthUserService;
 import com.wafflestudio.draft.security.oauth2.OAuth2Provider;
@@ -14,11 +18,7 @@ import com.wafflestudio.draft.security.password.UserPrincipal;
 import com.wafflestudio.draft.service.DeviceService;
 import com.wafflestudio.draft.service.PreferenceService;
 import com.wafflestudio.draft.service.RegionService;
-import jdk.nashorn.internal.objects.annotations.Constructor;
-import lombok.Data;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -90,7 +89,7 @@ public class UserApiController {
 
         for (SetPreferenceRequest preferenceRequest : preferenceRequestList) {
             Region duplicatedRegion = regionService.getRegionByName(preferenceRequest.getRegionName());
-            preferenceService.setPreferences(currentUser, duplicatedRegion, preferenceRequest.preferences);
+            preferenceService.setPreferences(currentUser, duplicatedRegion, preferenceRequest.getPreferences());
         }
     }
 
@@ -105,55 +104,12 @@ public class UserApiController {
 
     @PostMapping("/device/")
     @ResponseStatus(HttpStatus.CREATED)
-    public DeviceResponse setDevice(@RequestBody @Valid SetDeivceRequest request, @CurrentUser User currentUser) {
+    public DeviceResponse setDevice(@RequestBody @Valid SetDeviceRequest request, @CurrentUser User currentUser) {
         Device device = new Device();
         device.setUser(currentUser);
-        device.setDeviceToken(request.deviceToken);
+        device.setDeviceToken(request.getDeviceToken());
         deviceService.create(device);
         return new DeviceResponse(device);
     }
 
-    @Data
-    static class SetPreferenceRequest {
-        private String regionName;
-        private List<Preference> preferences;
-    }
-
-    @Data
-    @RequiredArgsConstructor
-    static class GetUserInformationResponse {
-        @NonNull
-        private String email;
-    }
-
-    @Data
-    static class GetUsersByPreferenceRequest {
-        private String regionName;
-        private DayOfWeek dayOfWeek;
-        @DateTimeFormat(pattern = "HHmmss")
-        private LocalTime startTime;
-        @DateTimeFormat(pattern = "HHmmss")
-        private LocalTime endTime;
-    }
-
-    @Data
-    static class SetDeivceRequest {
-        @NotNull
-        private String email;
-        @NotNull
-        private String deviceToken;
-    }
-
-    @Data
-    static class DeviceResponse {
-        private Long id;
-        private String deviceToken;
-        private String email;
-
-        public DeviceResponse(Device device) {
-            this.id = device.getId();
-            this.deviceToken = device.getDeviceToken();
-            this.email = device.getUser().getEmail();
-        }
-    }
 }
