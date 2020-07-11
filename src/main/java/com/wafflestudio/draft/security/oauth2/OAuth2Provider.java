@@ -1,7 +1,7 @@
 package com.wafflestudio.draft.security.oauth2;
 
 import com.wafflestudio.draft.model.User;
-import com.wafflestudio.draft.model.request.AuthenticationRequest;
+import com.wafflestudio.draft.dto.request.AuthenticationRequest;
 import com.wafflestudio.draft.security.oauth2.client.OAuth2Client;
 import com.wafflestudio.draft.security.oauth2.client.OAuth2Response;
 import com.wafflestudio.draft.security.password.UserPrincipal;
