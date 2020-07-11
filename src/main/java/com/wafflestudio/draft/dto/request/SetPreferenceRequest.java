@@ -1,4 +1,4 @@
-package com.wafflestudio.draft.model.request;
+package com.wafflestudio.draft.dto.request;
 
 import com.wafflestudio.draft.model.Preference;
 import lombok.Data;

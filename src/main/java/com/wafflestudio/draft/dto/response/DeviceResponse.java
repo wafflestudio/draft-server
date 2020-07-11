@@ -1,4 +1,4 @@
-package com.wafflestudio.draft.model.response;
+package com.wafflestudio.draft.dto.response;
 
 import com.wafflestudio.draft.model.Device;
 import lombok.Data;

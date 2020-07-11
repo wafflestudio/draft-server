@@ -1,4 +1,4 @@
-package com.wafflestudio.draft.model.response;
+package com.wafflestudio.draft.dto.response;
 
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.enums.RoomStatus;
