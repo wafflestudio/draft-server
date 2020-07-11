@@ -10,6 +10,5 @@ import javax.validation.constraints.NotBlank;
 @RequiredArgsConstructor
 public class GetUserInformationResponse {
     @NonNull
-    @NotBlank
     private String email;
 }

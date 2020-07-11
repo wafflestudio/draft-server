@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+
 @Data
 public class RoomResponse {
     private Long id;
@@ -15,6 +16,7 @@ public class RoomResponse {
     private String name;
     private LocalDateTime createdAt;
     private Long ownerId;
+    private Long courtId;
 
     public RoomResponse(Room room) {
         this.id = room.getId();
@@ -24,5 +26,6 @@ public class RoomResponse {
         this.name = room.getName();
         this.createdAt = room.getCreatedAt();
         this.ownerId = room.getOwner().getId();
+        this.courtId = room.getCourt().getId();
     }
 }

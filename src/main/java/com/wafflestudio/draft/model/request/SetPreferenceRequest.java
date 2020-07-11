@@ -10,5 +10,3 @@ public class SetPreferenceRequest {
     private String regionName;
     private List<Preference> preferences;
 }
-
-

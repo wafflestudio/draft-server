@@ -112,5 +112,4 @@ public class UserApiController {
         return new DeviceResponse(device);
     }
 
-
 }

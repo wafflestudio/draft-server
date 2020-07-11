@@ -14,5 +14,6 @@ public class CreateRoomRequest {
     private LocalDateTime endTime;
     @NotNull
     private String name;
+    @NotNull
+    private Long courtId;
 }
-
