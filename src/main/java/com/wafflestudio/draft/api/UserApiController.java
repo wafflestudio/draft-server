@@ -1,10 +1,7 @@
 package com.wafflestudio.draft.api;
 
 
-import com.wafflestudio.draft.model.Device;
-import com.wafflestudio.draft.model.Preference;
-import com.wafflestudio.draft.model.Region;
-import com.wafflestudio.draft.model.User;
+import com.wafflestudio.draft.model.*;
 import com.wafflestudio.draft.model.request.SignUpRequest;
 import com.wafflestudio.draft.security.CurrentUser;
 import com.wafflestudio.draft.security.oauth2.AuthUserService;
@@ -14,7 +11,6 @@ import com.wafflestudio.draft.security.password.UserPrincipal;
 import com.wafflestudio.draft.service.DeviceService;
 import com.wafflestudio.draft.service.PreferenceService;
 import com.wafflestudio.draft.service.RegionService;
-import jdk.nashorn.internal.objects.annotations.Constructor;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -30,7 +27,9 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -81,17 +80,27 @@ public class UserApiController {
     @GetMapping("/me/")
     public ResponseEntity<GetUserInformationResponse> myInfo(@CurrentUser UserPrincipal currentUser) {
         System.out.println(currentUser);
-        return new ResponseEntity<>(new GetUserInformationResponse(currentUser.getEmail()), HttpStatus.OK);
+        return new ResponseEntity<>(new GetUserInformationResponse(currentUser), HttpStatus.OK);
     }
 
     //    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/info/")
-    public void setPreferences(@Valid @RequestBody List<SetPreferenceRequest> preferenceRequestList, @CurrentUser UserPrincipal currentUser) {
+    public List<PreferenceInRegionResponse> setPreferences(@Valid @RequestBody List<SetPreferenceRequest> preferenceRequestList, @CurrentUser UserPrincipal currentUser) {
+        List<PreferenceInRegionResponse> preferenceInRegionResponses = new ArrayList<>();
 
         for (SetPreferenceRequest preferenceRequest : preferenceRequestList) {
-            Region duplicatedRegion = regionService.getRegionByName(preferenceRequest.getRegionName());
-            preferenceService.setPreferences(currentUser, duplicatedRegion, preferenceRequest.preferences);
+            Optional<Region> region = regionService.findRegionById(preferenceRequest.getRegionId());
+            if (region.isEmpty()) {
+                // FIXME: when a region is not found, we should not apply whole preferences of the request
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+
+            List<Preference> preferences = preferenceRequest.getPreferences();
+            preferenceService.setPreferences(currentUser, region.get(), preferences);
+            preferenceInRegionResponses.add(new PreferenceInRegionResponse(region.get(), preferences));
         }
+
+        return preferenceInRegionResponses;
     }
 
     @GetMapping("/playable/")
@@ -115,15 +124,21 @@ public class UserApiController {
 
     @Data
     static class SetPreferenceRequest {
-        private String regionName;
+        private Long regionId;
         private List<Preference> preferences;
     }
 
     @Data
-    @RequiredArgsConstructor
     static class GetUserInformationResponse {
-        @NonNull
+        private Long id;
+        private String username;
         private String email;
+
+        public GetUserInformationResponse(User user) {
+            this.id = user.getId();
+            this.username = user.getUsername();
+            this.email = user.getEmail();
+        }
     }
 
     @Data
@@ -139,8 +154,6 @@ public class UserApiController {
     @Data
     static class SetDeivceRequest {
         @NotNull
-        private String email;
-        @NotNull
         private String deviceToken;
     }
 
@@ -148,12 +161,54 @@ public class UserApiController {
     static class DeviceResponse {
         private Long id;
         private String deviceToken;
-        private String email;
+        private Long userId;
+        private String username;
 
         public DeviceResponse(Device device) {
             this.id = device.getId();
             this.deviceToken = device.getDeviceToken();
-            this.email = device.getUser().getEmail();
+            this.userId = device.getUser().getId();
+            this.username = device.getUser().getUsername();
+        }
+    }
+
+    @Data
+    static class PreferenceResponse {
+        private Long id;
+        private LocalTime startAt;
+        private LocalTime endAt;
+        private Long regionId;
+        private DayOfWeek dayOfWeek;
+
+        public PreferenceResponse(Preference preference) {
+            this.id = preference.getId();
+            this.startAt = preference.getStartAt();
+            this.endAt = preference.getEndAt();
+            this.regionId = preference.getRegion().getId();
+            this.dayOfWeek = preference.getDayOfWeek();
+        }
+    }
+
+    @Data
+    static class PreferenceInRegionResponse {
+        private Long id;
+        private String name;
+        private String depth1;
+        private String depth2;
+        private String depth3;
+        private List<PreferenceResponse> preferences;
+
+        public PreferenceInRegionResponse(Region region, List<Preference> preferences) {
+            this.id = region.getId();
+            this.name = region.getName();
+            this.depth1 = region.getDepth1();
+            this.depth2 = region.getDepth2();
+            this.depth3 = region.getDepth3();
+            List<PreferenceResponse> preferenceResponses = new ArrayList<>();
+            for (Preference preference : preferences) {
+                preferenceResponses.add(new PreferenceResponse(preference));
+            }
+            this.preferences = preferenceResponses;
         }
     }
 }

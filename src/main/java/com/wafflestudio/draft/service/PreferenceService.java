@@ -29,6 +29,8 @@ public class PreferenceService {
         List<String> registrationTokens = user.getDevices().stream()
                 .map(Device::getDeviceToken)
                 .collect(Collectors.toList());
+        System.out.println(registrationTokens);
+        System.out.println(preferences);
         FirebaseMessaging.getInstance().subscribeToTopicAsync(registrationTokens, region.getName());
         for (Preference preference : preferences) {
             preference.setRegion(region);
