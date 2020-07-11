@@ -12,7 +12,6 @@ import com.wafflestudio.draft.service.DeviceService;
 import com.wafflestudio.draft.service.PreferenceService;
 import com.wafflestudio.draft.service.RegionService;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
