@@ -1,7 +1,9 @@
 package com.wafflestudio.draft.api;
 
+import com.wafflestudio.draft.model.Court;
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
+import com.wafflestudio.draft.service.CourtService;
 import com.wafflestudio.draft.service.FCMService;
 import com.wafflestudio.draft.model.enums.RoomStatus;
 import com.wafflestudio.draft.security.CurrentUser;
@@ -20,6 +22,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/room")
@@ -30,6 +33,7 @@ public class RoomApiController {
     // FIXME: Use fcmService.send(message) when room create
 
     private final RoomService roomService;
+    private final CourtService courtService;
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,7 +43,12 @@ public class RoomApiController {
         room.setStartTime(request.getStartTime());
         room.setEndTime(request.getEndTime());
         room.setName(request.getName());
-        Long id = roomService.create(room);
+        Optional<Court> court = courtService.getCourtById(request.getCourtId());
+        if (court.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        room.setCourt(court.get());
+        roomService.create(room);
         return new RoomResponse(room);
     }
 
@@ -53,20 +62,21 @@ public class RoomApiController {
     }
 
     @GetMapping("/")
-    public List<RoomResponse> getAllRoomsV1(@Valid @ModelAttribute GetRoomsRequest request) {
+    public List<RoomResponse> getRoomsV1(@Valid @ModelAttribute GetRoomsRequest request) {
         String name = request.getName();
         if (name == null) {
             name = "";
         }
+        Long courtId = request.getCourtId();
         // FIXME: startTime and endTime for getting rooms will be used later
         LocalDateTime startTime = request.getStartTime();
         LocalDateTime endTime = request.getEndTime();
-        List<Room> rooms = roomService.findRooms(name, startTime, endTime);
-        List<RoomResponse> getAllRoomsResponse = new ArrayList<>();
+        List<Room> rooms = roomService.findRooms(name, courtId, startTime, endTime);
+        List<RoomResponse> getRoomsResponse = new ArrayList<>();
         for (Room room : rooms) {
-            getAllRoomsResponse.add(new RoomResponse(room));
+            getRoomsResponse.add(new RoomResponse(room));
         }
-        return getAllRoomsResponse;
+        return getRoomsResponse;
     }
 
 
@@ -78,11 +88,14 @@ public class RoomApiController {
         private LocalDateTime endTime;
         @NotNull
         private String name;
+        @NotNull
+        private Long courtId;
     }
 
     @Data
     static class GetRoomsRequest {
         private String name;
+        private Long courtId;
         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime startTime;
         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -98,6 +111,7 @@ public class RoomApiController {
         private String name;
         private LocalDateTime createdAt;
         private Long ownerId;
+        private Long courtId;
 
         public RoomResponse(Room room) {
             this.id = room.getId();
@@ -107,6 +121,7 @@ public class RoomApiController {
             this.name = room.getName();
             this.createdAt = room.getCreatedAt();
             this.ownerId = room.getOwner().getId();
+            this.courtId = room.getCourt().getId();
         }
     }
 }
