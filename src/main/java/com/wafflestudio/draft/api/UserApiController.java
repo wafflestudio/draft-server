@@ -84,7 +84,6 @@ public class UserApiController {
     //    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/me/")
     public ResponseEntity<GetUserInformationResponse> myInfo(@CurrentUser UserPrincipal currentUser) {
-        System.out.println(currentUser);
         return new ResponseEntity<>(new GetUserInformationResponse(currentUser), HttpStatus.OK);
     }
 
