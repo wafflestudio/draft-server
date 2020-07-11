@@ -16,8 +16,8 @@ public class Device extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @NonNull
+    @NotBlank
     @Column(unique = true)
     private String deviceToken;
 

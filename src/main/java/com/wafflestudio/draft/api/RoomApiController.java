@@ -9,6 +9,7 @@ import com.wafflestudio.draft.dto.response.RoomResponse;
 import com.wafflestudio.draft.security.CurrentUser;
 import com.wafflestudio.draft.service.CourtService;
 import com.wafflestudio.draft.service.FCMService;
+import com.wafflestudio.draft.service.ParticipantService;
 import com.wafflestudio.draft.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class RoomApiController {
     private final FCMService fcmService;
     // FIXME: Use fcmService.send(message) when room create
 
+    private final ParticipantService participantService;
     private final RoomService roomService;
     private final CourtService courtService;
 
@@ -74,5 +76,15 @@ public class RoomApiController {
             getRoomsResponse.add(new RoomResponse(room));
         }
         return getRoomsResponse;
+
+    }
+
+    @PostMapping(path = "{id}/participant")
+    public void participate(@PathVariable("id") Long id, @CurrentUser User currentUser) {
+        Room room = roomService.findOne(id);
+        if (room == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        participantService.addParticipants(room, currentUser);
     }
 }
