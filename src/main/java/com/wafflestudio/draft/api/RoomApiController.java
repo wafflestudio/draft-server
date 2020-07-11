@@ -121,6 +121,7 @@ public class RoomApiController {
             this.name = room.getName();
             this.createdAt = room.getCreatedAt();
             this.ownerId = room.getOwner().getId();
+            this.courtId = room.getCourt().getId();
         }
     }
 }
