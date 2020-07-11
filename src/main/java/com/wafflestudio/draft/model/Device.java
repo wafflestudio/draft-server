@@ -1,6 +1,9 @@
 package com.wafflestudio.draft.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -17,7 +20,6 @@ public class Device extends BaseTimeEntity {
     private Long id;
 
     @NotBlank
-    @NonNull
     @Column(unique = true)
     private String deviceToken;
 
