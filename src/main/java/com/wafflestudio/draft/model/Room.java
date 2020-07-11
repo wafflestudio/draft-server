@@ -28,5 +28,7 @@ public class Room extends BaseTimeEntity {
 
     private String name;
 
-    // TODO: court_id
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "court_id", referencedColumnName = "id")
+    private Court court;
 }

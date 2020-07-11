@@ -1,5 +1,6 @@
 package com.wafflestudio.draft.service;
 
+import com.wafflestudio.draft.model.Court;
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.repository.RoomRepository;
@@ -19,6 +20,7 @@ class RoomServiceTest {
 
     @Autowired RoomService roomService;
     @Autowired UserService userService;
+    @Autowired CourtService courtService;
     @Autowired RoomRepository roomRepository;
 
     @Test
@@ -27,6 +29,9 @@ class RoomServiceTest {
         Room room = new Room();
         User user = userService.findUser("authuser@test.com").get();
         room.setOwner(user);
+
+        Court court = courtService.getCourtById(1L).get();
+        room.setCourt(court);
 
         // when
         Long savedId = roomService.create(room);

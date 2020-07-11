@@ -1,8 +1,13 @@
 package com.wafflestudio.draft;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.wafflestudio.draft.model.Court;
 import com.wafflestudio.draft.model.Device;
 import com.wafflestudio.draft.model.Region;
 import com.wafflestudio.draft.model.User;
+import com.wafflestudio.draft.repository.CourtRepository;
 import com.wafflestudio.draft.repository.DeviceRepository;
 import com.wafflestudio.draft.repository.RegionRepository;
 import com.wafflestudio.draft.repository.UserRepository;
@@ -17,13 +22,25 @@ import org.springframework.stereotype.Component;
 public class DataLoader implements ApplicationRunner {
     final UserRepository userRepository;
     final RegionRepository regionRepository;
+    final CourtRepository courtRepository;
     final DeviceRepository deviceRepository;
+    final GeometryFactory gf = new GeometryFactory();
 
     @Override
     public void run(ApplicationArguments args) {
+        Point point = gf.createPoint(new Coordinate(2, 5));
+
         Region testRegion = new Region();
         testRegion.setName("TEST_REGION");
         regionRepository.save(testRegion);
+
+        Court testCourt = new Court();
+        testCourt.setName("TEST_COURT");
+        testCourt.setCapacity(10);
+        testCourt.setRegion(testRegion);
+        // FIXME: how to set location with Point?
+        // testCourt.setLocation(point);
+        courtRepository.save(testCourt);
 
         User oauth2User = new User("OAUTH2_TESTUSER", "authuser@test.com");
         oauth2User.addRole("TEST_API");
