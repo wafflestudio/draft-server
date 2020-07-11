@@ -34,7 +34,7 @@ class RoomServiceTest {
         room.setCourt(court);
 
         // when
-        Long savedId = roomService.create(room);
+        Long savedId = roomService.save(room);
 
         // then
         assertEquals(room, roomRepository.findOne(savedId));
