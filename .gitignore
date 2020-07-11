@@ -165,5 +165,6 @@ gradle-app.setting
 
 # firebase account key
 draftServiceAccountKey.json
+*/draftServiceAccountKey.json
 
 # End of https://www.gitignore.io/api/java,macos,gradle,intellij

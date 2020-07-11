@@ -1,7 +1,7 @@
 package com.wafflestudio.draft.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wafflestudio.draft.model.request.AuthenticationRequest;
+import com.wafflestudio.draft.dto.request.AuthenticationRequest;
 import com.wafflestudio.draft.security.oauth2.OAuth2Token;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

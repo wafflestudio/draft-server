@@ -3,22 +3,19 @@ package com.wafflestudio.draft.api;
 import com.wafflestudio.draft.model.Court;
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
+import com.wafflestudio.draft.dto.request.CreateRoomRequest;
+import com.wafflestudio.draft.dto.request.GetRoomsRequest;
+import com.wafflestudio.draft.dto.response.RoomResponse;
+import com.wafflestudio.draft.security.CurrentUser;
 import com.wafflestudio.draft.service.CourtService;
 import com.wafflestudio.draft.service.FCMService;
-import com.wafflestudio.draft.model.enums.RoomStatus;
-import com.wafflestudio.draft.security.CurrentUser;
 import com.wafflestudio.draft.service.RoomService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,51 +74,5 @@ public class RoomApiController {
             getRoomsResponse.add(new RoomResponse(room));
         }
         return getRoomsResponse;
-    }
-
-
-    @Data
-    static class CreateRoomRequest {
-        @NotNull
-        private LocalDateTime startTime;
-        @NotNull
-        private LocalDateTime endTime;
-        @NotNull
-        private String name;
-        @NotNull
-        private Long courtId;
-    }
-
-    @Data
-    static class GetRoomsRequest {
-        private String name;
-        private Long courtId;
-        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        private LocalDateTime startTime;
-        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        private LocalDateTime endTime;
-    }
-
-    @Data
-    static class RoomResponse {
-        private Long id;
-        private RoomStatus roomStatus;
-        private LocalDateTime startTime;
-        private LocalDateTime endTime;
-        private String name;
-        private LocalDateTime createdAt;
-        private Long ownerId;
-        private Long courtId;
-
-        public RoomResponse(Room room) {
-            this.id = room.getId();
-            this.roomStatus = room.getStatus();
-            this.startTime = room.getStartTime();
-            this.endTime = room.getEndTime();
-            this.name = room.getName();
-            this.createdAt = room.getCreatedAt();
-            this.ownerId = room.getOwner().getId();
-            this.courtId = room.getCourt().getId();
-        }
     }
 }
