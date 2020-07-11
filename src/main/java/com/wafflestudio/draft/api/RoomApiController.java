@@ -10,7 +10,6 @@ import com.wafflestudio.draft.security.CurrentUser;
 import com.wafflestudio.draft.service.RoomService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.jni.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
