@@ -2,7 +2,6 @@ package com.wafflestudio.draft.repository;
 
 import com.wafflestudio.draft.model.Room;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

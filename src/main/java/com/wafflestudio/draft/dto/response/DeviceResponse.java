@@ -7,11 +7,13 @@ import lombok.Data;
 public class DeviceResponse {
     private Long id;
     private String deviceToken;
-    private String email;
+    private Long userId;
+    private String username;
 
     public DeviceResponse(Device device) {
         this.id = device.getId();
         this.deviceToken = device.getDeviceToken();
-        this.email = device.getUser().getEmail();
+        this.userId = device.getUser().getId();
+        this.username = device.getUser().getUsername();
     }
 }
