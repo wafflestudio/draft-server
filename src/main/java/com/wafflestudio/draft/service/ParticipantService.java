@@ -1,5 +1,7 @@
 package com.wafflestudio.draft.service;
 
+import com.wafflestudio.draft.dto.response.ParticipantsResponse;
+import com.wafflestudio.draft.dto.response.UserInformationResponse;
 import com.wafflestudio.draft.model.Participant;
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
@@ -20,11 +22,18 @@ public class ParticipantService {
         return participantRepository.getAllByRoom(room);
     }
 
-    public void addParticipants(Room room, User user) {
-        List<Participant> participantsOfTeam1 = participantRepository.findByRoomAndTeam(room, 1);
-        List<Participant> participantsOfTeam2 = participantRepository.findByRoomAndTeam(room, 2);
-        int teamOfNewParticipant = participantsOfTeam1.size() > participantsOfTeam2.size() ? 2 : 1;
+    public ParticipantsResponse addParticipants(Room room, User user) {
+        List<UserInformationResponse> participantsOfTeam1 = participantRepository.getUsersInTeam(room, 1);
+        List<UserInformationResponse> participantsOfTeam2 = participantRepository.getUsersInTeam(room, 2);
+        int teamOfNewParticipant = 1;
+        if (participantsOfTeam1.size() > participantsOfTeam2.size()) {
+            teamOfNewParticipant = 2;
+            participantsOfTeam2.add(new UserInformationResponse(user.getId(), user.getUsername(), user.getEmail()));
+        } else {
+            participantsOfTeam1.add(new UserInformationResponse(user.getId(), user.getUsername(), user.getEmail()));
+        }
         Participant newParticipant = new Participant(user, room, teamOfNewParticipant);
         participantRepository.save(newParticipant);
+        return new ParticipantsResponse(participantsOfTeam1, participantsOfTeam2);
     }
 }

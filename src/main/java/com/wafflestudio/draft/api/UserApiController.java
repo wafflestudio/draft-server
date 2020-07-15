@@ -1,15 +1,15 @@
 package com.wafflestudio.draft.api;
 
 
-import com.wafflestudio.draft.model.Device;
-import com.wafflestudio.draft.model.Region;
-import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.dto.request.GetUsersByPreferenceRequest;
 import com.wafflestudio.draft.dto.request.SetDeviceRequest;
 import com.wafflestudio.draft.dto.request.SetPreferenceRequest;
 import com.wafflestudio.draft.dto.request.SignUpRequest;
 import com.wafflestudio.draft.dto.response.DeviceResponse;
-import com.wafflestudio.draft.dto.response.GetUserInformationResponse;
+import com.wafflestudio.draft.dto.response.UserEmailResponse;
+import com.wafflestudio.draft.model.Device;
+import com.wafflestudio.draft.model.Region;
+import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.security.CurrentUser;
 import com.wafflestudio.draft.security.oauth2.AuthUserService;
 import com.wafflestudio.draft.security.oauth2.OAuth2Provider;
@@ -78,9 +78,9 @@ public class UserApiController {
 
     //    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/me/")
-    public ResponseEntity<GetUserInformationResponse> myInfo(@CurrentUser UserPrincipal currentUser) {
+    public ResponseEntity<UserEmailResponse> myInfo(@CurrentUser UserPrincipal currentUser) {
         System.out.println(currentUser);
-        return new ResponseEntity<>(new GetUserInformationResponse(currentUser.getEmail()), HttpStatus.OK);
+        return new ResponseEntity<>(new UserEmailResponse(currentUser.getEmail()), HttpStatus.OK);
     }
 
     //    @PreAuthorize("hasRole('ROLE_USER')")

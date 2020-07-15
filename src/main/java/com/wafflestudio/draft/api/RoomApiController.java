@@ -1,11 +1,12 @@
 package com.wafflestudio.draft.api;
 
+import com.wafflestudio.draft.dto.request.CreateRoomRequest;
+import com.wafflestudio.draft.dto.request.GetRoomsRequest;
+import com.wafflestudio.draft.dto.response.ParticipantsResponse;
+import com.wafflestudio.draft.dto.response.RoomResponse;
 import com.wafflestudio.draft.model.Court;
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
-import com.wafflestudio.draft.dto.request.CreateRoomRequest;
-import com.wafflestudio.draft.dto.request.GetRoomsRequest;
-import com.wafflestudio.draft.dto.response.RoomResponse;
 import com.wafflestudio.draft.security.CurrentUser;
 import com.wafflestudio.draft.service.CourtService;
 import com.wafflestudio.draft.service.FCMService;
@@ -80,11 +81,11 @@ public class RoomApiController {
     }
 
     @PostMapping(path = "{id}/participant")
-    public void participate(@PathVariable("id") Long id, @CurrentUser User currentUser) {
+    public ParticipantsResponse participate(@PathVariable("id") Long id, @CurrentUser User currentUser) {
         Room room = roomService.findOne(id);
         if (room == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        participantService.addParticipants(room, currentUser);
+        return participantService.addParticipants(room, currentUser);
     }
 }

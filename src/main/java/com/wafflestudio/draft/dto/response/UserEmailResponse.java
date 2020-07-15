@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class GetUserInformationResponse {
+public class UserEmailResponse {
     @NonNull
     private String email;
 }
