@@ -2,11 +2,13 @@ package com.wafflestudio.draft.api;
 
 import com.wafflestudio.draft.dto.request.CreateRoomRequest;
 import com.wafflestudio.draft.dto.request.GetRoomsRequest;
+import com.wafflestudio.draft.dto.request.PutRoomRequest;
 import com.wafflestudio.draft.dto.response.ParticipantsResponse;
 import com.wafflestudio.draft.dto.response.RoomResponse;
 import com.wafflestudio.draft.model.Court;
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
+import com.wafflestudio.draft.model.enums.RoomStatus;
 import com.wafflestudio.draft.security.CurrentUser;
 import com.wafflestudio.draft.service.CourtService;
 import com.wafflestudio.draft.service.FCMService;
@@ -48,7 +50,7 @@ public class RoomApiController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         room.setCourt(court.get());
-        roomService.create(room);
+        roomService.save(room);
         return new RoomResponse(room);
     }
 
@@ -87,5 +89,35 @@ public class RoomApiController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return participantService.addParticipants(room, currentUser);
+
+    }
+
+    @PutMapping(path = "{id}")
+    public RoomResponse putRoomV1(@PathVariable("id") Long id, @RequestBody @Valid PutRoomRequest request) {
+        Room room = roomService.findOne(id);
+        if (room == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        // FIXME: we should find a smarter way...
+        LocalDateTime startTime = request.getStartTime();
+        if (startTime != null) {
+            room.setStartTime(startTime);
+        }
+        LocalDateTime endTime = request.getEndTime();
+        if (endTime != null) {
+            room.setEndTime(endTime);
+        }
+        String name = request.getName();
+        if (name != null) {
+            room.setName(name);
+        }
+        RoomStatus status = request.getStatus();
+        if (status != null) {
+            room.setStatus(status);
+        }
+
+        roomService.save(room);
+        return new RoomResponse(room);
     }
 }

@@ -6,8 +6,10 @@ import com.wafflestudio.draft.dto.request.SetDeviceRequest;
 import com.wafflestudio.draft.dto.request.SetPreferenceRequest;
 import com.wafflestudio.draft.dto.request.SignUpRequest;
 import com.wafflestudio.draft.dto.response.DeviceResponse;
-import com.wafflestudio.draft.dto.response.UserEmailResponse;
+import com.wafflestudio.draft.dto.response.PreferenceInRegionResponse;
+import com.wafflestudio.draft.dto.response.UserInformationResponse;
 import com.wafflestudio.draft.model.Device;
+import com.wafflestudio.draft.model.Preference;
 import com.wafflestudio.draft.model.Region;
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.security.CurrentUser;
@@ -23,13 +25,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -78,19 +83,28 @@ public class UserApiController {
 
     //    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/me/")
-    public ResponseEntity<UserEmailResponse> myInfo(@CurrentUser UserPrincipal currentUser) {
-        System.out.println(currentUser);
-        return new ResponseEntity<>(new UserEmailResponse(currentUser.getEmail()), HttpStatus.OK);
+    public ResponseEntity<UserInformationResponse> myInfo(@CurrentUser UserPrincipal currentUser) {
+        return new ResponseEntity<>(new UserInformationResponse(currentUser), HttpStatus.OK);
     }
 
     //    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/info/")
-    public void setPreferences(@Valid @RequestBody List<SetPreferenceRequest> preferenceRequestList, @CurrentUser UserPrincipal currentUser) {
+    public List<PreferenceInRegionResponse> setPreferences(@Valid @RequestBody List<SetPreferenceRequest> preferenceRequestList, @CurrentUser UserPrincipal currentUser) {
+        List<PreferenceInRegionResponse> preferenceInRegionResponses = new ArrayList<>();
 
         for (SetPreferenceRequest preferenceRequest : preferenceRequestList) {
-            Region duplicatedRegion = regionService.getRegionByName(preferenceRequest.getRegionName());
-            preferenceService.setPreferences(currentUser, duplicatedRegion, preferenceRequest.getPreferences());
+            Optional<Region> region = regionService.findRegionById(preferenceRequest.getRegionId());
+            if (region.isEmpty()) {
+                // FIXME: when a region is not found, we should not apply whole preferences of the request
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+
+            List<Preference> preferences = preferenceRequest.getPreferences();
+            preferenceService.setPreferences(currentUser, region.get(), preferences);
+            preferenceInRegionResponses.add(new PreferenceInRegionResponse(region.get(), preferences));
         }
+
+        return preferenceInRegionResponses;
     }
 
     @GetMapping("/playable/")
@@ -111,5 +125,4 @@ public class UserApiController {
         deviceService.create(device);
         return new DeviceResponse(device);
     }
-
 }

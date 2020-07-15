@@ -3,14 +3,12 @@ package com.wafflestudio.draft;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import com.wafflestudio.draft.model.Court;
-import com.wafflestudio.draft.model.Device;
-import com.wafflestudio.draft.model.Region;
-import com.wafflestudio.draft.model.User;
+import com.wafflestudio.draft.model.*;
 import com.wafflestudio.draft.repository.CourtRepository;
 import com.wafflestudio.draft.repository.DeviceRepository;
 import com.wafflestudio.draft.repository.RegionRepository;
 import com.wafflestudio.draft.repository.UserRepository;
+import com.wafflestudio.draft.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -25,6 +23,7 @@ public class DataLoader implements ApplicationRunner {
     final CourtRepository courtRepository;
     final DeviceRepository deviceRepository;
     final GeometryFactory gf = new GeometryFactory();
+    final RoomService roomService;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -60,5 +59,13 @@ public class DataLoader implements ApplicationRunner {
         Device testDevice = new Device("euSJRfcqJTc:APA91bFIUxmYZX68KWUZSZPW0sMhCl1tJKdH8L-lvhUv71DbePYmA8RI-QrVGGAqBzoxfklsl-i7NdgazQAHGQXlFkCnaCIpP3B_oDCCkpTR_HxxUVeNoG8_DeNODrwxEMfardoz_4Ym");
         testDevice.setUser(passwordUser);
         deviceRepository.save(testDevice);
+
+        for (int i = 1; i <= 5; i++) {
+            Room room = new Room();
+            room.setOwner(oauth2User);
+            room.setCourt(testCourt);
+            room.setName("TEST_ROOM_" + i);
+            roomService.save(room);
+        }
     }
 }

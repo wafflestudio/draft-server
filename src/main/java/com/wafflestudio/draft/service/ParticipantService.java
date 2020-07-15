@@ -28,9 +28,9 @@ public class ParticipantService {
         int teamOfNewParticipant = 1;
         if (participantsOfTeam1.size() > participantsOfTeam2.size()) {
             teamOfNewParticipant = 2;
-            participantsOfTeam2.add(new UserInformationResponse(user.getId(), user.getUsername(), user.getEmail()));
+            participantsOfTeam2.add(new UserInformationResponse(user));
         } else {
-            participantsOfTeam1.add(new UserInformationResponse(user.getId(), user.getUsername(), user.getEmail()));
+            participantsOfTeam1.add(new UserInformationResponse(user));
         }
         Participant newParticipant = new Participant(user, room, teamOfNewParticipant);
         participantRepository.save(newParticipant);

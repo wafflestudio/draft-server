@@ -17,7 +17,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
 
     @Transactional
-    public Long create(Room room) {
+    public Long save(Room room) {
         roomRepository.save(room);
         return room.getId();
     }

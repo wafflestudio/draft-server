@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -34,7 +34,7 @@ class RoomServiceTest {
         room.setCourt(court);
 
         // when
-        Long savedId = roomService.create(room);
+        Long savedId = roomService.save(room);
 
         // then
         assertEquals(room, roomRepository.findOne(savedId));

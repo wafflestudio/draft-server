@@ -2,7 +2,6 @@ package com.wafflestudio.draft.repository;
 
 import com.wafflestudio.draft.model.Room;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -21,11 +20,6 @@ public class RoomRepository {
 
     public Room findOne(Long id) {
         return em.find(Room.class, id);
-    }
-
-    public List<Room> findAll() {
-        return em.createQuery("SELECT r FROM Room r", Room.class)
-                .getResultList();
     }
 
     public List<Room> findRooms(String name, Long courtId, LocalDateTime startTime, LocalDateTime endTime) {

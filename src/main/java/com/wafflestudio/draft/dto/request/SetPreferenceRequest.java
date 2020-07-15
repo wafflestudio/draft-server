@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data
 public class SetPreferenceRequest {
-    private String regionName;
+    private Long regionId;
     private List<Preference> preferences;
 }
