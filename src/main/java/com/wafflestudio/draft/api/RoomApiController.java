@@ -92,6 +92,15 @@ public class RoomApiController {
 
     }
 
+    @GetMapping(path = "{id}/participant")
+    public ParticipantsResponse getParticipants(@PathVariable("id") Long id) {
+        Room room = roomService.findOne(id);
+        if (room == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return participantService.getParticipants(room);
+    }
+
     @PutMapping(path = "{id}")
     public RoomResponse putRoomV1(@PathVariable("id") Long id, @RequestBody @Valid PutRoomRequest request) {
         Room room = roomService.findOne(id);

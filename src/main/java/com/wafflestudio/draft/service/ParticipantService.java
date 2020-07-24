@@ -18,8 +18,10 @@ import java.util.List;
 public class ParticipantService {
     private final ParticipantRepository participantRepository;
 
-    public List<Participant> getParticipants(Room room) {
-        return participantRepository.getAllByRoom(room);
+    public ParticipantsResponse getParticipants(Room room) {
+        List<UserInformationResponse> participantsOfTeam1 = participantRepository.getUsersInTeam(room, 1);
+        List<UserInformationResponse> participantsOfTeam2 = participantRepository.getUsersInTeam(room, 2);
+        return new ParticipantsResponse(participantsOfTeam1, participantsOfTeam2);
     }
 
     public ParticipantsResponse addParticipants(Room room, User user) {
