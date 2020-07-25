@@ -55,26 +55,27 @@ public class UserApiController {
         User user;
 
         switch (signUpRequest.getGrantType()) {
-            case "OAUTH" -> {
+            case "OAUTH":
                 OAuth2Response oAuth2Response = oAuth2Provider.requestAuthentication(signUpRequest);
                 if (oAuth2Response.getStatus() != HttpStatus.OK) {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Token for auth server is not valid");
                     return null;
                 }
+
                 user = new User(signUpRequest.getUsername(), oAuth2Response.getEmail());
-            }
-            case "PASSWORD" -> {
+                break;
+            case "PASSWORD":
                 if (signUpRequest.getUsername() == null || signUpRequest.getEmail() == null || signUpRequest.getPassword() == null) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     return null;
                 }
+
                 user = new User(signUpRequest.getUsername(), signUpRequest.getEmail());
                 user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-            }
-            default -> {
+                break;
+            default:
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Grant type not valid");
                 return null;
-            }
         }
 
         authUserService.saveUser(user);

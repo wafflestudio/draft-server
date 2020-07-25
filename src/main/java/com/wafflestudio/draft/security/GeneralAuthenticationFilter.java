@@ -57,11 +57,18 @@ public class GeneralAuthenticationFilter extends UsernamePasswordAuthenticationF
 
         String grantType = parsedRequest.getGrantType();
 
-        Authentication authRequest = switch (grantType) {
-            case "OAUTH" -> new OAuth2Token(null, parsedRequest);
-            case "PASSWORD" -> new UsernamePasswordAuthenticationToken(parsedRequest.getEmail(), parsedRequest.getPassword());
-            default -> throw new UsernameNotFoundException(String.format("Grant Type '%s' is not supported", grantType));
-        };
+        Authentication authRequest;
+
+        switch (grantType) {
+            case "OAUTH":
+                authRequest = new OAuth2Token(null, parsedRequest);
+                break;
+            case "PASSWORD":
+                authRequest = new UsernamePasswordAuthenticationToken(parsedRequest.getEmail(), parsedRequest.getPassword());
+                break;
+            default:
+                throw new UsernameNotFoundException(String.format("Grant Type '%s' is not supported", grantType));
+        }
 
         return this.getAuthenticationManager().authenticate(authRequest);
     }
