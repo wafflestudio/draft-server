@@ -13,6 +13,7 @@ import com.wafflestudio.draft.model.Preference;
 import com.wafflestudio.draft.model.Region;
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.security.CurrentUser;
+import com.wafflestudio.draft.security.JwtTokenProvider;
 import com.wafflestudio.draft.security.oauth2.AuthUserService;
 import com.wafflestudio.draft.security.oauth2.OAuth2Provider;
 import com.wafflestudio.draft.security.oauth2.client.OAuth2Response;
@@ -47,36 +48,37 @@ public class UserApiController {
     private final RegionService regionService;
     private final PreferenceService preferenceService;
     private final DeviceService deviceService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup/")
     public ResponseEntity<User> createUser(@RequestBody SignUpRequest signUpRequest, HttpServletResponse response) throws IOException {
         User user;
 
         switch (signUpRequest.getGrantType()) {
-            case "OAUTH":
+            case "OAUTH" -> {
                 OAuth2Response oAuth2Response = oAuth2Provider.requestAuthentication(signUpRequest);
                 if (oAuth2Response.getStatus() != HttpStatus.OK) {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Token for auth server is not valid");
                     return null;
                 }
-
                 user = new User(signUpRequest.getUsername(), oAuth2Response.getEmail());
-                break;
-            case "PASSWORD":
+            }
+            case "PASSWORD" -> {
                 if (signUpRequest.getUsername() == null || signUpRequest.getEmail() == null || signUpRequest.getPassword() == null) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     return null;
                 }
-
                 user = new User(signUpRequest.getUsername(), signUpRequest.getEmail());
                 user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-                break;
-            default:
+            }
+            default -> {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Grant type not valid");
                 return null;
+            }
         }
 
         authUserService.saveUser(user);
+        response.addHeader("Authentication", jwtTokenProvider.generateToken(user.getEmail()));
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }

@@ -43,9 +43,12 @@ public class JwtTokenProvider {
     // Generate jwt token with prefix
     public String generateToken(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
+        return generateToken(user.getEmail());
+    }
 
+    public String generateToken(String email) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("email", user.getEmail());
+        claims.put("email", email);
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);

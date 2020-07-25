@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -36,15 +35,20 @@ public class GeneralAuthenticationFilter extends UsernamePasswordAuthenticationF
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
 //        super.unsuccessfulAuthentication(request, response, failed);
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, failed.getMessage());
+        //FIXME: Please fix it to compare with Exception type(not message)
+        if (failed.getMessage().contains("Authentication success")) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        } else {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, failed.getMessage());
+        }
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         // Parse auth request
-        AuthenticationRequest parsedRequest = null;
+        AuthenticationRequest parsedRequest;
         try {
             parsedRequest = parseRequest(request);
         } catch (IOException e) {
@@ -53,18 +57,11 @@ public class GeneralAuthenticationFilter extends UsernamePasswordAuthenticationF
 
         String grantType = parsedRequest.getGrantType();
 
-        Authentication authRequest;
-
-        switch (grantType) {
-            case "OAUTH":
-                authRequest = new OAuth2Token(null, parsedRequest);
-                break;
-            case "PASSWORD":
-                authRequest = new UsernamePasswordAuthenticationToken(parsedRequest.getEmail(), parsedRequest.getPassword());
-                break;
-            default:
-                throw new UsernameNotFoundException(String.format("Grant Type '%s' is not supported", grantType));
-        }
+        Authentication authRequest = switch (grantType) {
+            case "OAUTH" -> new OAuth2Token(null, parsedRequest);
+            case "PASSWORD" -> new UsernamePasswordAuthenticationToken(parsedRequest.getEmail(), parsedRequest.getPassword());
+            default -> throw new UsernameNotFoundException(String.format("Grant Type '%s' is not supported", grantType));
+        };
 
         return this.getAuthenticationManager().authenticate(authRequest);
     }

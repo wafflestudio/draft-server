@@ -35,7 +35,7 @@ public class FacebookOAuth2Client implements OAuth2Client {
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(headers);
         ParameterizedTypeReference<HashMap<String, Object>> responseType =
-                new ParameterizedTypeReference<HashMap<String, Object>>() {
+                new ParameterizedTypeReference<>() {
                 };
 
         ResponseEntity<HashMap<String, Object>> response = template.exchange(
@@ -54,6 +54,7 @@ public class FacebookOAuth2Client implements OAuth2Client {
         String account_name = response.getBody().get("name").toString();
 
         System.out.println(account_name);
+        //FIXME: Change account_name to email
 
         return new OAuth2Response(OAUTH_TOKEN_PREFIX, account_name, response.getStatusCode());
     }
