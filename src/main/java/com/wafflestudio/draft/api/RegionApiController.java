@@ -1,8 +1,9 @@
 package com.wafflestudio.draft.api;
 
+import com.wafflestudio.draft.dto.request.GetRegionsRequest;
+import com.wafflestudio.draft.dto.response.RegionResponse;
 import com.wafflestudio.draft.model.Region;
 import com.wafflestudio.draft.service.RegionService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,27 +33,5 @@ public class RegionApiController {
             getRegionsResponse.add(new RegionResponse(region));
         }
         return getRegionsResponse;
-    }
-
-    @Data
-    static class GetRegionsRequest {
-        private String name;
-    }
-
-    @Data
-    static class RegionResponse {
-        private Long id;
-        private String name;
-        private String depth1;
-        private String depth2;
-        private String depth3;
-
-        public RegionResponse(Region region) {
-            this.id = region.getId();
-            this.name = region.getName();
-            this.depth1 = region.getDepth1();
-            this.depth2 = region.getDepth2();
-            this.depth3 = region.getDepth3();
-        }
     }
 }

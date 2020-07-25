@@ -15,6 +15,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 @RequiredArgsConstructor
 public class DataLoader implements ApplicationRunner {
@@ -65,6 +67,8 @@ public class DataLoader implements ApplicationRunner {
             room.setOwner(oauth2User);
             room.setCourt(testCourt);
             room.setName("TEST_ROOM_" + i);
+            room.setStartTime(LocalDateTime.now());
+            room.setEndTime(LocalDateTime.now().plusHours(1));
             roomService.save(room);
         }
     }
