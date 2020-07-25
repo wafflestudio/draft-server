@@ -1,6 +1,7 @@
 package com.wafflestudio.draft.repository;
 
 import com.wafflestudio.draft.model.Room;
+import com.wafflestudio.draft.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -42,5 +43,14 @@ public class RoomRepository {
                     .setParameter("court_id", courtId)
                     .getResultList();
         }
+    }
+
+    public List<Room> findRoomsByUser(User user) {
+        return em.createQuery("SELECT r FROM Participant p " +
+                        "INNER JOIN p.room r " +
+                        "WHERE p.user = :user"
+                , Room.class)
+                .setParameter("user", user)
+                .getResultList();
     }
 }
