@@ -3,6 +3,7 @@ package com.wafflestudio.draft.repository;
 import com.wafflestudio.draft.dto.response.UserInformationResponse;
 import com.wafflestudio.draft.model.Participant;
 import com.wafflestudio.draft.model.Room;
+import com.wafflestudio.draft.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,4 +22,5 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
             @Param("room") Room room,
             @Param("team") int team);
 
+    void deleteParticipantByRoomAndUser(Room room, User user);
 }

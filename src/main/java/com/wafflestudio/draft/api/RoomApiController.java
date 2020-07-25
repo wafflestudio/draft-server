@@ -101,6 +101,16 @@ public class RoomApiController {
         return participantService.getParticipants(room);
     }
 
+    @DeleteMapping(path = "{id}/participant/")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void leaveRoom(@PathVariable("id") Long id, @CurrentUser User currentUser) {
+        Room room = roomService.findOne(id);
+        if (room == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        participantService.deleteParticipants(room, currentUser);
+    }
+
     @PutMapping(path = "{id}")
     public RoomResponse putRoomV1(@PathVariable("id") Long id, @RequestBody @Valid PutRoomRequest request) {
         Room room = roomService.findOne(id);
