@@ -54,6 +54,7 @@ public class FacebookOAuth2Client implements OAuth2Client {
         String account_name = response.getBody().get("name").toString();
 
         System.out.println(account_name);
+        //FIXME: Change account_name to email
 
         return new OAuth2Response(OAUTH_TOKEN_PREFIX, account_name, response.getStatusCode());
     }

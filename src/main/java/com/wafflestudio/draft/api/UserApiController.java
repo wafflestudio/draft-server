@@ -13,6 +13,7 @@ import com.wafflestudio.draft.model.Preference;
 import com.wafflestudio.draft.model.Region;
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.security.CurrentUser;
+import com.wafflestudio.draft.security.JwtTokenProvider;
 import com.wafflestudio.draft.security.oauth2.AuthUserService;
 import com.wafflestudio.draft.security.oauth2.OAuth2Provider;
 import com.wafflestudio.draft.security.oauth2.client.OAuth2Response;
@@ -47,6 +48,7 @@ public class UserApiController {
     private final RegionService regionService;
     private final PreferenceService preferenceService;
     private final DeviceService deviceService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup/")
     public ResponseEntity<User> createUser(@RequestBody SignUpRequest signUpRequest, HttpServletResponse response) throws IOException {
@@ -77,6 +79,7 @@ public class UserApiController {
         }
 
         authUserService.saveUser(user);
+        response.addHeader("Authentication", jwtTokenProvider.generateToken(user.getEmail()));
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
