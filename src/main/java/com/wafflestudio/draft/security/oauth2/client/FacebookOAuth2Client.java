@@ -35,7 +35,7 @@ public class FacebookOAuth2Client implements OAuth2Client {
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(headers);
         ParameterizedTypeReference<HashMap<String, Object>> responseType =
-                new ParameterizedTypeReference<>() {
+                new ParameterizedTypeReference<HashMap<String, Object>>() {
                 };
 
         ResponseEntity<HashMap<String, Object>> response = template.exchange(
