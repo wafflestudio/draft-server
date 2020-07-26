@@ -8,6 +8,7 @@ import com.wafflestudio.draft.repository.CourtRepository;
 import com.wafflestudio.draft.repository.DeviceRepository;
 import com.wafflestudio.draft.repository.RegionRepository;
 import com.wafflestudio.draft.repository.UserRepository;
+import com.wafflestudio.draft.service.ParticipantService;
 import com.wafflestudio.draft.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
@@ -26,6 +27,7 @@ public class DataLoader implements ApplicationRunner {
     final DeviceRepository deviceRepository;
     final GeometryFactory gf = new GeometryFactory();
     final RoomService roomService;
+    final ParticipantService participantService;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -70,6 +72,7 @@ public class DataLoader implements ApplicationRunner {
             room.setStartTime(LocalDateTime.now());
             room.setEndTime(LocalDateTime.now().plusHours(1));
             roomService.save(room);
+            participantService.addParticipants(room, oauth2User);
         }
     }
 }

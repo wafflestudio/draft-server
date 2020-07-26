@@ -89,10 +89,13 @@ public class RoomApiController {
         if (room == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        if (room.getStatus() != RoomStatus.WAITING) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
 
         List<Participant> participants = room.getParticipants();
         for (Participant participant : participants) {
-            if (currentUser.getId() == participant.getUser().getId()) {
+            if (currentUser.getId().equals(participant.getUser().getId())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
         }
