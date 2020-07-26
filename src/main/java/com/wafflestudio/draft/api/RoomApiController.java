@@ -6,6 +6,7 @@ import com.wafflestudio.draft.dto.request.PutRoomRequest;
 import com.wafflestudio.draft.dto.response.ParticipantsResponse;
 import com.wafflestudio.draft.dto.response.RoomResponse;
 import com.wafflestudio.draft.model.Court;
+import com.wafflestudio.draft.model.Participant;
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.model.enums.RoomStatus;
@@ -108,7 +109,23 @@ public class RoomApiController {
         if (room == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+
         participantService.deleteParticipants(room, currentUser);
+
+        List<Participant> participants = room.getParticipants();
+
+        if (participants.size() <= 0) {
+            room.setStatus(RoomStatus.CLOSED);
+            room.setOwner(null);
+            roomService.save(room);
+        }
+
+        if (room.getStatus() != RoomStatus.CLOSED) {
+            if (room.getOwner().getId().equals(currentUser.getId())) {
+                room.setOwner(participants.get(0).getUser());
+                roomService.save(room);
+            }
+        }
     }
 
     @PutMapping(path = "{id}")
