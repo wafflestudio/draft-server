@@ -1,6 +1,7 @@
 package com.wafflestudio.draft.service;
 
 import com.wafflestudio.draft.model.Room;
+import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,15 @@ public class RoomService {
         return room.getId();
     }
 
+    public Room findOne(Long roomId) {
+        return roomRepository.findOne(roomId);
+    }
+
     public List<Room> findRooms(String name, Long courtId, LocalDateTime startTime, LocalDateTime endTime) {
         return roomRepository.findRooms(name, courtId, startTime, endTime);
     }
 
-    public Room findOne(Long roomId) {
-        return roomRepository.findOne(roomId);
+    public List<Room> findRoomsByUser(User user) {
+        return roomRepository.findRoomsByUser(user);
     }
 }
