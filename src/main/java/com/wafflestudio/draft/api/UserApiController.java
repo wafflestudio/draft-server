@@ -7,11 +7,9 @@ import com.wafflestudio.draft.dto.request.SetPreferenceRequest;
 import com.wafflestudio.draft.dto.request.SignUpRequest;
 import com.wafflestudio.draft.dto.response.DeviceResponse;
 import com.wafflestudio.draft.dto.response.PreferenceInRegionResponse;
+import com.wafflestudio.draft.dto.response.RoomsOfUserResponse;
 import com.wafflestudio.draft.dto.response.UserInformationResponse;
-import com.wafflestudio.draft.model.Device;
-import com.wafflestudio.draft.model.Preference;
-import com.wafflestudio.draft.model.Region;
-import com.wafflestudio.draft.model.User;
+import com.wafflestudio.draft.model.*;
 import com.wafflestudio.draft.security.CurrentUser;
 import com.wafflestudio.draft.security.JwtTokenProvider;
 import com.wafflestudio.draft.security.oauth2.AuthUserService;
@@ -21,6 +19,7 @@ import com.wafflestudio.draft.security.password.UserPrincipal;
 import com.wafflestudio.draft.service.DeviceService;
 import com.wafflestudio.draft.service.PreferenceService;
 import com.wafflestudio.draft.service.RegionService;
+import com.wafflestudio.draft.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +47,7 @@ public class UserApiController {
     private final RegionService regionService;
     private final PreferenceService preferenceService;
     private final DeviceService deviceService;
+    private final RoomService roomService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup/")
@@ -127,5 +127,11 @@ public class UserApiController {
         device.setDeviceToken(request.getDeviceToken());
         deviceService.create(device);
         return new DeviceResponse(device);
+    }
+
+    @GetMapping("/room/")
+    public RoomsOfUserResponse getBelongingRooms(@CurrentUser User currentUser) {
+        List<Room> rooms = roomService.findRoomsByUser(currentUser);
+        return new RoomsOfUserResponse(currentUser, rooms);
     }
 }
