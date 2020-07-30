@@ -52,6 +52,7 @@ public class RoomApiController {
         }
         room.setCourt(court.get());
         roomService.save(room);
+        participantService.addParticipants(room, currentUser);
         return new RoomResponse(room);
     }
 
@@ -80,20 +81,33 @@ public class RoomApiController {
             getRoomsResponse.add(new RoomResponse(room));
         }
         return getRoomsResponse;
-
     }
 
-    @PostMapping(path = "{id}/participant")
+    @PostMapping(path = "{id}/participant/")
     public ParticipantsResponse participate(@PathVariable("id") Long id, @CurrentUser User currentUser) {
         Room room = roomService.findOne(id);
         if (room == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return participantService.addParticipants(room, currentUser);
+        if (room.getStatus() != RoomStatus.WAITING) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
 
+        List<Participant> participants = room.getParticipants();
+        for (Participant participant : participants) {
+            if (currentUser.getId().equals(participant.getUser().getId())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        if (participants.size() >= room.getCourt().getCapacity()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+
+        return participantService.addParticipants(room, currentUser);
     }
 
-    @GetMapping(path = "{id}/participant")
+    @GetMapping(path = "{id}/participant/")
     public ParticipantsResponse getParticipants(@PathVariable("id") Long id) {
         Room room = roomService.findOne(id);
         if (room == null) {
