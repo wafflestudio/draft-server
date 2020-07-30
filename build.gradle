@@ -14,18 +14,15 @@ repositories {
 
 dependencies {
 	// Default setting from template
-	implementation 'org.springframework.boot:spring-boot-starter-tomcat'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-tomcat:2.2.6.RELEASE'
+	implementation 'org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE'
 
 	// Database
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	runtimeOnly 'mysql:mysql-connector-java'
-
-	// Spring Security
-//	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.2.6.RELEASE'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.2.6.RELEASE'
+	runtimeOnly 'mysql:mysql-connector-java:8.0.19'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
 
 	// Geometry
 	implementation 'com.vividsolutions:jts:1.13'
@@ -37,8 +34,8 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 
 	// Spring Security
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.2.6.RELEASE'
+	implementation 'org.springframework.boot:spring-boot-starter-security:2.2.6.RELEASE'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
 	// Geometry
@@ -60,6 +57,9 @@ dependencies {
 
 	//firebase
 	implementation 'com.google.firebase:firebase-admin:6.8.1'
+
+	// Google oauth
+	implementation 'com.google.api-client:google-api-client:1.30.9'
 
 	// Testing instrument
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
