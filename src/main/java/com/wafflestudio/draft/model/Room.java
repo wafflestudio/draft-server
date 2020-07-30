@@ -20,7 +20,7 @@ public class Room extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RoomStatus status = RoomStatus.WAITING;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
 
