@@ -6,6 +6,7 @@ import com.wafflestudio.draft.dto.request.PutRoomRequest;
 import com.wafflestudio.draft.dto.response.ParticipantsResponse;
 import com.wafflestudio.draft.dto.response.RoomResponse;
 import com.wafflestudio.draft.model.Court;
+import com.wafflestudio.draft.model.Participant;
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.model.enums.RoomStatus;
@@ -51,6 +52,7 @@ public class RoomApiController {
         }
         room.setCourt(court.get());
         roomService.save(room);
+        participantService.addParticipants(room, currentUser);
         return new RoomResponse(room);
     }
 
@@ -79,26 +81,65 @@ public class RoomApiController {
             getRoomsResponse.add(new RoomResponse(room));
         }
         return getRoomsResponse;
-
     }
 
-    @PostMapping(path = "{id}/participant")
+    @PostMapping(path = "{id}/participant/")
     public ParticipantsResponse participate(@PathVariable("id") Long id, @CurrentUser User currentUser) {
         Room room = roomService.findOne(id);
         if (room == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return participantService.addParticipants(room, currentUser);
+        if (room.getStatus() != RoomStatus.WAITING) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
 
+        List<Participant> participants = room.getParticipants();
+        for (Participant participant : participants) {
+            if (currentUser.getId().equals(participant.getUser().getId())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        if (participants.size() >= room.getCourt().getCapacity()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+
+        return participantService.addParticipants(room, currentUser);
     }
 
-    @GetMapping(path = "{id}/participant")
+    @GetMapping(path = "{id}/participant/")
     public ParticipantsResponse getParticipants(@PathVariable("id") Long id) {
         Room room = roomService.findOne(id);
         if (room == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return participantService.getParticipants(room);
+    }
+
+    @DeleteMapping(path = "{id}/participant/")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void leaveRoom(@PathVariable("id") Long id, @CurrentUser User currentUser) {
+        Room room = roomService.findOne(id);
+        if (room == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        participantService.deleteParticipants(room, currentUser);
+
+        List<Participant> participants = room.getParticipants();
+
+        if (participants.size() <= 0) {
+            room.setStatus(RoomStatus.CLOSED);
+            room.setOwner(null);
+            roomService.save(room);
+        }
+
+        if (room.getStatus() != RoomStatus.CLOSED) {
+            if (room.getOwner().getId().equals(currentUser.getId())) {
+                room.setOwner(participants.get(0).getUser());
+                roomService.save(room);
+            }
+        }
     }
 
     @PutMapping(path = "{id}")

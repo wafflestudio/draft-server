@@ -38,4 +38,8 @@ public class ParticipantService {
         participantRepository.save(newParticipant);
         return new ParticipantsResponse(participantsOfTeam1, participantsOfTeam2);
     }
+
+    public void deleteParticipants(Room room, User user) {
+        participantRepository.deleteParticipantByRoomAndUser(room, user);
+    }
 }

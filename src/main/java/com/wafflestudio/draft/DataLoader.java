@@ -8,12 +8,15 @@ import com.wafflestudio.draft.repository.CourtRepository;
 import com.wafflestudio.draft.repository.DeviceRepository;
 import com.wafflestudio.draft.repository.RegionRepository;
 import com.wafflestudio.draft.repository.UserRepository;
+import com.wafflestudio.draft.service.ParticipantService;
 import com.wafflestudio.draft.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +27,7 @@ public class DataLoader implements ApplicationRunner {
     final DeviceRepository deviceRepository;
     final GeometryFactory gf = new GeometryFactory();
     final RoomService roomService;
+    final ParticipantService participantService;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -65,7 +69,10 @@ public class DataLoader implements ApplicationRunner {
             room.setOwner(oauth2User);
             room.setCourt(testCourt);
             room.setName("TEST_ROOM_" + i);
+            room.setStartTime(LocalDateTime.now());
+            room.setEndTime(LocalDateTime.now().plusHours(1));
             roomService.save(room);
+            participantService.addParticipants(room, oauth2User);
         }
     }
 }
