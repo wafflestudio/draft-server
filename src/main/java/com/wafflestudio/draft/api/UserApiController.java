@@ -63,8 +63,6 @@ public class UserApiController {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
                     return null;
                 }
-
-                user = new User(username, oAuth2Response.getEmail());
                 break;
             case "PASSWORD":
                 if (username == null || signUpRequest.getEmail() == null || signUpRequest.getPassword() == null) {
