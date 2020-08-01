@@ -12,7 +12,11 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public Optional<User> findUser(String email) {
+    public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public boolean existsUserByUsername(String username) {
+        return userRepository.existsUserByUsername(username);
     }
 }
