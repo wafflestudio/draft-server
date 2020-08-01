@@ -27,7 +27,7 @@ class RoomServiceTest {
     void create() throws Exception {
         // given
         Room room = new Room();
-        User user = userService.findUser("authuser@test.com").get();
+        User user = userService.findUserByEmail("authuser@test.com").get();
         room.setOwner(user);
 
         Court court = courtService.getCourtById(1L).get();

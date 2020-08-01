@@ -1,10 +1,7 @@
 package com.wafflestudio.draft.api;
 
 
-import com.wafflestudio.draft.dto.request.GetUsersByPreferenceRequest;
-import com.wafflestudio.draft.dto.request.SetDeviceRequest;
-import com.wafflestudio.draft.dto.request.SetPreferenceRequest;
-import com.wafflestudio.draft.dto.request.SignUpRequest;
+import com.wafflestudio.draft.dto.request.*;
 import com.wafflestudio.draft.dto.response.DeviceResponse;
 import com.wafflestudio.draft.dto.response.PreferenceInRegionResponse;
 import com.wafflestudio.draft.dto.response.RoomsOfUserResponse;
@@ -16,10 +13,7 @@ import com.wafflestudio.draft.security.oauth2.AuthUserService;
 import com.wafflestudio.draft.security.oauth2.OAuth2Provider;
 import com.wafflestudio.draft.security.oauth2.client.OAuth2Response;
 import com.wafflestudio.draft.security.password.UserPrincipal;
-import com.wafflestudio.draft.service.DeviceService;
-import com.wafflestudio.draft.service.PreferenceService;
-import com.wafflestudio.draft.service.RegionService;
-import com.wafflestudio.draft.service.RoomService;
+import com.wafflestudio.draft.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +37,7 @@ public class UserApiController {
 
     private final OAuth2Provider oAuth2Provider;
     private final AuthUserService authUserService;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final RegionService regionService;
     private final PreferenceService preferenceService;
@@ -51,26 +46,33 @@ public class UserApiController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup/")
-    public ResponseEntity<User> createUser(@RequestBody SignUpRequest signUpRequest, HttpServletResponse response) throws IOException {
+    public ResponseEntity<User> createUser(@RequestBody @Valid SignUpRequest signUpRequest, HttpServletResponse response) throws IOException {
         User user;
+        String username = signUpRequest.getUsername();
+
+        if (userService.existsUserByUsername(username)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
 
         switch (signUpRequest.getGrantType()) {
             case "OAUTH":
                 try {
                     OAuth2Response oAuth2Response = oAuth2Provider.requestAuthentication(signUpRequest);
-                    user = new User(signUpRequest.getUsername(), oAuth2Response.getEmail());
+                    user = new User(username, oAuth2Response.getEmail());
                 } catch (Exception e) {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
                     return null;
                 }
+
+                user = new User(username, oAuth2Response.getEmail());
                 break;
             case "PASSWORD":
-                if (signUpRequest.getUsername() == null || signUpRequest.getEmail() == null || signUpRequest.getPassword() == null) {
+                if (username == null || signUpRequest.getEmail() == null || signUpRequest.getPassword() == null) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     return null;
                 }
 
-                user = new User(signUpRequest.getUsername(), signUpRequest.getEmail());
+                user = new User(username, signUpRequest.getEmail());
                 user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
                 break;
             default:
@@ -84,6 +86,14 @@ public class UserApiController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    @GetMapping("/check-username/")
+    public ResponseEntity<Void> checkUsername(@RequestBody @Valid CheckUsernameRequest checkUsernameRequest) {
+        if (userService.existsUserByUsername(checkUsernameRequest.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
     //    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/me/")
     public ResponseEntity<UserInformationResponse> myInfo(@CurrentUser UserPrincipal currentUser) {
@@ -92,7 +102,7 @@ public class UserApiController {
 
     //    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/info/")
-    public List<PreferenceInRegionResponse> setPreferences(@Valid @RequestBody List<SetPreferenceRequest> preferenceRequestList, @CurrentUser UserPrincipal currentUser) {
+    public List<PreferenceInRegionResponse> setPreferences(@RequestBody @Valid List<SetPreferenceRequest> preferenceRequestList, @CurrentUser UserPrincipal currentUser) {
         List<PreferenceInRegionResponse> preferenceInRegionResponses = new ArrayList<>();
 
         for (SetPreferenceRequest preferenceRequest : preferenceRequestList) {
