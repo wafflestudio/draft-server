@@ -56,13 +56,13 @@ public class UserApiController {
 
         switch (signUpRequest.getGrantType()) {
             case "OAUTH":
-                OAuth2Response oAuth2Response = oAuth2Provider.requestAuthentication(signUpRequest);
-                if (oAuth2Response.getStatus() != HttpStatus.OK) {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Token for auth server is not valid");
+                try {
+                    OAuth2Response oAuth2Response = oAuth2Provider.requestAuthentication(signUpRequest);
+                    user = new User(signUpRequest.getUsername(), oAuth2Response.getEmail());
+                } catch (Exception e) {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
                     return null;
                 }
-
-                user = new User(signUpRequest.getUsername(), oAuth2Response.getEmail());
                 break;
             case "PASSWORD":
                 if (signUpRequest.getUsername() == null || signUpRequest.getEmail() == null || signUpRequest.getPassword() == null) {

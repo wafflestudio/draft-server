@@ -33,6 +33,9 @@ dependencies {
 	// Lombok
 	runtimeOnly 'com.h2database:h2'
 
+	// JSON parser
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
 	// Spring Security
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.2.6.RELEASE'
 	implementation 'org.springframework.boot:spring-boot-starter-security:2.2.6.RELEASE'

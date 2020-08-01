@@ -6,6 +6,7 @@ import com.wafflestudio.draft.security.JwtAuthorizationFilter;
 import com.wafflestudio.draft.security.JwtTokenProvider;
 import com.wafflestudio.draft.security.oauth2.OAuth2Provider;
 import com.wafflestudio.draft.security.oauth2.client.FacebookOAuth2Client;
+import com.wafflestudio.draft.security.oauth2.client.GoogleOAuth2Client;
 import com.wafflestudio.draft.security.oauth2.client.KakaoOAuth2Client;
 import com.wafflestudio.draft.security.oauth2.client.TestOAuth2Client;
 import com.wafflestudio.draft.security.password.UserPrincipalDetailService;
@@ -40,6 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final FacebookOAuth2Client facebookOAuth2Client;
 
+    private final GoogleOAuth2Client googleOAuth2Client;
+
     private static final String[] AUTH_WHITELIST_SWAGGER = {
             // -- swagger ui
             "/swagger-resources/**",
@@ -48,13 +51,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/webjars/**"
     };
 
-    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtTokenProvider jwtTokenProvider, UserPrincipalDetailService userPrincipalDetailService, KakaoOAuth2Client kakaoOAuth2Client, TestOAuth2Client testOAuth2Client, FacebookOAuth2Client facebookOAuth2Client) {
+    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtTokenProvider jwtTokenProvider, UserPrincipalDetailService userPrincipalDetailService, KakaoOAuth2Client kakaoOAuth2Client, TestOAuth2Client testOAuth2Client, FacebookOAuth2Client facebookOAuth2Client, GoogleOAuth2Client googleOAuth2Client) {
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userPrincipalDetailService = userPrincipalDetailService;
         this.kakaoOAuth2Client = kakaoOAuth2Client;
         this.testOAuth2Client = testOAuth2Client;
         this.facebookOAuth2Client = facebookOAuth2Client;
+        this.googleOAuth2Client = googleOAuth2Client;
     }
 
     @Override
@@ -75,6 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         provider.addOAuth2Client(KakaoOAuth2Client.OAUTH_TOKEN_PREFIX, kakaoOAuth2Client);
         provider.addOAuth2Client(FacebookOAuth2Client.OAUTH_TOKEN_PREFIX, facebookOAuth2Client);
         provider.addOAuth2Client(TestOAuth2Client.OAUTH_TOKEN_PREFIX, testOAuth2Client);
+        provider.addOAuth2Client(GoogleOAuth2Client.OAUTH_TOKEN_PREFIX, googleOAuth2Client);
         return provider;
     }
 

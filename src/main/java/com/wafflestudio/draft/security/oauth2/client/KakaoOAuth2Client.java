@@ -1,14 +1,19 @@
 package com.wafflestudio.draft.security.oauth2.client;
 
-import org.springframework.core.ParameterizedTypeReference;
+import com.wafflestudio.draft.security.oauth2.client.exception.OAuthTokenNotValidException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.HashMap;
+import java.io.IOException;
 
 @Component
 public class KakaoOAuth2Client implements OAuth2Client {
@@ -26,38 +31,46 @@ public class KakaoOAuth2Client implements OAuth2Client {
 
     @Override
     public OAuth2Response userInfo(String accessToken) throws AuthenticationException {
-        RestTemplate template = new RestTemplate();
 
+        RestTemplate template = new RestTemplate();
+        template.setErrorHandler(new ResponseErrorHandler() {
+            @Override
+            public boolean hasError(ClientHttpResponse response) throws IOException {
+                return false;
+            }
+
+            @Override
+            public void handleError(ClientHttpResponse response) throws IOException {
+
+            }
+        });
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(KAKAO_HOST + "/v2/user/me");
         MultiValueMap<String, String> headers = new HttpHeaders();
         headers.add("Authorization", TOKEN_PREFIX + " " + accessToken);
         headers.add("property_keys", "[\"kakao_account.email\"]");
 
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(headers);
-        ParameterizedTypeReference<HashMap<String, Object>> responseType =
-                new ParameterizedTypeReference<HashMap<String, Object>>() {
-                };
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(headers);
 
-        ResponseEntity<HashMap<String, Object>> response =
-                template.exchange(KAKAO_HOST + "/v2/user/me", HttpMethod.GET, entity, responseType);
+        ResponseEntity<String> response =
+                template.exchange(builder.toUriString(), HttpMethod.GET, httpEntity, String.class);
 
         if (response.getStatusCode() != HttpStatus.OK ||
-                !response.hasBody() ||
-                !response.getBody().containsKey("kakao_account") ||
-                !(response.getBody().get("kakao_account") instanceof HashMap)) {
-            throw new UsernameNotFoundException("Cannot retrieve user info from KAKAO Auth server");
+                !response.hasBody()) {
+            throw new OAuthTokenNotValidException("Cannot retrieve user info from KAKAO Auth server");
+
         }
 
-        HashMap<String, Object> account = (HashMap<String, Object>) response.getBody().get("kakao_account");
+        String body = response.getBody();
+        try {
+            JSONObject jsonBody = (JSONObject) ((JSONObject) new JSONParser().parse(body)).get("kakao_account");
+            String email = (String) jsonBody.get("email");
 
-        if (!(boolean) account.get("is_email_valid")) {
-            throw new UsernameNotFoundException("Email information not exist or not agreed");
+            return new OAuth2Response(OAUTH_TOKEN_PREFIX, email, response.getStatusCode());
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
-        System.out.println(account.get("email").toString());
-        System.out.println(response.toString());
-
-
-        // TODO: Make up kakao response
-        return new OAuth2Response(OAUTH_TOKEN_PREFIX, account.get("email").toString(), response.getStatusCode());
+        throw new OAuthTokenNotValidException("Cannot retrieve user info from KAKAO Auth server, user info is not parcelable");
     }
 }
