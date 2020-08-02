@@ -1,9 +1,11 @@
 package com.wafflestudio.draft.security.oauth2;
 
-import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.dto.request.AuthenticationRequest;
+import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.security.oauth2.client.OAuth2Client;
 import com.wafflestudio.draft.security.oauth2.client.OAuth2Response;
+import com.wafflestudio.draft.security.oauth2.client.exception.OAuthTokenNotValidException;
+import com.wafflestudio.draft.security.oauth2.client.exception.SucceedOAuthUserNotFoundException;
 import com.wafflestudio.draft.security.password.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +31,7 @@ public class OAuth2Provider implements AuthenticationProvider {
 
         response = requestAuthentication(request);
         if (response.getStatus() != HttpStatus.OK)
-            throw new UsernameNotFoundException("User token failed to authenticate on " + request.getAuthProvider());
+            throw new OAuthTokenNotValidException("User token failed to authenticate on " + request.getAuthProvider());
 
         currentUser = loadAndUpdate(response);
         UserPrincipal userPrincipal = new UserPrincipal(currentUser);
@@ -38,7 +40,7 @@ public class OAuth2Provider implements AuthenticationProvider {
     }
 
     // Request authenticate to auth server by access token
-    public OAuth2Response requestAuthentication(AuthenticationRequest request) {
+    public OAuth2Response requestAuthentication(AuthenticationRequest request) throws AuthenticationException {
         if (request.getAuthProvider() == null)
             throw new UsernameNotFoundException("authServer is not given");
 
@@ -54,7 +56,7 @@ public class OAuth2Provider implements AuthenticationProvider {
     // Fetch User data from oauth2 server and update database
     private User loadAndUpdate(OAuth2Response response) {
         User user = authUserService.loadUserByEmail(response.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("Authentication success, but user email '%s' is not found in database", response.getEmail())));
+                .orElseThrow(() -> new SucceedOAuthUserNotFoundException(String.format("Authentication success, but user email '%s' is not found in database", response.getEmail())));
 
         // TODO: Update user info by response
         return authUserService.saveUser(user);

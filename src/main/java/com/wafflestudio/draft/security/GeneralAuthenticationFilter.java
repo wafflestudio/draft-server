@@ -3,6 +3,7 @@ package com.wafflestudio.draft.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wafflestudio.draft.dto.request.AuthenticationRequest;
 import com.wafflestudio.draft.security.oauth2.OAuth2Token;
+import com.wafflestudio.draft.security.oauth2.client.exception.SucceedOAuthUserNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,6 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -35,13 +37,12 @@ public class GeneralAuthenticationFilter extends UsernamePasswordAuthenticationF
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
 //        super.unsuccessfulAuthentication(request, response, failed);
-        //FIXME: Please fix it to compare with Exception type(not message)
-        if (failed.getMessage().contains("Authentication success")) {
+        if (failed instanceof SucceedOAuthUserNotFoundException) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, failed.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 
