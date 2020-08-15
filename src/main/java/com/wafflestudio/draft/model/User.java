@@ -31,6 +31,9 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @Column
+    private String profileImage;
+
+    @Column
     private String roles;
 
     @OneToMany(mappedBy = "owner")
@@ -46,5 +49,4 @@ public class User extends BaseTimeEntity {
     public void addRole(String role) {
         roles = roles + "," + role;
     }
-
 }

@@ -37,7 +37,9 @@ public class RoomApiControllerTest {
         this.mockMvc.perform(get("/api/v1/room/{roomId}", 1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$['id']", is(1)))
-                .andExpect(jsonPath("$['name']", is("TEST_ROOM_1")));
+                .andExpect(jsonPath("$['name']", is("TEST_ROOM_1")))
+                .andExpect(jsonPath("$['participants']['team1'][0]['id']", is(1)))
+                .andExpect(jsonPath("$['participants']['team2']", hasSize(0)));
     }
 
     @Test
@@ -47,7 +49,8 @@ public class RoomApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(5)))
                 .andExpect(jsonPath("$[4].id", is(5)))
-                .andExpect(jsonPath("$[4].name", is("TEST_ROOM_5")));
+                .andExpect(jsonPath("$[4].name", is("TEST_ROOM_5")))
+                .andExpect(jsonPath("$[4]['participants']['team1'][0]['id']", is(1)));
 
         this.mockMvc.perform(get("/api/v1/room/")
                 .param("name", "TEST_ROOM_3").contentType(MediaType.APPLICATION_JSON))

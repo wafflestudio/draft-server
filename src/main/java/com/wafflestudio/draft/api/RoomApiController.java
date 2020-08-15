@@ -53,7 +53,7 @@ public class RoomApiController {
         room.setCourt(court.get());
         roomService.save(room);
         participantService.addParticipants(room, currentUser);
-        return new RoomResponse(room);
+        return roomService.makeRoomResponse(room);
     }
 
     @GetMapping(path = "{id}")
@@ -62,7 +62,7 @@ public class RoomApiController {
         if (room == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return new RoomResponse(room);
+        return roomService.makeRoomResponse(room);
     }
 
     @GetMapping("/")
@@ -78,7 +78,7 @@ public class RoomApiController {
         List<Room> rooms = roomService.findRooms(name, courtId, startTime, endTime);
         List<RoomResponse> getRoomsResponse = new ArrayList<>();
         for (Room room : rooms) {
-            getRoomsResponse.add(new RoomResponse(room));
+            getRoomsResponse.add(roomService.makeRoomResponse(room));
         }
         return getRoomsResponse;
     }
@@ -168,6 +168,6 @@ public class RoomApiController {
         }
 
         roomService.save(room);
-        return new RoomResponse(room);
+        return roomService.makeRoomResponse(room);
     }
 }
