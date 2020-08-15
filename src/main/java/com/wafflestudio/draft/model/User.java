@@ -1,7 +1,6 @@
 package com.wafflestudio.draft.model;
 
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
