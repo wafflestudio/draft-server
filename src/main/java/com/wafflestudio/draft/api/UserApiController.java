@@ -2,10 +2,7 @@ package com.wafflestudio.draft.api;
 
 
 import com.wafflestudio.draft.dto.request.*;
-import com.wafflestudio.draft.dto.response.DeviceResponse;
-import com.wafflestudio.draft.dto.response.PreferenceInRegionResponse;
-import com.wafflestudio.draft.dto.response.RoomsOfUserResponse;
-import com.wafflestudio.draft.dto.response.UserInformationResponse;
+import com.wafflestudio.draft.dto.response.*;
 import com.wafflestudio.draft.model.*;
 import com.wafflestudio.draft.security.CurrentUser;
 import com.wafflestudio.draft.security.JwtTokenProvider;
@@ -140,6 +137,12 @@ public class UserApiController {
     @GetMapping("/room/")
     public RoomsOfUserResponse getBelongingRooms(@CurrentUser User currentUser) {
         List<Room> rooms = roomService.findRoomsByUser(currentUser);
-        return new RoomsOfUserResponse(currentUser, rooms);
+        RoomsOfUserResponse roomsOfUserResponse = new RoomsOfUserResponse(currentUser);
+        List<RoomResponse> roomResponses = new ArrayList<>();
+        for (Room room : rooms) {
+            roomResponses.add(roomService.makeRoomResponse(room));
+        }
+        roomsOfUserResponse.setRooms(roomResponses);
+        return roomsOfUserResponse;
     }
 }

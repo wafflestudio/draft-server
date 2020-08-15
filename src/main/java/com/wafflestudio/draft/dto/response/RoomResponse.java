@@ -17,6 +17,7 @@ public class RoomResponse {
     private LocalDateTime createdAt;
     private Long ownerId;
     private Long courtId;
+    private ParticipantsResponse participants;
 
     public RoomResponse(Room room) {
         this.id = room.getId();

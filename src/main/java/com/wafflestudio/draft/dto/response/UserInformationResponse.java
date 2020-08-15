@@ -14,10 +14,12 @@ public class UserInformationResponse {
     private String username;
     @NonNull
     private String email;
+    private String profileImage;
 
     public UserInformationResponse(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.email = user.getEmail();
+        this.profileImage = user.getProfileImage();
     }
 }

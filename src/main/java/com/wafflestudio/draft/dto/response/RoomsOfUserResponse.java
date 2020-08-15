@@ -14,14 +14,9 @@ public class RoomsOfUserResponse {
     private String email;
     private List<RoomResponse> rooms;
 
-    public RoomsOfUserResponse(User user, List<Room> rooms) {
+    public RoomsOfUserResponse(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.email = user.getEmail();
-        List<RoomResponse> roomResponses = new ArrayList<>();
-        for (Room room : rooms) {
-            roomResponses.add(new RoomResponse(room));
-        }
-        this.rooms = roomResponses;
     }
 }

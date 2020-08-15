@@ -1,5 +1,6 @@
 package com.wafflestudio.draft.service;
 
+import com.wafflestudio.draft.dto.response.RoomResponse;
 import com.wafflestudio.draft.model.Room;
 import com.wafflestudio.draft.model.User;
 import com.wafflestudio.draft.repository.RoomRepository;
@@ -16,6 +17,7 @@ import java.util.List;
 public class RoomService {
 
     private final RoomRepository roomRepository;
+    private final ParticipantService participantService;
 
     @Transactional
     public Long save(Room room) {
@@ -33,5 +35,11 @@ public class RoomService {
 
     public List<Room> findRoomsByUser(User user) {
         return roomRepository.findRoomsByUser(user);
+    }
+
+    public RoomResponse makeRoomResponse(Room room) {
+        RoomResponse roomResponse = new RoomResponse(room);
+        roomResponse.setParticipants(participantService.getParticipants(room));
+        return roomResponse;
     }
 }
