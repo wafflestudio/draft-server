@@ -1,6 +1,7 @@
 package com.wafflestudio.draft.model;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -31,7 +32,8 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @Column
-    private String profileImage;
+    private String profileImage = "https://lh3.googleusercontent.com/-XdUIqdMkCWA/" +
+                                    "AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg";
 
     @Column
     private String roles;
