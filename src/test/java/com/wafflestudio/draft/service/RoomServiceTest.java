@@ -35,7 +35,7 @@ class RoomServiceTest {
     void create() throws Exception {
         // given
         Room room = new Room();
-        User user = new User("TEST_USER", "user@test.com", null, null, null, null, null, null);
+        User user = new User("TEST_USER", "user@test.com", null, null, null, null, null, null, null);
         userRepository.save(user);
         room.setOwner(user);
 

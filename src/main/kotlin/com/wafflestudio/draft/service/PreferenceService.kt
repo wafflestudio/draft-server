@@ -22,10 +22,11 @@ class PreferenceService {
         // TODO: Add unsubscribing logic
         val registrationTokens: List<String> = user.devices!!.map { obj: Device? -> obj!!.deviceToken }
         FirebaseMessaging.getInstance().subscribeToTopicAsync(registrationTokens, region.name)
-        for (preference in preferences!!) {
-            preference.region = region
-            preference.user = user
-            preferenceRepository.save<Preference>(preference)
+        preferences?.forEach {
+            preferenceRepository.save(it.apply {
+                this.region = region
+                this.user = user
+            })
         }
     }
 

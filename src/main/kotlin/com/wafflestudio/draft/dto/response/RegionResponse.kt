@@ -9,11 +9,11 @@ data class RegionResponse(
         var depth2: String? = null,
         var depth3: String? = null
 ) {
-    constructor(region: Region) {
-        id = region.id
-        name = region.name
-        depth1 = region.depth1
-        depth2 = region.depth2
-        depth3 = region.depth3
-    }
+    constructor(region: Region) : this(
+            region.id,
+            region.name,
+            region.depth1,
+            region.depth2,
+            region.depth3
+    )
 }

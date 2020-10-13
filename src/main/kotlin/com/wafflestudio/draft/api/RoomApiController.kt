@@ -7,9 +7,9 @@ import com.wafflestudio.draft.dto.response.ParticipantsResponse
 import com.wafflestudio.draft.dto.response.RoomResponse
 import com.wafflestudio.draft.model.Participant
 import com.wafflestudio.draft.model.Room
-import com.wafflestudio.draft.model.User
 import com.wafflestudio.draft.model.enums.RoomStatus
 import com.wafflestudio.draft.security.CurrentUser
+import com.wafflestudio.draft.security.password.UserPrincipal
 import com.wafflestudio.draft.service.CourtService
 import com.wafflestudio.draft.service.FCMService
 import com.wafflestudio.draft.service.ParticipantService
@@ -26,9 +26,9 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    fun saveRoomV1(@RequestBody @Valid request: CreateRoomRequest, @CurrentUser currentUser: User): RoomResponse {
+    fun saveRoomV1(@RequestBody @Valid request: CreateRoomRequest, @CurrentUser currentUser: UserPrincipal): RoomResponse {
         val room = Room()
-        room.owner = currentUser
+        room.owner = currentUser.user
         room.startTime = request.startTime
         room.endTime = request.endTime
         room.name = request.name
@@ -38,7 +38,7 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         }
         room.court = court.get()
         roomService.save(room)
-        participantService.addParticipants(room, currentUser)
+        participantService.addParticipants(room, currentUser.user)
         return roomService.makeRoomResponse(room)
     }
 
@@ -63,14 +63,14 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
     }
 
     @PostMapping(path = ["{id}/participant"])
-    fun participate(@PathVariable("id") id: Long, @CurrentUser currentUser: User): ParticipantsResponse? {
+    fun participate(@PathVariable("id") id: Long, @CurrentUser currentUser: UserPrincipal): ParticipantsResponse? {
         val room: Room = roomService.findOne(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
         if (room.status !== RoomStatus.WAITING) {
             throw ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY)
         }
         val participants: List<Participant>? = room.participants
         participants?.forEach { participant ->
-            if (currentUser.id === participant.user.id) {
+            if (currentUser.user.id === participant.user.id) {
                 throw ResponseStatusException(HttpStatus.BAD_REQUEST)
             }
         }
@@ -79,7 +79,7 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
             throw ResponseStatusException(HttpStatus.CONFLICT)
         }
 
-        return participantService.addParticipants(room, currentUser)
+        return participantService.addParticipants(room, currentUser.user)
     }
 
     @GetMapping(path = ["{id}/participant/"])
@@ -90,9 +90,9 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
 
     @DeleteMapping(path = ["{id}/participant/"])
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    fun leaveRoom(@PathVariable("id") id: Long, @CurrentUser currentUser: User) {
+    fun leaveRoom(@PathVariable("id") id: Long, @CurrentUser currentUser: UserPrincipal) {
         val room: Room = roomService.findOne(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        participantService.deleteParticipants(room, currentUser)
+        participantService.deleteParticipants(room, currentUser.user)
         val participants: List<Participant>? = room.participants
         if (participants !== null && participants.isEmpty()) {
             room.status = RoomStatus.CLOSED
@@ -100,7 +100,7 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
             roomService.save(room)
         }
         if (room.status !== RoomStatus.CLOSED) {
-            if (room.owner!!.id === currentUser.id) {
+            if (room.owner!!.id === currentUser.user.id) {
                 room.owner = participants!![0].user
                 roomService.save(room)
             }

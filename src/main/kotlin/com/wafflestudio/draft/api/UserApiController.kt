@@ -21,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.io.IOException
-import java.util.*
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
@@ -87,8 +86,7 @@ class UserApiController(private val oAuth2Provider: OAuth2Provider,
     //    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/info/")
     fun setPreferences(@RequestBody @Valid preferenceRequestList: List<SetPreferenceRequest>, @CurrentUser currentUser: UserPrincipal): List<PreferenceInRegionResponse> {
-        val preferenceInRegionResponses: MutableList<PreferenceInRegionResponse> = ArrayList()
-        for (preferenceRequest in preferenceRequestList) {
+        return preferenceRequestList.map { preferenceRequest ->
             val region = regionService.findRegionById(preferenceRequest.regionId)
             if (region!!.isEmpty) {
                 // FIXME: when a region is not found, we should not apply whole preferences of the request
@@ -96,9 +94,8 @@ class UserApiController(private val oAuth2Provider: OAuth2Provider,
             }
             val preferences = preferenceRequest.preferences
             preferenceService.setPreferences(currentUser.user, region.get(), preferences)
-            preferenceInRegionResponses.add(PreferenceInRegionResponse(region.get(), preferences))
+            PreferenceInRegionResponse(region.get(), preferences)
         }
-        return preferenceInRegionResponses
     }
 
     @GetMapping("/playable/")
@@ -112,17 +109,17 @@ class UserApiController(private val oAuth2Provider: OAuth2Provider,
 
     @PostMapping("/device/")
     @ResponseStatus(HttpStatus.CREATED)
-    fun setDevice(@RequestBody @Valid request: SetDeviceRequest, @CurrentUser currentUser: User?): DeviceResponse {
+    fun setDevice(@RequestBody @Valid request: SetDeviceRequest, @CurrentUser currentUser: UserPrincipal): DeviceResponse {
         val device = Device(request.deviceToken)
-        device.user = currentUser
+        device.user = currentUser.user
         deviceService.create(device)
         return DeviceResponse(device)
     }
 
     @GetMapping("/room/")
-    fun getBelongingRooms(@CurrentUser currentUser: User): RoomsOfUserResponse? {
-        val rooms: List<Room>? = roomService.findRoomsByUser(currentUser)
-        val roomsOfUserResponse = RoomsOfUserResponse(currentUser)
+    fun getBelongingRooms(@CurrentUser currentUser: UserPrincipal): RoomsOfUserResponse? {
+        val rooms: List<Room>? = roomService.findRoomsByUser(currentUser.user)
+        val roomsOfUserResponse = RoomsOfUserResponse(currentUser.user)
         roomsOfUserResponse.rooms = rooms?.map { roomService.makeRoomResponse(it) } ?: emptyList()
         return roomsOfUserResponse
     }

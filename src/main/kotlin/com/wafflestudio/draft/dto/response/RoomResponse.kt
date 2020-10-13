@@ -15,14 +15,14 @@ data class RoomResponse(
         var courtId: Long? = null,
         var participants: ParticipantsResponse? = null
 ) {
-    constructor(room: Room?) {
-        id = room!!.id
-        roomStatus = room.status
-        startTime = room.startTime
-        endTime = room.endTime
-        name = room.name
-        createdAt = room.createdAt
-        ownerId = room.owner!!.id
-        courtId = room.court!!.id
-    }
+    constructor(room: Room?) : this(
+            room!!.id,
+            room.status,
+            room.startTime,
+            room.endTime,
+            room.name,
+            room.createdAt,
+            room.owner!!.id,
+            room.court!!.id
+    )
 }

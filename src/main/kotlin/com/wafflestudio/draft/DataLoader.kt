@@ -31,7 +31,6 @@ class DataLoader(val userRepository: UserRepository, val regionRepository: Regio
         testCourt.name = "TEST_COURT"
         testCourt.capacity = 10
         testCourt.region = testRegion
-        testCourt.location = point
         // FIXME: how to set location with Point?
         // testCourt.setLocation(point);
         courtRepository.save(testCourt)

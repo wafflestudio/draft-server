@@ -8,10 +8,11 @@ data class DeviceResponse(
         var userId: Long? = null,
         var username: String? = null
 ) {
-    constructor(device: Device) {
-        id = device.id
-        deviceToken = device.deviceToken
-        userId = device.user!!.id
-        username = device.user!!.username
-    }
+
+    constructor(device: Device) : this(
+            device.id,
+            device.deviceToken,
+            device.user!!.id,
+            device.user!!.username
+    )
 }

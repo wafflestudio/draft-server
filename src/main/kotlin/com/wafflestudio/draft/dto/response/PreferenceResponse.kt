@@ -11,11 +11,11 @@ data class PreferenceResponse(
         var regionId: Long? = null,
         var dayOfWeek: DayOfWeek? = null
 ) {
-    constructor(preference: Preference?) {
-        id = preference!!.id
-        startAt = preference.startAt
-        endAt = preference.endAt
-        regionId = preference.region!!.id
-        dayOfWeek = preference.dayOfWeek
-    }
+    constructor(preference: Preference?) : this(
+            preference!!.id,
+            preference.startAt,
+            preference.endAt,
+            preference.region!!.id,
+            preference.dayOfWeek
+    )
 }

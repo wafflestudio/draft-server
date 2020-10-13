@@ -8,10 +8,10 @@ data class UserInformationResponse(
         var email: String,
         var profileImage: String
 ) {
-    constructor(user: User) {
-        id = user.id!!
-        username = user.username
-        email = user.email
-        profileImage = user.profileImage!!
-    }
+    constructor(user: User) : this(
+            user.id!!,
+            user.username,
+            user.email,
+            user.profileImage!!
+    )
 }

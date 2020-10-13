@@ -8,9 +8,9 @@ data class RoomsOfUserResponse(
         var email: String? = null,
         var rooms: List<RoomResponse>? = null
 ) {
-    constructor(user: User) {
-        id = user.id
-        username = user.username
-        email = user.email
-    }
+    constructor(user: User) : this(
+            user.id,
+            user.username,
+            user.email
+    )
 }
