@@ -16,7 +16,7 @@ class RegionService {
         return regionRepository!!.findById(id!!)
     }
 
-    fun findRegionsByName(name: String?): List<Region?>? {
+    fun findRegionsByName(name: String?): List<Region>? {
         return regionRepository!!.findByNameContaining(name)
     }
 }

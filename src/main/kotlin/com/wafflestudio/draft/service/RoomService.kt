@@ -17,7 +17,7 @@ class RoomService(private val roomRepository: RoomRepository,private val partici
         return room.id
     }
 
-    fun findRooms(name: String?, courtId: Long?, startTime: LocalDateTime?, endTime: LocalDateTime?): List<Room?>? {
+    fun findRooms(name: String?, courtId: Long?, startTime: LocalDateTime?, endTime: LocalDateTime?): List<Room>? {
         return roomRepository.findRooms(name, courtId, startTime, endTime)
     }
 

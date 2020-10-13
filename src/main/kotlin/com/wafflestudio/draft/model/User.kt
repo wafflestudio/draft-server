@@ -18,6 +18,10 @@ data class User(
         var password: String? = null,
 
         @Column
+        var profileImage: String? = "https://lh3.googleusercontent.com/-XdUIqdMkCWA/" +
+                "AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+
+        @Column
         var roles: String? = null,
 
         @OneToMany(mappedBy = "owner")
@@ -34,5 +38,4 @@ data class User(
     fun addRole(role: String) {
         roles = "$roles,$role"
     }
-
 }

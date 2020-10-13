@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.DayOfWeek
 import java.time.LocalTime
-import java.util.stream.Collectors
 
 @Service
 @Transactional
@@ -21,9 +20,7 @@ class PreferenceService {
     fun setPreferences(user: User, region: Region, preferences: List<Preference>?) {
         preferenceRepository!!.deleteAllByUser(user)
         // TODO: Add unsubscribing logic
-        val registrationTokens = user.devices!!.stream()
-                .map { obj: Device? -> obj!!.deviceToken }
-                .collect(Collectors.toList())
+        val registrationTokens:List<String> = user.devices!!.map { obj: Device? -> obj!!.deviceToken }
         FirebaseMessaging.getInstance().subscribeToTopicAsync(registrationTokens, region.name)
         for (preference in preferences!!) {
             preference.region = region

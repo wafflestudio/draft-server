@@ -1,6 +1,5 @@
 package com.wafflestudio.draft.security
 
-import com.wafflestudio.draft.model.User
 import com.wafflestudio.draft.security.oauth2.AuthUserService
 import com.wafflestudio.draft.security.oauth2.OAuth2Token
 import com.wafflestudio.draft.security.password.UserPrincipal

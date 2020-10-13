@@ -17,7 +17,7 @@ interface ParticipantRepository : JpaRepository<Participant?, Long?> {
             "from Participant p INNER JOIN p.user u WHERE p.room = :room AND p.team = :team")
     fun getUsersInTeam(
             @Param("room") room: Room?,
-            @Param("team") team: Team): List<UserInformationResponse?>?
+            @Param("team") team: Team): MutableList<UserInformationResponse>?
 
     fun deleteParticipantByRoomAndUser(room: Room, user: User)
 }

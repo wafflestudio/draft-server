@@ -17,8 +17,6 @@ import com.wafflestudio.draft.service.RoomService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
-import java.time.LocalDateTime
-import java.util.*
 import javax.validation.Valid
 
 @RestController
@@ -61,11 +59,7 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         val startTime = request.startTime
         val endTime = request.endTime
         val rooms = roomService.findRooms(name, courtId, startTime, endTime)
-        val getRoomsResponse: MutableList<RoomResponse> = ArrayList()
-        for (room in rooms!!) {
-            getRoomsResponse.add(roomService.makeRoomResponse(room))
-        }
-        return getRoomsResponse
+        return rooms?.map { roomService.makeRoomResponse(it) } ?: emptyList()
     }
 
     @PostMapping(path = ["{id}/participant"])
@@ -82,7 +76,7 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         }
 
         if (participants!!.size >= room.court!!.capacity!!) {
-            throw ResponseStatusException(HttpStatus.CONFLICT);
+            throw ResponseStatusException(HttpStatus.CONFLICT)
         }
 
         return participantService.addParticipants(room, currentUser)

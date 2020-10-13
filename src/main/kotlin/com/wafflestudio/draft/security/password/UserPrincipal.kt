@@ -5,7 +5,6 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.util.*
-import java.util.stream.Collectors
 
 class UserPrincipal(val user: User) : UserDetails {
     override fun getUsername(): String {
@@ -16,10 +15,10 @@ class UserPrincipal(val user: User) : UserDetails {
         return user.password
     }
 
-    override fun getAuthorities(): Collection<GrantedAuthority> {
+    override fun getAuthorities(): List<GrantedAuthority> {
         if (user.roles == null) return ArrayList()
         val roles = Arrays.asList(*user.roles!!.split(",").toTypedArray())
-        return roles.stream().map { role: String? -> SimpleGrantedAuthority(role) }.collect(Collectors.toList())
+        return roles.map { role: String? -> SimpleGrantedAuthority(role) }
     }
 
 

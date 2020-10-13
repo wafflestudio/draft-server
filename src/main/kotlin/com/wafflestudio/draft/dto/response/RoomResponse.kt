@@ -13,7 +13,7 @@ data class RoomResponse (
     var createdAt: LocalDateTime? = null,
     var ownerId: Long? = null,
     var courtId: Long? = null,
-    var participants: ParticipantsResponse? = null,
+    var participants: ParticipantsResponse? = null
 ){
     constructor(room: Room?) {
         id = room!!.id

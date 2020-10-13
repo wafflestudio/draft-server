@@ -6,5 +6,5 @@ import java.util.*
 
 interface RegionRepository : JpaRepository<Region?, Long?> {
     override fun findById(id: Long): Optional<Region?>
-    fun findByNameContaining(name: String?): List<Region?>?
+    fun findByNameContaining(name: String?): List<Region>?
 }

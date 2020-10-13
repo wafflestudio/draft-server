@@ -16,7 +16,7 @@ class RoomRepository(private val em: EntityManager) {
         return em.find(Room::class.java, id)
     }
 
-    fun findRooms(name: String?, courtId: Long?, startTime: LocalDateTime?, endTime: LocalDateTime?): List<Room> {
+    fun findRooms(name: String?, courtId: Long?, startTime: LocalDateTime?, endTime: LocalDateTime?): List<Room>? {
         // FIXME: we should find a smarter way...
         return if (courtId == null) {
             em.createQuery("SELECT r FROM Room r " +

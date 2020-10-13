@@ -13,12 +13,6 @@ import org.springframework.web.client.ResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import java.io.IOException
-import kotlin.jvm.Throws
-import com.wafflestudio.draft.service.FCMService
-import com.wafflestudio.draft.service.FCMInitializer
-import com.wafflestudio.draft.security.oauth2.client.KakaoOAuth2Client
-import com.wafflestudio.draft.security.oauth2.client.FacebookOAuth2Client
-import com.wafflestudio.draft.security.JwtTokenProvider
 
 @Component
 class FacebookOAuth2Client : OAuth2Client {
