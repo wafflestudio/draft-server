@@ -37,6 +37,4 @@ class UserPrincipal(val user: User) : UserDetails {
     override fun isEnabled(): Boolean {
         return true
     }
-
-
 }

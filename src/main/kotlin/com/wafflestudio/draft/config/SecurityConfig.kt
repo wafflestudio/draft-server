@@ -48,10 +48,10 @@ class SecurityConfig(private val jwtAuthenticationEntryPoint: JwtAuthenticationE
     @Bean
     fun oAuth2AuthenticationProvider(): OAuth2Provider {
         val provider = OAuth2Provider()
-        provider.addOAuth2Client(KakaoOAuth2Client.Companion.OAUTH_TOKEN_PREFIX, kakaoOAuth2Client)
-        provider.addOAuth2Client(FacebookOAuth2Client.Companion.OAUTH_TOKEN_PREFIX, facebookOAuth2Client)
-        provider.addOAuth2Client(TestOAuth2Client.Companion.OAUTH_TOKEN_PREFIX, testOAuth2Client)
-        provider.addOAuth2Client(GoogleOAuth2Client.OAUTH_TOKEN_PREFIX, googleOAuth2Client);
+        provider.addOAuth2Client(KakaoOAuth2Client.OAUTH_TOKEN_PREFIX, kakaoOAuth2Client)
+        provider.addOAuth2Client(FacebookOAuth2Client.OAUTH_TOKEN_PREFIX, facebookOAuth2Client)
+        provider.addOAuth2Client(TestOAuth2Client.OAUTH_TOKEN_PREFIX, testOAuth2Client)
+        provider.addOAuth2Client(GoogleOAuth2Client.OAUTH_TOKEN_PREFIX, googleOAuth2Client)
         return provider
     }
 
@@ -93,5 +93,4 @@ class SecurityConfig(private val jwtAuthenticationEntryPoint: JwtAuthenticationE
                 "/webjars/**"
         )
     }
-
 }

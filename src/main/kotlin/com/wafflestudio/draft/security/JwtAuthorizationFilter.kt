@@ -21,5 +21,4 @@ class JwtAuthorizationFilter(authenticationManager: AuthenticationManager?, priv
         SecurityContextHolder.getContext().authentication = authentication
         filterChain.doFilter(request, response)
     }
-
 }

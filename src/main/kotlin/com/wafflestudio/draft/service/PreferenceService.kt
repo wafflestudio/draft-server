@@ -20,7 +20,7 @@ class PreferenceService {
     fun setPreferences(user: User, region: Region, preferences: List<Preference>?) {
         preferenceRepository!!.deleteAllByUser(user)
         // TODO: Add unsubscribing logic
-        val registrationTokens:List<String> = user.devices!!.map { obj: Device? -> obj!!.deviceToken }
+        val registrationTokens: List<String> = user.devices!!.map { obj: Device? -> obj!!.deviceToken }
         FirebaseMessaging.getInstance().subscribeToTopicAsync(registrationTokens, region.name)
         for (preference in preferences!!) {
             preference.region = region

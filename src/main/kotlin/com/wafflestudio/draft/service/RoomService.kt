@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 
 @Service
 @Transactional(readOnly = true)
-class RoomService(private val roomRepository: RoomRepository,private val participantService: ParticipantService) {
+class RoomService(private val roomRepository: RoomRepository, private val participantService: ParticipantService) {
     @Transactional
     fun save(room: Room): Long? {
         roomRepository.save(room)

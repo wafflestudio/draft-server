@@ -31,11 +31,12 @@ class DataLoader(val userRepository: UserRepository, val regionRepository: Regio
         testCourt.name = "TEST_COURT"
         testCourt.capacity = 10
         testCourt.region = testRegion
+        testCourt.location = point
         // FIXME: how to set location with Point?
         // testCourt.setLocation(point);
         courtRepository.save(testCourt)
 
-        val oauth2User = User(username="OAUTH2_TESTUSER", email="authuser@test.com")
+        val oauth2User = User(username = "OAUTH2_TESTUSER", email = "authuser@test.com")
         oauth2User.addRole("TEST_API")
         oauth2User.addRole("ROLE_USER")
         oauth2User.addRole("USER")
@@ -62,8 +63,7 @@ class DataLoader(val userRepository: UserRepository, val regionRepository: Regio
             room.startTime = LocalDateTime.now()
             room.endTime = LocalDateTime.now().plusHours(1)
             roomService.save(room)
-            participantService.addParticipants(room, oauth2User);
+            participantService.addParticipants(room, oauth2User)
         }
     }
-
 }

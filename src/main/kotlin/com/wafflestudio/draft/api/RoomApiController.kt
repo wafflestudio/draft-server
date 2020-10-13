@@ -38,7 +38,7 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         }
         room.court = court.get()
         roomService.save(room)
-        participantService.addParticipants(room, currentUser);
+        participantService.addParticipants(room, currentUser)
         return roomService.makeRoomResponse(room)
     }
 
@@ -131,5 +131,4 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         roomService.save(room)
         return roomService.makeRoomResponse(room)
     }
-
 }

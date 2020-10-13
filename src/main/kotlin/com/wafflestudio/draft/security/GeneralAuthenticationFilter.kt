@@ -55,8 +55,7 @@ class GeneralAuthenticationFilter(authenticationManager: AuthenticationManager?,
 
     @Throws(IOException::class)
     private fun parseRequest(request: HttpServletRequest): AuthenticationRequest {
-        val reader: BufferedReader
-        reader = request.reader
+        val reader: BufferedReader = request.reader
         val mapper = ObjectMapper()
         return mapper.readValue(reader, AuthenticationRequest::class.java)
     }

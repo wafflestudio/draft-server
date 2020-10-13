@@ -42,17 +42,18 @@ class JwtTokenProvider(private val authUserService: AuthUserService) {
     }
 
     fun getOAuth2TokenFromJwt(token: String): Authentication {
-        var token = token
-        token = removePrefix(token)
+        var tokenWithoutPrefix = token
+        tokenWithoutPrefix = removePrefix(tokenWithoutPrefix)
         val claims = Jwts.parser()
                 .setSigningKey(jwtSecretKey)
-                .parseClaimsJws(token)
+                .parseClaimsJws(tokenWithoutPrefix)
                 .body
 
 
         // Recover User class from JWT
         val email = claims.get("email", String::class.java)
-        val currentUser = authUserService.loadUserByEmail(email) ?: throw UsernameNotFoundException("$email is not valid email, check token is expired")
+        val currentUser = authUserService.loadUserByEmail(email)
+                ?: throw UsernameNotFoundException("$email is not valid email, check token is expired")
         val userPrincipal = UserPrincipal(currentUser)
         val authorises = userPrincipal.authorities
         println(authorises)
@@ -61,14 +62,14 @@ class JwtTokenProvider(private val authUserService: AuthUserService) {
     }
 
     fun validateToken(authToken: String?): Boolean {
-        var authToken = authToken ?: return false
-        if (!authToken.startsWith(tokenPrefix)) {
+        var authTokenWithoutPrefix = authToken ?: return false
+        if (!authTokenWithoutPrefix.startsWith(tokenPrefix)) {
             logger.error("Token not match type Bearer")
             return false
         }
-        authToken = removePrefix(authToken)
+        authTokenWithoutPrefix = removePrefix(authTokenWithoutPrefix)
         try {
-            Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(authToken)
+            Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(authTokenWithoutPrefix)
             return true
         } catch (ex: SignatureException) {
             logger.error("Invalid JWT signature")
@@ -91,5 +92,4 @@ class JwtTokenProvider(private val authUserService: AuthUserService) {
     companion object {
         private val logger = LoggerFactory.getLogger(JwtTokenProvider::class.java)
     }
-
 }

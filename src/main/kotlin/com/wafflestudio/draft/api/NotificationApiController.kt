@@ -14,5 +14,4 @@ class NotificationApiController(private val fcmService: FCMService) {
     fun testNotification() {
         fcmService.send("TEST_REGION", "title_test", "body_test")
     } // FIXME: Remove this temporary endpoint and make others
-
 }
