@@ -14,7 +14,7 @@ class Room(
     @Enumerated(EnumType.STRING)
     var status:RoomStatus = RoomStatus.WAITING,
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     var owner: User? = null,
     var startTime: LocalDateTime? = null,
@@ -23,5 +23,8 @@ class Room(
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "court_id", referencedColumnName = "id")
-    var court: Court? = null
+    var court: Court? = null,
+
+    @OneToMany(mappedBy = "room")
+    var participants: List<Participant>? = null
 ) : BaseTimeEntity()

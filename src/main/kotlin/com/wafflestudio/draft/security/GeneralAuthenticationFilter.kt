@@ -35,11 +35,10 @@ class GeneralAuthenticationFilter(authenticationManager: AuthenticationManager?,
         }
     }
 
-        @Throws(AuthenticationException::class)
+    @Throws(AuthenticationException::class)
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
         // Parse auth request
-        val parsedRequest: AuthenticationRequest
-        parsedRequest = try {
+        val parsedRequest: AuthenticationRequest = try {
             parseRequest(request)
         } catch (e: IOException) {
             throw RuntimeException("Bad request")

@@ -1,6 +1,7 @@
 package com.wafflestudio.draft.repository
 
 import com.wafflestudio.draft.model.Room
+import com.wafflestudio.draft.model.User
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import javax.persistence.EntityManager
@@ -36,4 +37,12 @@ class RoomRepository(private val em: EntityManager) {
         }
     }
 
+    fun findRoomsByUser(user: User?): MutableList<Room>? {
+        return em.createQuery("SELECT r FROM Participant p " +
+                "INNER JOIN p.room r " +
+                "WHERE p.user = :user"
+                , Room::class.java)
+                .setParameter("user", user)
+                .resultList
+    }
 }

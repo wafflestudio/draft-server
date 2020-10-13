@@ -7,15 +7,18 @@ import com.wafflestudio.draft.repository.CourtRepository
 import com.wafflestudio.draft.repository.DeviceRepository
 import com.wafflestudio.draft.repository.RegionRepository
 import com.wafflestudio.draft.repository.UserRepository
+import com.wafflestudio.draft.service.ParticipantService
 import com.wafflestudio.draft.service.RoomService
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
+import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
+@Profile("!test")
 @Component
-class DataLoader(val userRepository: UserRepository, val regionRepository: RegionRepository, val courtRepository: CourtRepository, val deviceRepository: DeviceRepository, val roomService: RoomService) : ApplicationRunner {
+class DataLoader(val userRepository: UserRepository, val regionRepository: RegionRepository, val courtRepository: CourtRepository, val deviceRepository: DeviceRepository, val roomService: RoomService, val participantService: ParticipantService) : ApplicationRunner {
     val gf = GeometryFactory()
     override fun run(args: ApplicationArguments) {
         val point = gf.createPoint(Coordinate(2.0, 5.0))
@@ -59,6 +62,7 @@ class DataLoader(val userRepository: UserRepository, val regionRepository: Regio
             room.startTime = LocalDateTime.now()
             room.endTime = LocalDateTime.now().plusHours(1)
             roomService.save(room)
+            participantService.addParticipants(room, oauth2User);
         }
     }
 

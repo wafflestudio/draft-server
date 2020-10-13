@@ -6,6 +6,7 @@ import com.wafflestudio.draft.security.JwtAuthorizationFilter
 import com.wafflestudio.draft.security.JwtTokenProvider
 import com.wafflestudio.draft.security.oauth2.OAuth2Provider
 import com.wafflestudio.draft.security.oauth2.client.FacebookOAuth2Client
+import com.wafflestudio.draft.security.oauth2.client.GoogleOAuth2Client
 import com.wafflestudio.draft.security.oauth2.client.KakaoOAuth2Client
 import com.wafflestudio.draft.security.oauth2.client.TestOAuth2Client
 import com.wafflestudio.draft.security.password.UserPrincipalDetailService

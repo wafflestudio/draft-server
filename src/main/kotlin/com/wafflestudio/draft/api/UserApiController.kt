@@ -1,10 +1,9 @@
 package com.wafflestudio.draft.api
 
 import com.wafflestudio.draft.dto.request.*
-import com.wafflestudio.draft.dto.response.DeviceResponse
-import com.wafflestudio.draft.dto.response.PreferenceInRegionResponse
-import com.wafflestudio.draft.dto.response.UserInformationResponse
+import com.wafflestudio.draft.dto.response.*
 import com.wafflestudio.draft.model.Device
+import com.wafflestudio.draft.model.Room
 import com.wafflestudio.draft.model.User
 import com.wafflestudio.draft.security.CurrentUser
 import com.wafflestudio.draft.security.JwtTokenProvider
@@ -32,6 +31,7 @@ class UserApiController(private val oAuth2Provider: OAuth2Provider,
                         private val regionService: RegionService,
                         private val preferenceService: PreferenceService,
                         private val deviceService: DeviceService,
+                        private val roomService: RoomService,
                         private val jwtTokenProvider: JwtTokenProvider) {
     @PostMapping("/signup/")
     @Throws(IOException::class)
@@ -116,4 +116,11 @@ class UserApiController(private val oAuth2Provider: OAuth2Provider,
         return DeviceResponse(device)
     }
 
+    @GetMapping("/room/")
+    fun getBelongingRooms(@CurrentUser currentUser: User): RoomsOfUserResponse? {
+        val rooms: List<Room>? = roomService.findRoomsByUser(currentUser)
+        val roomsOfUserResponse = RoomsOfUserResponse(currentUser, rooms)
+        roomsOfUserResponse.rooms = rooms?.map { roomService.makeRoomResponse(it) }
+        return roomsOfUserResponse
+    }
 }

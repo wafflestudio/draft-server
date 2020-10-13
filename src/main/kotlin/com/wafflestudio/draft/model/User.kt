@@ -3,7 +3,7 @@ package com.wafflestudio.draft.model
 import javax.persistence.*
 
 @Entity
-open class User(
+data class User(
         @Column(unique = true)
         var username: String,
 

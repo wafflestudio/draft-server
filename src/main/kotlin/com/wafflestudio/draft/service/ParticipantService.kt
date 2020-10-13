@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class ParticipantService(private val participantRepository: ParticipantRepository) {
     fun getParticipants(room: Room?): ParticipantsResponse {
-        val participantsOfTeam1 = participantRepository.getUsersInTeam(room, Team.A)
-        val participantsOfTeam2 = participantRepository.getUsersInTeam(room, Team.B)
+        val participantsOfTeam1:List<UserInformationResponse> = participantRepository.getUsersInTeam(room, Team.A)
+        val participantsOfTeam2:List<UserInformationResponse> = participantRepository.getUsersInTeam(room, Team.B)
         return ParticipantsResponse(participantsOfTeam1!!, participantsOfTeam2!!)
     }
 
@@ -34,4 +34,7 @@ class ParticipantService(private val participantRepository: ParticipantRepositor
         return ParticipantsResponse(participantsOfTeam1, participantsOfTeam2)
     }
 
+    fun deleteParticipants(room: Room, user: User) {
+        participantRepository.deleteParticipantByRoomAndUser(room, user)
+    }
 }

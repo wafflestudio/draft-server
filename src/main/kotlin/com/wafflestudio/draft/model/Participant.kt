@@ -4,6 +4,7 @@ import com.wafflestudio.draft.model.enums.Team
 import javax.persistence.*
 
 @Entity
+@Table(uniqueConstraints = [UniqueConstraint(columnNames = ["user_id", "room_id"])])
 data class Participant(
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id", referencedColumnName = "id")
