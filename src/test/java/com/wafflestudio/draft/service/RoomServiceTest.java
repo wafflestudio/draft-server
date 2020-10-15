@@ -22,16 +22,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Transactional
 class RoomServiceTest {
 
-    @Autowired RoomService roomService;
-    @Autowired RoomRepository roomRepository;
-    @Autowired UserRepository userRepository;
-    @Autowired CourtRepository courtRepository;
+    @Autowired
+    RoomService roomService;
+    @Autowired
+    RoomRepository roomRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    CourtRepository courtRepository;
 
     @Test
     void create() throws Exception {
         // given
         Room room = new Room();
-        User user = new User("TEST_USER", "user@test.com");
+        User user = new User("TEST_USER", "user@test.com", null, null, null, null, null, null, null);
         userRepository.save(user);
         room.setOwner(user);
 
