@@ -176,3 +176,9 @@ gradle-app.setting
 **/build/
 
 # End of https://www.toptal.com/developers/gitignore/api/kotlin,intellij+all,gradle,macos,java
+
+### Additional files ###
+
+# firebase account key
+draftServiceAccountKey.json
+*/draftServiceAccountKey.json
