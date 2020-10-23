@@ -12,6 +12,7 @@ import java.util.*
 class CourtService {
     @Autowired
     private val courtRepository: CourtRepository? = null
+
     fun getCourtById(id: Long?): Optional<Court?> {
         return courtRepository!!.findById(id!!)
     }

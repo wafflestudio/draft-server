@@ -29,10 +29,4 @@ class RoomService(private val roomRepository: RoomRepository, private val partic
     fun findRoomsByUser(user: User): List<Room>? {
         return roomRepository.findRoomsByUser(user)
     }
-
-    fun makeRoomResponse(room: Room): RoomResponse {
-        val roomResponse = RoomResponse(room)
-        roomResponse.participants = (participantService.getParticipants(room))
-        return roomResponse
-    }
 }

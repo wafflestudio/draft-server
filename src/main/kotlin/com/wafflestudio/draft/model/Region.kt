@@ -17,5 +17,8 @@ data class Region(
         var name: String? = null,
 
         @OneToMany(mappedBy = "region", cascade = [CascadeType.ALL])
-        var users: MutableList<User> = mutableListOf()
+        var users: MutableList<User> = mutableListOf(),
+
+        @OneToMany(mappedBy = "region", cascade = [CascadeType.ALL])
+        var courts: MutableList<Court> = mutableListOf()
 ) : BaseTimeEntity()
