@@ -50,12 +50,12 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
 
     @GetMapping("/")
     fun getRoomsV1(@ModelAttribute request: GetRoomsRequest): List<RoomInRegionResponse> {
+        // FIXME: query param for searching rooms will be used later
         var name = request.name
         if (name == null) {
             name = ""
         }
         val courtId = request.courtId
-        // FIXME: startTime and endTime for getting rooms will be used later
         val startTime = request.startTime
         val endTime = request.endTime
 
