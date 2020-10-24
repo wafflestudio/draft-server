@@ -1,10 +1,7 @@
 package com.wafflestudio.draft.api
 
 import com.wafflestudio.draft.dto.request.*
-import com.wafflestudio.draft.dto.response.DeviceResponse
-import com.wafflestudio.draft.dto.response.PreferenceInRegionResponse
-import com.wafflestudio.draft.dto.response.RoomsOfUserResponse
-import com.wafflestudio.draft.dto.response.UserInformationResponse
+import com.wafflestudio.draft.dto.response.*
 import com.wafflestudio.draft.model.Device
 import com.wafflestudio.draft.model.Room
 import com.wafflestudio.draft.model.User
@@ -120,7 +117,7 @@ class UserApiController(private val oAuth2Provider: OAuth2Provider,
     fun getBelongingRooms(@CurrentUser currentUser: UserPrincipal): RoomsOfUserResponse? {
         val rooms: List<Room>? = roomService.findRoomsByUser(currentUser.user)
         val roomsOfUserResponse = RoomsOfUserResponse(currentUser.user)
-        roomsOfUserResponse.rooms = rooms?.map { roomService.makeRoomResponse(it) } ?: emptyList()
+        roomsOfUserResponse.rooms = rooms?.map { RoomResponse(it) } ?: emptyList()
         return roomsOfUserResponse
     }
 }

@@ -4,16 +4,15 @@ import com.wafflestudio.draft.dto.request.CreateRoomRequest
 import com.wafflestudio.draft.dto.request.GetRoomsRequest
 import com.wafflestudio.draft.dto.request.PutRoomRequest
 import com.wafflestudio.draft.dto.response.ParticipantsResponse
+import com.wafflestudio.draft.dto.response.PreferenceInRegionResponse
+import com.wafflestudio.draft.dto.response.RoomInRegionResponse
 import com.wafflestudio.draft.dto.response.RoomResponse
 import com.wafflestudio.draft.model.Participant
 import com.wafflestudio.draft.model.Room
 import com.wafflestudio.draft.model.enums.RoomStatus
 import com.wafflestudio.draft.security.CurrentUser
 import com.wafflestudio.draft.security.password.UserPrincipal
-import com.wafflestudio.draft.service.CourtService
-import com.wafflestudio.draft.service.FCMService
-import com.wafflestudio.draft.service.ParticipantService
-import com.wafflestudio.draft.service.RoomService
+import com.wafflestudio.draft.service.*
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
@@ -22,7 +21,8 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/api/v1/room")
 class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmService.send(message) when room create
-                        private val participantService: ParticipantService, private val roomService: RoomService, private val courtService: CourtService) {
+                        private val courtService: CourtService, private val participantService: ParticipantService,
+                        private val regionService: RegionService, private val roomService: RoomService) {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,27 +39,28 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         room.court = court.get()
         roomService.save(room)
         participantService.addParticipants(room, currentUser.user)
-        return roomService.makeRoomResponse(room)
+        return RoomResponse(room)
     }
 
     @GetMapping(path = ["{id}"])
     fun getRoomV1(@PathVariable("id") id: Long): RoomResponse {
         val room = roomService.findOne(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        return roomService.makeRoomResponse(room)
+        return RoomResponse(room)
     }
 
     @GetMapping("/")
-    fun getRoomsV1(@ModelAttribute request: GetRoomsRequest): List<RoomResponse> {
+    fun getRoomsV1(@ModelAttribute request: GetRoomsRequest): List<RoomInRegionResponse> {
+        // FIXME: query param for searching rooms will be used later
         var name = request.name
         if (name == null) {
             name = ""
         }
         val courtId = request.courtId
-        // FIXME: startTime and endTime for getting rooms will be used later
         val startTime = request.startTime
         val endTime = request.endTime
-        val rooms = roomService.findRooms(name, courtId, startTime, endTime)
-        return rooms?.map { roomService.makeRoomResponse(it) } ?: emptyList()
+
+        val regions = regionService.getRegions()
+        return regions.map { RoomInRegionResponse(it!!) }
     }
 
     @PostMapping(path = ["{id}/participant"])
@@ -129,6 +130,6 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
             room.status = status
         }
         roomService.save(room)
-        return roomService.makeRoomResponse(room)
+        return RoomResponse(room)
     }
 }
