@@ -48,21 +48,6 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         return RoomResponse(room)
     }
 
-    @GetMapping("/")
-    fun getRoomsV1(@ModelAttribute request: GetRoomsRequest): List<RoomInRegionResponse> {
-        // FIXME: query param for searching rooms will be used later
-        var name = request.name
-        if (name == null) {
-            name = ""
-        }
-        val courtId = request.courtId
-        val startTime = request.startTime
-        val endTime = request.endTime
-
-        val regions = regionService.getRegions()
-        return regions.map { RoomInRegionResponse(it!!) }
-    }
-
     @PostMapping(path = ["{id}/participant"])
     fun participate(@PathVariable("id") id: Long, @CurrentUser currentUser: UserPrincipal): ParticipantsResponse? {
         val room: Room = roomService.findOne(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)

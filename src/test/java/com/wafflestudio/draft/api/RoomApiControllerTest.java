@@ -45,15 +45,6 @@ public class RoomApiControllerTest {
     @Test
     @WithMockUser
     public void getRoomsTest() throws Exception {
-        this.mockMvc.perform(get("/api/v1/room/").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].name", is("TEST_REGION")))
-                .andExpect(jsonPath("$[0]['rooms']", hasSize(5)))
-                .andExpect(jsonPath("$[0]['rooms'][4].name", is("TEST_ROOM_5")))
-                .andExpect(jsonPath("$[0]['rooms'][4]['participants']", hasSize(1)));
-
         // FIXME: query param for searching rooms will be used later
 //        this.mockMvc.perform(get("/api/v1/room/")
 //                .param("name", "TEST_ROOM_3").contentType(MediaType.APPLICATION_JSON))
