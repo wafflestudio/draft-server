@@ -1,7 +1,9 @@
 package com.wafflestudio.draft.api
 
 import com.wafflestudio.draft.dto.request.GetRegionsRequest
+import com.wafflestudio.draft.dto.request.GetRoomsRequest
 import com.wafflestudio.draft.dto.response.RegionResponse
+import com.wafflestudio.draft.dto.response.RoomInRegionResponse
 import com.wafflestudio.draft.service.RegionService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -22,5 +24,11 @@ class RegionApiController(private val regionService: RegionService) {
         return regions?.map {
             RegionResponse(it)
         } ?: emptyList()
+    }
+
+    @GetMapping("/room/")
+    fun getRoomsV1(@ModelAttribute request: GetRoomsRequest): List<RoomInRegionResponse> {
+        val regions = regionService.getRegions()
+        return regions.map { RoomInRegionResponse(it!!) }
     }
 }
