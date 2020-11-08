@@ -18,7 +18,7 @@ services:
 
 before-install:
   - psql -c 'CREATE DATABASE draft;' -U postgres
-  - psql -e "CREATE USER draft PASSWORD 'draft-pw';"
+  - psql -c "CREATE USER draft PASSWORD 'draft-pw';"
 
 install:
   - ./gradlew assemble
