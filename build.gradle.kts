@@ -32,7 +32,7 @@ dependencies {
 
     implementation ("org.springframework.boot:spring-boot-starter-jdbc")
     implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
-    runtimeOnly ("mysql:mysql-connector-java")
+    runtimeOnly("org.postgresql:postgresql")
 
     // Geomety
     implementation ("com.vividsolutions:jts:1.13")

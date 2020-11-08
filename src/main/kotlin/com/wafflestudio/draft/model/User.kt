@@ -3,6 +3,7 @@ package com.wafflestudio.draft.model
 import javax.persistence.*
 
 @Entity
+@Table(name = "draft_user")
 data class User(
         @Column(unique = true)
         var username: String,

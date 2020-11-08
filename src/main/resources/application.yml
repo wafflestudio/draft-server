@@ -1,9 +1,8 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    jdbc-url: jdbc:mysql://localhost:3306/draft?serverTimezone=UTC
-    username: draft-admin
-    password: draft-pw
+    jdbc-url: jdbc:postgresql://localhost:5432/draft?serverTimezone=UTC
+    username: draft
+    password: coffee-urban
   jpa:
     hibernate:
       ddl-auto: create
