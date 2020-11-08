@@ -13,13 +13,12 @@ os: linux
 dist: xenial
 jdk: openjdk11
 services:
-  - mysql
+  - postgresql
   - redis
 
 before-install:
-  - mysql -e "CREATE DATABASE draft;"
-  - mysql -e "CREATE USER 'draft-admin'@'localhost' IDENTIFIED BY 'draft-pw';"
-  - mysql -e "GRANT ALL PRIVILEGES ON *.* to 'draft-admin'@'localhost';"
+  - psql -c 'CREATE DATABASE draft;' -U postgres
+  - psql -e "CREATE USER draft PASSWORD 'draft-pw';"
 
 install:
   - ./gradlew assemble

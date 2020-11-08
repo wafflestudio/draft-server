@@ -2,7 +2,7 @@ spring:
   datasource:
     jdbc-url: jdbc:postgresql://localhost:5432/draft?serverTimezone=UTC
     username: draft
-    password: coffee-urban
+    password: draft-pw
   jpa:
     hibernate:
       ddl-auto: create
