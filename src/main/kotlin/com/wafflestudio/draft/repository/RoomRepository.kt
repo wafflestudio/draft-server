@@ -16,11 +16,10 @@ class RoomRepository(private val em: EntityManager) {
         return em.find(Room::class.java, id)
     }
 
-    fun findRooms(name: String?, courtId: Long?, startTime: LocalDateTime?, endTime: LocalDateTime?): List<Room>? {
+    fun findRooms(name: String?, regionId: Long?, startTime: LocalDateTime?, endTime: LocalDateTime?): List<Room>? {
         // FIXME: we should find a smarter way...
-        return if (courtId == null) {
+        return if (regionId == null) {
             em.createQuery("SELECT r FROM Room r " +
-                    "INNER JOIN r.court c " +
                     "WHERE r.name LIKE '%'||:name||'%' "
                     , Room::class.java)
                     .setParameter("name", name)
@@ -28,11 +27,12 @@ class RoomRepository(private val em: EntityManager) {
         } else {
             em.createQuery("SELECT r FROM Room r " +
                     "INNER JOIN r.court c " +
+                    "INNER JOIN c.region reg " +
                     "WHERE r.name LIKE '%'||:name||'%' " +
-                    "AND c.id = :court_id"
+                    "AND reg.id = :region_id"
                     , Room::class.java)
                     .setParameter("name", name)
-                    .setParameter("court_id", courtId)
+                    .setParameter("region_id", regionId)
                     .resultList
         }
     }

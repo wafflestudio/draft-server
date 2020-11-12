@@ -1,9 +1,6 @@
 package com.wafflestudio.draft.service
 
-import com.wafflestudio.draft.dto.response.RoomResponse
-import com.wafflestudio.draft.model.Court
 import com.wafflestudio.draft.model.Region
-import com.wafflestudio.draft.model.Room
 import com.wafflestudio.draft.repository.RegionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

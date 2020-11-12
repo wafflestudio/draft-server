@@ -10,5 +10,5 @@ data class GetRoomsRequest(
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         var endTime: LocalDateTime? = null,
         var name: String? = null,
-        var courtId: Long? = null
+        var regionId: Long? = null
 )
