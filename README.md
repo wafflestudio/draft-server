@@ -2,10 +2,8 @@
 
 - How to set up?
 ```
-mysql.server start
-mysql -u root -e "CREATE DATABASE draft;"
-mysql -u root -e "CREATE USER 'draft-admin'@'localhost' IDENTIFIED BY 'draft-pw';"
-mysql -u root -e "GRANT ALL PRIVILEGES ON *.* to 'draft-admin'@'localhost';"
+psql -c 'CREATE DATABASE draft;' -U postgres
+psql -c "CREATE USER draft PASSWORD 'draft-pw';"
 ./gradlew assemble
 ```
 
