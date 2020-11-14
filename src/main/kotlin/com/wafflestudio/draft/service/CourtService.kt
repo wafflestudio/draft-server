@@ -16,4 +16,8 @@ class CourtService {
     fun getCourtById(id: Long?): Optional<Court?> {
         return courtRepository!!.findById(id!!)
     }
+
+    fun findCourtsByName(name: String?): List<Court>? {
+        return courtRepository!!.findByNameContaining(name)
+    }
 }
