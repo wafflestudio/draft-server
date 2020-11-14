@@ -42,6 +42,20 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         return RoomResponse(room)
     }
 
+    @GetMapping("/")
+    fun getRoomsV1(@ModelAttribute request: GetRoomsRequest): List<RoomResponse> {
+        var name = request.name
+        if (name == null) {
+            name = ""
+        }
+        val regionId = request.regionId
+        val startTime = request.startTime
+        val endTime = request.endTime
+
+        val rooms = roomService.findRooms(name, regionId, startTime, endTime)
+        return rooms!!.map { RoomResponse(it) }
+    }
+
     @GetMapping(path = ["{id}"])
     fun getRoomV1(@PathVariable("id") id: Long): RoomResponse {
         val room = roomService.findOne(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
