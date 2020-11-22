@@ -23,14 +23,14 @@ class DataLoader(val userRepository: UserRepository, val regionRepository: Regio
     override fun run(args: ApplicationArguments) {
         val point = gf.createPoint(Coordinate(2.0, 5.0))
 
-        val testRegion = Region()
-        testRegion.name = "TEST_REGION"
-        regionRepository.save(testRegion)
+//        val testRegion = Region()
+//        testRegion.name = "TEST_REGION"
+//        regionRepository.save(testRegion)
 
         val testCourt = Court()
         testCourt.name = "TEST_COURT"
         testCourt.capacity = 10
-        testCourt.region = testRegion
+//        testCourt.region = testRegion
         // FIXME: how to set location with Point?
         // testCourt.setLocation(point);
         courtRepository.save(testCourt)
@@ -39,14 +39,14 @@ class DataLoader(val userRepository: UserRepository, val regionRepository: Regio
         oauth2User.addRole("TEST_API")
         oauth2User.addRole("ROLE_USER")
         oauth2User.addRole("USER")
-        oauth2User.region = testRegion
+//        oauth2User.region = testRegion
         userRepository.save(oauth2User)
 
         val passwordUser = User("PASSWORD_TESTUSER", "passworduser@test.com")
         passwordUser.addRole("TEST_API")
         passwordUser.addRole("ROLE_USER")
         passwordUser.addRole("USER")
-        passwordUser.region = testRegion
+//        passwordUser.region = testRegion
         passwordUser.password = BCryptPasswordEncoder().encode("testpassword")
         userRepository.save(passwordUser)
 
