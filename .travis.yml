@@ -30,7 +30,7 @@ install:
 
 before_script:
   - psql -d draft -c 'CREATE EXTENSION postgis;' -U postgres
-  - psql -d draft -c 'CREATE EXTENSION postgis_raster;' -U postgres
+#  - psql -d draft -c 'CREATE EXTENSION postgis_raster;' -U postgres
   - psql -d draft -c 'CREATE EXTENSION postgis_topology;' -U postgres
   - psql -d draft -c 'CREATE EXTENSION postgis_sfcgal;' -U postgres
   - psql -d draft -c 'CREATE EXTENSION fuzzystrmatch;' -U postgres
