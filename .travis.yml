@@ -15,6 +15,10 @@ jdk: openjdk11
 services:
   - postgresql
   - redis
+addons:
+  apt:
+    packages:
+      - postgresql-13-postgis-3
 
 before-install:
   - psql -c 'CREATE DATABASE draft;' -U postgres
