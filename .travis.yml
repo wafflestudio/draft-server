@@ -16,9 +16,10 @@ services:
   - postgresql
   - redis
 addons:
+  postgresql: "9.6"
   apt:
     packages:
-      - postgresql-13-postgis-3
+      - postgresql-9.6-postgis-2.3
 
 before-install:
   - psql -c 'CREATE DATABASE draft;' -U postgres
