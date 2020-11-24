@@ -3,12 +3,17 @@ spring:
     jdbc-url: jdbc:postgresql://localhost:5432/draft?serverTimezone=UTC
     username: draft
     password: draft-pw
+    initialization-mode: always
+    data:
+      - classpath:emd1.sql
+      - classpath:emd2.sql
   jpa:
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
-        # show_sql: true
+        show_sql: true
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisPG95Dialect
         format_sql: true
   security:
     oauth2:
