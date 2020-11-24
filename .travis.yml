@@ -19,14 +19,14 @@ services:
 before-install:
   - psql -c 'CREATE DATABASE draft;' -U postgres
   - psql -c "CREATE USER draft PASSWORD 'draft-pw';"
-  - psql -d draft -c "CREATE EXTENSION postgis;"
-  - psql -d draft -c "CREATE EXTENSION postgis_raster;"
-  - psql -d draft -c "CREATE EXTENSION postgis_topology;"
-  - psql -d draft -c "CREATE EXTENSION postgis_sfcgal;"
-  - psql -d draft -c "CREATE EXTENSION fuzzystrmatch;"
-  - psql -d draft -c "CREATE EXTENSION address_standardizer;"
-  - psql -d draft -c "CREATE EXTENSION address_standardizer_data_us;"
-  - psql -d draft -c "CREATE EXTENSION postgis_tiger_geocoder;"
+  - psql -d draft -U draft -p 'draft-pw' -c "CREATE EXTENSION postgis;"
+  - psql -d draft -U draft -p 'draft-pw' -c "CREATE EXTENSION postgis_raster;"
+  - psql -d draft -U draft -p 'draft-pw' -c "CREATE EXTENSION postgis_topology;"
+  - psql -d draft -U draft -p 'draft-pw' -c "CREATE EXTENSION postgis_sfcgal;"
+  - psql -d draft -U draft -p 'draft-pw' -c "CREATE EXTENSION fuzzystrmatch;"
+  - psql -d draft -U draft -p 'draft-pw' -c "CREATE EXTENSION address_standardizer;"
+  - psql -d draft -U draft -p 'draft-pw' -c "CREATE EXTENSION address_standardizer_data_us;"
+  - psql -d draft -U draft -p 'draft-pw' -c "CREATE EXTENSION postgis_tiger_geocoder;"
 
 install:
   - ./gradlew assemble
