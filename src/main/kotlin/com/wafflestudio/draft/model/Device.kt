@@ -4,7 +4,7 @@ import javax.persistence.*
 import javax.validation.constraints.NotBlank
 
 @Entity
-data class Device(
+class Device(
         @field:NotBlank
         @Column(unique = true)
         var deviceToken: String,

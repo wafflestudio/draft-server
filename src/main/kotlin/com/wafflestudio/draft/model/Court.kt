@@ -1,12 +1,12 @@
 package com.wafflestudio.draft.model
 
-import com.vividsolutions.jts.geom.Point
+import org.locationtech.jts.geom.Point
 import javax.persistence.*
 import javax.validation.constraints.Min
 
 @Entity
 @Table(uniqueConstraints = [UniqueConstraint(columnNames = ["name", "region_id"])])
-data class Court(
+class Court(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long? = null,
@@ -18,8 +18,10 @@ data class Court(
 
         @field:Min(value = 0, message = "The value must be positive.")
         var capacity: Int? = null,
-        var location: Point? = null,
+
+        @Column(nullable = false, columnDefinition = "Geometry(Point,4326)")
+        var location: Point,
 
         @OneToMany(mappedBy = "court")
-        var rooms: List<Room>? = null
+        var rooms: MutableList<Room> = mutableListOf()
 )

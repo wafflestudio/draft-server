@@ -26,5 +26,5 @@ class Room(
         var court: Court? = null,
 
         @OneToMany(mappedBy = "room")
-        var participants: List<Participant>? = null
+        var participants: MutableList<Participant> = mutableListOf()
 ) : BaseTimeEntity()

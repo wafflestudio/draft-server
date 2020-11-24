@@ -7,6 +7,16 @@ plugins {
     kotlin("plugin.spring") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
     kotlin("kapt") version "1.3.72"
+    kotlin("plugin.allopen") version "1.3.71"
+    kotlin("plugin.noarg") version "1.3.71"
+}
+
+allOpen {
+    annotation("javax.persistence.Entity")
+}
+
+noArg {
+    annotation("javax.persistence.Entity")
 }
 
 group = "com.wafflestudio"
@@ -35,24 +45,26 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     // Geomety
-    implementation ("com.vividsolutions:jts:1.13")
+    implementation("org.locationtech.jts:jts-core")
 
     // Logger
-    implementation ("org.slf4j:slf4j-api:1.7.25")
+    implementation("org.slf4j:slf4j-api:1.7.25")
 
     // Lombok
-    runtimeOnly ("com.h2database:h2")
+    runtimeOnly("com.h2database:h2")
 
     //hibernate
     implementation("org.hibernate.validator:hibernate-validator")
+    implementation("org.hibernate:hibernate-core")
+    implementation("org.hibernate:hibernate-spatial:5.4.24.Final")
 
     // JSON parser
-    implementation ("com.googlecode.json-simple:json-simple:1.1.1")
+    implementation("com.googlecode.json-simple:json-simple:1.1.1")
 
     // Spring Security
-    implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
-    implementation ("org.springframework.boot:spring-boot-starter-security")
-    implementation ("io.jsonwebtoken:jjwt:0.9.1")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
 
     // Swagger
     implementation ("io.springfox:springfox-swagger2:2.9.2")
