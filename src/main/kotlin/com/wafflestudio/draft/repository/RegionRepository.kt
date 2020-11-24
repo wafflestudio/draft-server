@@ -13,7 +13,7 @@ interface RegionRepository : JpaRepository<Region?, Long?> {
 
     @Query("SELECT r FROM Region r " +
             "WHERE CONTAINS(r.polygon, ST_SetSRID(ST_MakePoint(:lon,:lat),4326))=true")
-    fun findRegionByPolygonContainsPosition(@Param("lat") lat: Double, @Param("lon") lon: Double): List<Region>?
+    fun findRegionByPolygonContainsCoordinate(@Param("lat") lat: Double, @Param("lon") lon: Double): List<Region>?
 
     @Query("SELECT r FROM Region r " +
             "WHERE CONTAINS(r.polygon, :point)=true")
