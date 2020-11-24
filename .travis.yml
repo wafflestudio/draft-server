@@ -24,6 +24,11 @@ addons:
 before-install:
   - psql -c 'CREATE DATABASE draft;' -U postgres
   - psql -c "CREATE USER draft PASSWORD 'draft-pw';"
+
+install:
+  - ./gradlew assemble
+
+before_script:
   - psql -d draft -c 'CREATE EXTENSION postgis;' -U postgres
   - psql -d draft -c 'CREATE EXTENSION postgis_raster;' -U postgres
   - psql -d draft -c 'CREATE EXTENSION postgis_topology;' -U postgres
@@ -32,9 +37,6 @@ before-install:
   - psql -d draft -c 'CREATE EXTENSION address_standardizer;' -U postgres
   - psql -d draft -c 'CREATE EXTENSION address_standardizer_data_us;' -U postgres
   - psql -d draft -c 'CREATE EXTENSION postgis_tiger_geocoder;' -U postgres
-
-install:
-  - ./gradlew assemble
 
 script:
   - ./gradlew clean build
