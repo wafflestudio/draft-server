@@ -19,14 +19,14 @@ services:
 before-install:
   - psql -c 'CREATE DATABASE draft;' -U postgres
   - psql -c "CREATE USER draft PASSWORD 'draft-pw';"
-  - psql -d draft -U draft -c "CREATE EXTENSION postgis;"
-  - psql -d draft -U draft -c "CREATE EXTENSION postgis_raster;"
-  - psql -d draft -U draft -c "CREATE EXTENSION postgis_topology;"
-  - psql -d draft -U draft -c "CREATE EXTENSION postgis_sfcgal;"
-  - psql -d draft -U draft -c "CREATE EXTENSION fuzzystrmatch;"
-  - psql -d draft -U draft -c "CREATE EXTENSION address_standardizer;"
-  - psql -d draft -U draft -c "CREATE EXTENSION address_standardizer_data_us;"
-  - psql -d draft -U draft -c "CREATE EXTENSION postgis_tiger_geocoder;"
+  - psql -d draft -c 'CREATE EXTENSION postgis;' -U postgres
+  - psql -d draft -c 'CREATE EXTENSION postgis_raster;' -U postgres
+  - psql -d draft -c 'CREATE EXTENSION postgis_topology;' -U postgres
+  - psql -d draft -c 'CREATE EXTENSION postgis_sfcgal;' -U postgres
+  - psql -d draft -c 'CREATE EXTENSION fuzzystrmatch;' -U postgres
+  - psql -d draft -c 'CREATE EXTENSION address_standardizer;' -U postgres
+  - psql -d draft -c 'CREATE EXTENSION address_standardizer_data_us;' -U postgres
+  - psql -d draft -c 'CREATE EXTENSION postgis_tiger_geocoder;' -U postgres
 
 install:
   - ./gradlew assemble
