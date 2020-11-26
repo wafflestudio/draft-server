@@ -26,7 +26,6 @@ class DataLoader(val userRepository: UserRepository, val regionRepository: Regio
         val point = gf.createPoint(Coordinate(37.5186202, 126.904905))
         point.srid = 4326
 
-//        val testRegion = regionRepository.findRegionByPolygonContainsPoint(37.5186202,126.904905)
         val gsf = GeometricShapeFactory()
         val testPolygon = gf.createMultiPolygon(arrayOf<Polygon>(gsf.createCircle(), gsf.createRectangle()))
         testPolygon.srid = 5179
@@ -34,7 +33,6 @@ class DataLoader(val userRepository: UserRepository, val regionRepository: Regio
         regionRepository.save(testRegion)
 
         val testCourt = Court(region = testRegion, name = "TEST_COURT", capacity = 10, location = point)
-        // FIXME: how to set location with Point?
         courtRepository.save(testCourt)
 
         val oauth2User = User(username = "OAUTH2_TESTUSER", email = "authuser@test.com")
@@ -48,7 +46,7 @@ class DataLoader(val userRepository: UserRepository, val regionRepository: Regio
         passwordUser.addRole("TEST_API")
         passwordUser.addRole("ROLE_USER")
         passwordUser.addRole("USER")
-//        passwordUser.region = testRegion
+        passwordUser.region = testRegion
         passwordUser.password = BCryptPasswordEncoder().encode("testpassword")
         userRepository.save(passwordUser)
 
