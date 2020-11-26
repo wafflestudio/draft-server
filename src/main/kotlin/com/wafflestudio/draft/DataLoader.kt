@@ -1,7 +1,5 @@
 package com.wafflestudio.draft
 
-import com.vividsolutions.jts.geom.Coordinate
-import com.vividsolutions.jts.geom.GeometryFactory
 import com.wafflestudio.draft.model.*
 import com.wafflestudio.draft.repository.CourtRepository
 import com.wafflestudio.draft.repository.DeviceRepository
@@ -9,6 +7,10 @@ import com.wafflestudio.draft.repository.RegionRepository
 import com.wafflestudio.draft.repository.UserRepository
 import com.wafflestudio.draft.service.ParticipantService
 import com.wafflestudio.draft.service.RoomService
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.GeometryFactory
+import org.locationtech.jts.geom.Polygon
+import org.locationtech.jts.util.GeometricShapeFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Profile
@@ -21,18 +23,16 @@ import java.time.LocalDateTime
 class DataLoader(val userRepository: UserRepository, val regionRepository: RegionRepository, val courtRepository: CourtRepository, val deviceRepository: DeviceRepository, val roomService: RoomService, val participantService: ParticipantService) : ApplicationRunner {
     val gf = GeometryFactory()
     override fun run(args: ApplicationArguments) {
-        val point = gf.createPoint(Coordinate(2.0, 5.0))
+        val point = gf.createPoint(Coordinate(37.5186202, 126.904905))
+        point.srid = 4326
 
-        val testRegion = Region()
-        testRegion.name = "TEST_REGION"
+        val gsf = GeometricShapeFactory()
+        val testPolygon = gf.createMultiPolygon(arrayOf<Polygon>(gsf.createCircle(), gsf.createRectangle()))
+        testPolygon.srid = 5179
+        val testRegion = Region(null, 99999999, null, null, "테스트", testPolygon, "TEST_REGION")
         regionRepository.save(testRegion)
 
-        val testCourt = Court()
-        testCourt.name = "TEST_COURT"
-        testCourt.capacity = 10
-        testCourt.region = testRegion
-        // FIXME: how to set location with Point?
-        // testCourt.setLocation(point);
+        val testCourt = Court(region = testRegion, name = "TEST_COURT", capacity = 10, location = point)
         courtRepository.save(testCourt)
 
         val oauth2User = User(username = "OAUTH2_TESTUSER", email = "authuser@test.com")

@@ -4,7 +4,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "draft_user")
-data class User(
+class User(
         @Column(unique = true)
         var username: String,
 
@@ -26,10 +26,10 @@ data class User(
         var roles: String? = null,
 
         @OneToMany(mappedBy = "owner")
-        var rooms: List<Room>? = null,
+        var rooms: MutableList<Room> = mutableListOf(),
 
         @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-        var devices: List<Device?>? = null,
+        var devices: MutableList<Device> = mutableListOf(),
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "region_id", referencedColumnName = "id")
