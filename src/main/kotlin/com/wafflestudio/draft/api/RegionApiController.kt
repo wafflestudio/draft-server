@@ -20,10 +20,7 @@ class RegionApiController(private val regionService: RegionService) {
         if (name == null) {
             name = ""
         }
-        val regions = regionService.findRegionsByName(name)
-        return regions?.map {
-            RegionResponse(it)
-        } ?: emptyList()
+        return regionService.findRegionsByName(name).orEmpty()
     }
 
     @GetMapping("/room/")
