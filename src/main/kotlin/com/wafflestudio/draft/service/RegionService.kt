@@ -1,5 +1,6 @@
 package com.wafflestudio.draft.service
 
+import com.wafflestudio.draft.dto.response.RegionResponse
 import com.wafflestudio.draft.model.Region
 import com.wafflestudio.draft.repository.RegionRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +18,7 @@ class RegionService {
         return regionRepository!!.findById(id!!)
     }
 
-    fun findRegionsByName(name: String?): List<Region>? {
+    fun findRegionsByName(name: String?): List<RegionResponse>? {
         return regionRepository!!.findByNameContaining(name)
     }
 

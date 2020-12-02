@@ -14,7 +14,6 @@ class Region(
         var depth3: String? = null,
 
         @Column(nullable = false, columnDefinition = "Geometry(MultiPolygon,5179)")
-        @Basic(fetch = FetchType.LAZY)
         var polygon: MultiPolygon,
 
         @Column(unique = true)
