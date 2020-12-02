@@ -3,10 +3,7 @@ package com.wafflestudio.draft.api
 import com.wafflestudio.draft.dto.request.CreateRoomRequest
 import com.wafflestudio.draft.dto.request.GetRoomsRequest
 import com.wafflestudio.draft.dto.request.PutRoomRequest
-import com.wafflestudio.draft.dto.response.ParticipantsResponse
-import com.wafflestudio.draft.dto.response.PreferenceInRegionResponse
-import com.wafflestudio.draft.dto.response.RoomInRegionResponse
-import com.wafflestudio.draft.dto.response.RoomResponse
+import com.wafflestudio.draft.dto.response.*
 import com.wafflestudio.draft.model.Participant
 import com.wafflestudio.draft.model.Room
 import com.wafflestudio.draft.model.enums.RoomStatus
@@ -43,7 +40,7 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
     }
 
     @GetMapping("/")
-    fun getRoomsV1(@ModelAttribute request: GetRoomsRequest): List<RoomResponse> {
+    fun getRoomsV1(@ModelAttribute request: GetRoomsRequest): ListResponse<RoomResponse> {
         var name = request.name
         if (name == null) {
             name = ""
@@ -53,7 +50,7 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         val endTime = request.endTime
 
         val rooms = roomService.findRooms(name, regionId, startTime, endTime)
-        return rooms!!.map { RoomResponse(it) }
+        return ListResponse(rooms!!.map { RoomResponse(it) })
     }
 
     @GetMapping(path = ["{id}"])
@@ -68,14 +65,14 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         if (room.status !== RoomStatus.WAITING) {
             throw ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY)
         }
-        val participants: List<Participant>? = room.participants
-        participants?.forEach { participant ->
+        val participants: List<Participant> = room.participants
+        participants.forEach { participant ->
             if (currentUser.user.id === participant.user.id) {
                 throw ResponseStatusException(HttpStatus.BAD_REQUEST)
             }
         }
 
-        if (participants!!.size >= room.court!!.capacity!!) {
+        if (participants.size >= room.court!!.capacity!!) {
             throw ResponseStatusException(HttpStatus.CONFLICT)
         }
 
