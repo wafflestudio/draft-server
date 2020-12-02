@@ -46,9 +46,7 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") endTime: LocalDateTime?,
                    @RequestParam name: String?, @RequestParam regionId: Long?
                    ): List<RoomResponse> {
-        val stringName = name.orEmpty()
-
-        val rooms = roomService.findRooms(stringName, regionId, startTime, endTime)
+        val rooms = roomService.findRooms(name.orEmpty(), regionId, startTime, endTime)
         return rooms!!.map { RoomResponse(it) }
     }
 
