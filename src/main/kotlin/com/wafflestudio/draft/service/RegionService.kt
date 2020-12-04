@@ -21,6 +21,10 @@ class RegionService {
         return regionRepository!!.findByNameContaining(name)
     }
 
+    fun findRegionsByDepth3(depth3: String?): List<Region>? {
+        return regionRepository!!.findByDepth3Containing(depth3)
+    }
+
     fun getRegions(): MutableList<Region?> {
         return regionRepository!!.findAll()
     }
