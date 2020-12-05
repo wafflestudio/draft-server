@@ -1,7 +1,6 @@
 package com.wafflestudio.draft.api
 
 import com.wafflestudio.draft.dto.request.GetRegionsRequest
-import com.wafflestudio.draft.dto.request.GetRoomsRequest
 import com.wafflestudio.draft.dto.response.ListResponse
 import com.wafflestudio.draft.dto.response.RegionResponse
 import com.wafflestudio.draft.dto.response.RoomInRegionResponse
