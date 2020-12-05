@@ -1,7 +1,6 @@
 package com.wafflestudio.draft.api
 
 import com.wafflestudio.draft.dto.request.CreateRoomRequest
-import com.wafflestudio.draft.dto.request.GetRoomsRequest
 import com.wafflestudio.draft.dto.request.PutRoomRequest
 import com.wafflestudio.draft.dto.response.*
 import com.wafflestudio.draft.model.Participant
@@ -10,16 +9,18 @@ import com.wafflestudio.draft.model.enums.RoomStatus
 import com.wafflestudio.draft.security.CurrentUser
 import com.wafflestudio.draft.security.password.UserPrincipal
 import com.wafflestudio.draft.service.*
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import java.time.LocalDateTime
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/room")
 class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmService.send(message) when room create
                         private val courtService: CourtService, private val participantService: ParticipantService,
-                        private val regionService: RegionService, private val roomService: RoomService) {
+                        private val roomService: RoomService) {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
@@ -40,17 +41,12 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
     }
 
     @GetMapping("/")
-    fun getRoomsV1(@ModelAttribute request: GetRoomsRequest): ListResponse<RoomResponse> {
-        var name = request.name
-        if (name == null) {
-            name = ""
-        }
-        val regionId = request.regionId
-        val startTime = request.startTime
-        val endTime = request.endTime
-
-        val rooms = roomService.findRooms(name, regionId, startTime, endTime)
-        return ListResponse(rooms!!.map { RoomResponse(it) })
+    fun getRoomsV1(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") startTime: LocalDateTime?,
+                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") endTime: LocalDateTime?,
+                   @RequestParam name: String?, @RequestParam regionId: Long?
+                   ): ListResponse<RoomResponse> {
+        val rooms = roomService.findRooms(name.orEmpty(), regionId, startTime, endTime)
+        return  ListResponse(rooms!!.map { RoomResponse(it) })
     }
 
     @GetMapping(path = ["{id}"])

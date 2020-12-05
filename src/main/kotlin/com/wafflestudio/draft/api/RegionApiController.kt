@@ -17,17 +17,14 @@ import javax.validation.Valid
 @RequestMapping("/api/v1/region")
 class RegionApiController(private val regionService: RegionService) {
     @GetMapping("/")
-    fun getRegionsV1(@Valid @ModelAttribute request: GetRegionsRequest): ListResponse<Region> {
-        var name = request.name
-        if (name == null) {
-            name = ""
-        }
-        val regions = regionService.findRegionsByName(name)
-        return ListResponse(regions.orEmpty())
+    fun getRegionsV1(@Valid @ModelAttribute request: GetRegionsRequest): ListResponse<RegionResponse> {
+        val depth3 = request.depth3.orEmpty()
+        val regions = regionService.findRegionsByDepth3(depth3)
+        return ListResponse( regions?.map { RegionResponse(it) }.orEmpty() )
     }
 
     @GetMapping("/room/")
-    fun getRoomsV1(@ModelAttribute request: GetRoomsRequest): ListResponse<RoomInRegionResponse> {
+    fun getRoomsV1(): ListResponse<RoomInRegionResponse> {
         val regions = regionService.getRegions()
         return ListResponse(regions.map { RoomInRegionResponse(it!!) })
     }
