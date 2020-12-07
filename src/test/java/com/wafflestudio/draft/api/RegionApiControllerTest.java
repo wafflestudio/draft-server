@@ -32,11 +32,11 @@ public class RegionApiControllerTest {
     public void getRegionRoomTest() throws Exception {
         this.mockMvc.perform(get("/api/v1/region/room/").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].name", is("TEST_REGION")))
-                .andExpect(jsonPath("$[0]['rooms']", hasSize(5)))
-                .andExpect(jsonPath("$[0]['rooms'][4].name", is("TEST_ROOM_5")))
-                .andExpect(jsonPath("$[0]['rooms'][4]['participants']", hasSize(1)));
+                .andExpect(jsonPath("$['results']", hasSize(1)))
+                .andExpect(jsonPath("$['results'][0].id", is(1)))
+                .andExpect(jsonPath("$['results'][0].name", is("TEST_REGION")))
+                .andExpect(jsonPath("$['results'][0]['rooms']", hasSize(5)))
+                .andExpect(jsonPath("$['results'][0]['rooms'][4].name", is("TEST_ROOM_5")))
+                .andExpect(jsonPath("$['results'][0]['rooms'][4]['participants']", hasSize(1)));
     }
 }

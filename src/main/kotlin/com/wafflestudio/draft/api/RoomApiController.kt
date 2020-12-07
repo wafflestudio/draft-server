@@ -2,8 +2,7 @@ package com.wafflestudio.draft.api
 
 import com.wafflestudio.draft.dto.request.CreateRoomRequest
 import com.wafflestudio.draft.dto.request.PutRoomRequest
-import com.wafflestudio.draft.dto.response.ParticipantsResponse
-import com.wafflestudio.draft.dto.response.RoomResponse
+import com.wafflestudio.draft.dto.response.*
 import com.wafflestudio.draft.model.Participant
 import com.wafflestudio.draft.model.Room
 import com.wafflestudio.draft.model.enums.RoomStatus
@@ -45,9 +44,9 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
     fun getRoomsV1(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") startTime: LocalDateTime?,
                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") endTime: LocalDateTime?,
                    @RequestParam name: String?, @RequestParam regionId: Long?
-                   ): List<RoomResponse> {
+                   ): ListResponse<RoomResponse> {
         val rooms = roomService.findRooms(name.orEmpty(), regionId, startTime, endTime)
-        return rooms!!.map { RoomResponse(it) }
+        return  ListResponse(rooms!!.map { RoomResponse(it) })
     }
 
     @GetMapping(path = ["{id}"])
@@ -62,14 +61,14 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         if (room.status !== RoomStatus.WAITING) {
             throw ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY)
         }
-        val participants: List<Participant>? = room.participants
-        participants?.forEach { participant ->
+        val participants: List<Participant> = room.participants
+        participants.forEach { participant ->
             if (currentUser.user.id === participant.user.id) {
                 throw ResponseStatusException(HttpStatus.BAD_REQUEST)
             }
         }
 
-        if (participants!!.size >= room.court!!.capacity!!) {
+        if (participants.size >= room.court!!.capacity!!) {
             throw ResponseStatusException(HttpStatus.CONFLICT)
         }
 

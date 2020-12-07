@@ -82,8 +82,8 @@ class UserApiController(private val oAuth2Provider: OAuth2Provider,
 
     //    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/info/")
-    fun setPreferences(@RequestBody @Valid preferenceRequestList: List<SetPreferenceRequest>, @CurrentUser currentUser: UserPrincipal): List<PreferenceInRegionResponse> {
-        return preferenceRequestList.map { preferenceRequest ->
+    fun setPreferences(@RequestBody @Valid preferenceRequestList: List<SetPreferenceRequest>, @CurrentUser currentUser: UserPrincipal): ListResponse<PreferenceInRegionResponse> {
+        return ListResponse(preferenceRequestList.map { preferenceRequest ->
             val region = regionService.findRegionById(preferenceRequest.regionId)
             if (region!!.isEmpty) {
                 // FIXME: when a region is not found, we should not apply whole preferences of the request
@@ -92,16 +92,16 @@ class UserApiController(private val oAuth2Provider: OAuth2Provider,
             val preferences = preferenceRequest.preferences
             preferenceService.setPreferences(currentUser.user, region.get(), preferences)
             PreferenceInRegionResponse(region.get(), preferences)
-        }
+        })
     }
 
     @GetMapping("/playable/")
-    fun getPlayableUsers(@Valid @ModelAttribute getUsersByPreferenceRequest: GetUsersByPreferenceRequest): List<Long?>? {
+    fun getPlayableUsers(@Valid @ModelAttribute getUsersByPreferenceRequest: GetUsersByPreferenceRequest): ListResponse<Long?>? {
         val regionName = getUsersByPreferenceRequest.regionName
         val dayOfWeek = getUsersByPreferenceRequest.dayOfWeek
         val startTime = getUsersByPreferenceRequest.startTime
         val endTime = getUsersByPreferenceRequest.endTime
-        return preferenceService.getPlayableUsers(regionName, dayOfWeek, startTime, endTime)
+        return ListResponse(preferenceService.getPlayableUsers(regionName, dayOfWeek, startTime, endTime))
     }
 
     @PostMapping("/device/")
