@@ -15,6 +15,6 @@ class DraftRestControllerAdvice() {
     ): ErrorResponse {
         val errorType = e.errorType
         response.status = errorType.httpStatus.value()
-        return ErrorResponse(errorType.code, errorType.name.toLowerCase(), null)
+        return ErrorResponse(errorType.code, errorType.name.toLowerCase())
     }
 }
