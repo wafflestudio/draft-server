@@ -56,6 +56,6 @@ class RoomServiceTest {
         Long savedId = roomService.save(room);
 
         // then
-        assertEquals(room, roomRepository.findOne(savedId));
+        assertEquals(room, roomRepository.findById(savedId).get());
     }
 }

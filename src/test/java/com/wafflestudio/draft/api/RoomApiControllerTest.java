@@ -41,6 +41,9 @@ public class RoomApiControllerTest {
                 .andExpect(jsonPath("$['name']", is("TEST_ROOM_1")))
                 .andExpect(jsonPath("$['participants']", hasSize(1)))
                 .andExpect(jsonPath("$['participants'][0]['id']", is(1)));
+
+        this.mockMvc.perform(get("/api/v1/room/{roomId}", 100).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
