@@ -22,21 +22,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class RegionApiControllerTest {
+public class CourtApiControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     @WithMockUser
-    public void getRegionRoomTest() throws Exception {
-        this.mockMvc.perform(get("/api/v1/region/room/").contentType(MediaType.APPLICATION_JSON))
+    public void getCourtTest() throws Exception {
+        this.mockMvc.perform(get("/api/v1/court/").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$['results']", hasSize(1)))
+                .andExpect(jsonPath("$['results']", hasSize(15)))
+                .andExpect(jsonPath("$['count']", is(15)))
                 .andExpect(jsonPath("$['results'][0].id", is(1)))
-                .andExpect(jsonPath("$['results'][0].name", is("TEST_REGION")))
-                .andExpect(jsonPath("$['results'][0]['rooms']", hasSize(15)))
-                .andExpect(jsonPath("$['results'][0]['rooms'][4].name", is("TEST_ROOM_5")))
-                .andExpect(jsonPath("$['results'][0]['rooms'][4]['participants']", hasSize(1)));
+                .andExpect(jsonPath("$['results'][0].name", is("TEST_COURT_1")))
+                .andExpect(jsonPath("$['results'][0].regionId", is(1)))
+                .andExpect(jsonPath("$['results'][0]['location'].lat", is(37.5186202)))
+                .andExpect(jsonPath("$['results'][0]['location'].lng", is(126.904905)));
     }
 }

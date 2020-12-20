@@ -59,8 +59,8 @@ public class RoomApiControllerTest {
         this.mockMvc.perform(get("/api/v1/room/")
                 .param("regionId", "1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$['results']", hasSize(5)))
-                .andExpect(jsonPath("$['count']", is(5)));
+                .andExpect(jsonPath("$['results']", hasSize(15)))
+                .andExpect(jsonPath("$['count']", is(15)));
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("name", "TEST_ROOM_4");
@@ -76,22 +76,22 @@ public class RoomApiControllerTest {
         this.mockMvc.perform(get("/api/v1/room/")
                 .param("startTime", oneMinuteBefore).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$['results']", hasSize(5)));
+                .andExpect(jsonPath("$['results']", hasSize(15)));
 
-        String oneMinuteAfter = LocalDateTime.now().plusMinutes(1).format(
+        String fiveDayAfter = LocalDateTime.now().plusDays(5).format(
                 DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
         this.mockMvc.perform(get("/api/v1/room/")
-                .param("startTime", oneMinuteAfter).contentType(MediaType.APPLICATION_JSON))
+                .param("startTime", fiveDayAfter).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$['results']", hasSize(0)));
 
-        String oneDayAfter = LocalDateTime.now().plusDays(1).format(
-                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
         this.mockMvc.perform(get("/api/v1/room/")
-                .param("endTime", oneDayAfter).contentType(MediaType.APPLICATION_JSON))
+                .param("endTime", fiveDayAfter).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$['results']", hasSize(5)));
+                .andExpect(jsonPath("$['results']", hasSize(15)));
 
+        String oneMinuteAfter = LocalDateTime.now().plusMinutes(1).format(
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
         this.mockMvc.perform(get("/api/v1/room/")
                 .param("endTime", oneMinuteAfter).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
