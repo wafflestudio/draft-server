@@ -3,6 +3,7 @@ package com.wafflestudio.draft.api
 import com.wafflestudio.draft.dto.request.CreateRoomRequest
 import com.wafflestudio.draft.dto.request.PutRoomRequest
 import com.wafflestudio.draft.dto.response.*
+import com.wafflestudio.draft.error.*
 import com.wafflestudio.draft.model.Participant
 import com.wafflestudio.draft.model.Room
 import com.wafflestudio.draft.model.enums.RoomStatus
@@ -12,7 +13,6 @@ import com.wafflestudio.draft.service.*
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
 import javax.validation.Valid
 
@@ -25,17 +25,20 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     fun saveRoomV1(@RequestBody @Valid request: CreateRoomRequest, @CurrentUser currentUser: UserPrincipal): RoomResponse {
+        if (roomService.existsCurrentlyParticipating(currentUser.user, request.startTime, request.endTime)) {
+            throw ConcurrentlyParticipatingOtherRoomException()
+        }
+
         val room = Room()
         room.owner = currentUser.user
         room.startTime = request.startTime
         room.endTime = request.endTime
         room.name = request.name
+
         val court = courtService.getCourtById(request.courtId)
-        if (court.isEmpty) {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
-        room.court = court.get()
+        room.court = court
         roomService.save(room)
+
         participantService.addParticipants(room, currentUser.user)
         return RoomResponse(room)
     }
@@ -56,35 +59,41 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
     }
 
     @PostMapping(path = ["{id}/participant"])
-    fun participate(@PathVariable("id") id: Long, @CurrentUser currentUser: UserPrincipal): ParticipantsResponse? {
-        val room: Room = roomService.findOne(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    fun participate(@PathVariable("id") id: Long, @CurrentUser currentUser: UserPrincipal): RoomResponse {
+        val room: Room = roomService.findOne(id)
         if (room.status !== RoomStatus.WAITING) {
-            throw ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY)
+            throw RoomIsNotWaitingException()
         }
+
         val participants: List<Participant> = room.participants
         participants.forEach { participant ->
             if (currentUser.user.id === participant.user.id) {
-                throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+                throw AlreadyParticipatingRoomException()
             }
         }
 
         if (participants.size >= room.court!!.capacity!!) {
-            throw ResponseStatusException(HttpStatus.CONFLICT)
+            throw RoomIsFullException()
         }
 
-        return participantService.addParticipants(room, currentUser.user)
+        if (roomService.existsCurrentlyParticipating(currentUser.user, room.startTime!!, room.endTime!!)) {
+            throw ConcurrentlyParticipatingOtherRoomException()
+        }
+
+        participantService.addParticipants(room, currentUser.user)
+        return RoomResponse(room)
     }
 
     @GetMapping(path = ["{id}/participant/"])
     fun getParticipants(@PathVariable("id") id: Long): ParticipantsResponse? {
-        val room = roomService.findOne(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        val room = roomService.findOne(id)
         return participantService.getParticipants(room)
     }
 
     @DeleteMapping(path = ["{id}/participant/"])
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     fun leaveRoom(@PathVariable("id") id: Long, @CurrentUser currentUser: UserPrincipal) {
-        val room: Room = roomService.findOne(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        val room: Room = roomService.findOne(id)
         participantService.deleteParticipants(room, currentUser.user)
         val participants: List<Participant>? = room.participants
         if (participants !== null && participants.isEmpty()) {
@@ -101,26 +110,22 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
     }
 
     @PutMapping(path = ["{id}"])
-    fun putRoomV1(@PathVariable("id") id: Long, @RequestBody request: PutRoomRequest): RoomResponse {
-        val room = roomService.findOne(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    fun putRoomV1(@PathVariable("id") id: Long,
+                  @RequestBody request: PutRoomRequest,
+                  @CurrentUser currentUser: UserPrincipal): RoomResponse {
+        val room = roomService.findOne(id)
+        request.startTime?.let{ room.startTime = it }
+        request.endTime?.let{ room.endTime = it }
+        request.name?.let{ room.name = it }
+        request.status?.let { room.status = it }
 
-        // FIXME: we should find a smarter way...
-        val startTime = request.startTime
-        if (startTime != null) {
-            room.startTime = startTime
+        if(room.startTime != null && room.endTime != null
+                && roomService.existsCurrentlyParticipatingExcludingRoom(
+                        currentUser.user, room.startTime!!, room.endTime!!, room
+                )) {
+            throw ConcurrentlyParticipatingOtherRoomException()
         }
-        val endTime = request.endTime
-        if (endTime != null) {
-            room.endTime = endTime
-        }
-        val name = request.name
-        if (name != null) {
-            room.name = name
-        }
-        val status = request.status
-        if (status != null) {
-            room.status = status
-        }
+
         roomService.save(room)
         return RoomResponse(room)
     }
