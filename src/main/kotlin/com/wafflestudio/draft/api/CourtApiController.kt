@@ -15,11 +15,7 @@ import javax.validation.Valid
 class CourtApiController(private val courtService: CourtService) {
     @GetMapping("/")
     fun getCourtsV1(@Valid @ModelAttribute request: GetCourtsRequest): ListResponse<CourtResponse> {
-        var name = request.name
-        if (name == null) {
-            name = ""
-        }
-        val courts = courtService.findCourtsByName(name)
+        val courts = courtService.findCourtsByName(request.name.orEmpty())
         return ListResponse(courts?.map { CourtResponse(it) } ?: emptyList())
     }
 }

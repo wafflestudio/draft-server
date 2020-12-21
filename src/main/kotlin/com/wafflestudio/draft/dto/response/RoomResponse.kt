@@ -25,7 +25,7 @@ data class RoomResponse(
         this.ownerId = room.owner!!.id
         this.courtId = room.court!!.id
         val userResponses: MutableList<UserInformationResponse> = mutableListOf()
-        room.participants?.map { userResponses.add(UserInformationResponse(it.user)) }
+        room.participants.map { userResponses.add(UserInformationResponse(it.user)) }
         this.participants = userResponses
     }
 }
