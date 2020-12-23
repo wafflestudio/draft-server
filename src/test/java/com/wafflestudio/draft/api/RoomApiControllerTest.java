@@ -5,7 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -14,9 +13,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -40,31 +41,60 @@ public class RoomApiControllerTest {
                 .andExpect(jsonPath("$['name']", is("TEST_ROOM_1")))
                 .andExpect(jsonPath("$['participants']", hasSize(1)))
                 .andExpect(jsonPath("$['participants'][0]['id']", is(1)));
+
+        this.mockMvc.perform(get("/api/v1/room/{roomId}", 100).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @WithMockUser
     public void getRoomsTest() throws Exception {
-        // FIXME: query param for searching rooms will be used later
-//        this.mockMvc.perform(get("/api/v1/room/")
-//                .param("name", "TEST_ROOM_3").contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", hasSize(1)))
-//                .andExpect(jsonPath("$[0].id", is(3)))
-//                .andExpect(jsonPath("$[0].name", is("TEST_ROOM_3")));
-//
-//        this.mockMvc.perform(get("/api/v1/room/")
-//                .param("courtId", "1").contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", hasSize(5)));
-//
-//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-//        params.add("name", "TEST_ROOM_4");
-//        params.add("courtId", "1");
-//        this.mockMvc.perform(get("/api/v1/room/")
-//                .params(params).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", hasSize(1)))
-//                .andExpect(jsonPath("$[0].name", is("TEST_ROOM_4")));
+        this.mockMvc.perform(get("/api/v1/room/")
+                .param("name", "TEST_ROOM_3").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['results']", hasSize(1)))
+                .andExpect(jsonPath("$['results'][0].id", is(3)))
+                .andExpect(jsonPath("$['results'][0].name", is("TEST_ROOM_3")));
+
+        this.mockMvc.perform(get("/api/v1/room/")
+                .param("regionId", "1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['results']", hasSize(15)))
+                .andExpect(jsonPath("$['count']", is(15)));
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("name", "TEST_ROOM_4");
+        params.add("regionId", "1");
+        this.mockMvc.perform(get("/api/v1/room/")
+                .params(params).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['results']", hasSize(1)))
+                .andExpect(jsonPath("$['results'][0].name", is("TEST_ROOM_4")));
+
+        String oneMinuteBefore = LocalDateTime.now().minusMinutes(1).format(
+                                    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        this.mockMvc.perform(get("/api/v1/room/")
+                .param("startTime", oneMinuteBefore).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['results']", hasSize(15)));
+
+        String fiveDayAfter = LocalDateTime.now().plusDays(5).format(
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        this.mockMvc.perform(get("/api/v1/room/")
+                .param("startTime", fiveDayAfter).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['results']", hasSize(0)));
+
+        this.mockMvc.perform(get("/api/v1/room/")
+                .param("endTime", fiveDayAfter).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['results']", hasSize(15)));
+
+        String oneMinuteAfter = LocalDateTime.now().plusMinutes(1).format(
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        this.mockMvc.perform(get("/api/v1/room/")
+                .param("endTime", oneMinuteAfter).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['results']", hasSize(0)));
     }
 }

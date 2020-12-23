@@ -14,9 +14,7 @@ import java.time.LocalTime
 
 @Service
 @Transactional
-class PreferenceService {
-    @Autowired
-    private val preferenceRepository: PreferenceRepository? = null
+class PreferenceService(private val preferenceRepository: PreferenceRepository) {
     fun setPreferences(user: User, region: Region, preferences: List<Preference>?) {
         preferenceRepository!!.deleteAllByUser(user)
         // TODO: Add unsubscribing logic

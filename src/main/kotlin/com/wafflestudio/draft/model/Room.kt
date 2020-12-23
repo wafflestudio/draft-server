@@ -27,4 +27,8 @@ class Room(
 
         @OneToMany(mappedBy = "room")
         var participants: MutableList<Participant> = mutableListOf()
+
+//        @MapsId(value = "court_id")
+//        @ManyToOne(fetch = FetchType.LAZY)
+//        var region: Region? = null
 ) : BaseTimeEntity()

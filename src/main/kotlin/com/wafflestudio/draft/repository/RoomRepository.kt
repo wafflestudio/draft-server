@@ -2,47 +2,63 @@ package com.wafflestudio.draft.repository
 
 import com.wafflestudio.draft.model.Room
 import com.wafflestudio.draft.model.User
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import java.time.LocalDateTime
-import javax.persistence.EntityManager
 
-@Repository
-class RoomRepository(private val em: EntityManager) {
-    fun save(room: Room?) {
-        em.persist(room)
-    }
+interface RoomRepository : JpaRepository<Room?, Long?> {
 
-    fun findOne(id: Long?): Room {
-        return em.find(Room::class.java, id)
-    }
+    @Query("SELECT r FROM Room r " +
+            "INNER JOIN r.court c " +
+            "INNER JOIN c.region reg " +
+            "WHERE r.name LIKE %:name% " +
+            "AND (COALESCE(:start_time, null) is null or r.startTime >= :start_time) " +
+            "AND (COALESCE(:end_time, null) is null or r.endTime <= :end_time) " +
+            "AND reg.id = :region_id ")
+    fun findByNameAndOptionalRegionIdAndOptionalStartTimeAndOptionalEndTime(
+            @Param("name") name: String?,
+            @Param("region_id") regionId: Long?,
+            @Param("start_time") startTime: LocalDateTime?,
+            @Param("end_time") endTime: LocalDateTime?
+    ): List<Room>?
 
-    fun findRooms(name: String?, regionId: Long?, startTime: LocalDateTime?, endTime: LocalDateTime?): List<Room>? {
-        // FIXME: we should find a smarter way...
-        return if (regionId == null) {
-            em.createQuery("SELECT r FROM Room r " +
-                    "WHERE r.name LIKE '%'||:name||'%' "
-                    , Room::class.java)
-                    .setParameter("name", name)
-                    .resultList
-        } else {
-            em.createQuery("SELECT r FROM Room r " +
-                    "INNER JOIN r.court c " +
-                    "INNER JOIN c.region reg " +
-                    "WHERE r.name LIKE '%'||:name||'%' " +
-                    "AND reg.id = :region_id"
-                    , Room::class.java)
-                    .setParameter("name", name)
-                    .setParameter("region_id", regionId)
-                    .resultList
-        }
-    }
+    @Query("SELECT r FROM Room r " +
+            "WHERE r.name LIKE %:name% " +
+            "AND (COALESCE(:start_time, null) is null or r.startTime >= :start_time) " +
+            "AND (COALESCE(:end_time, null) is null or r.endTime <= :end_time)")
+    fun findByNameAndOptionalStartTimeAndOptionalEndTime(
+            @Param("name") name: String?,
+            @Param("start_time") startTime: LocalDateTime?,
+            @Param("end_time") endTime: LocalDateTime?
+    ): List<Room>?
 
-    fun findRoomsByUser(user: User?): MutableList<Room>? {
-        return em.createQuery("SELECT r FROM Participant p " +
-                "INNER JOIN p.room r " +
-                "WHERE p.user = :user"
-                , Room::class.java)
-                .setParameter("user", user)
-                .resultList
-    }
+    @Query("SELECT r FROM Participant p INNER JOIN p.room r WHERE p.user = :participatingUser")
+    fun findByParticipatingUser(participatingUser: User): List<Room>?
+
+    @Query("SELECT COUNT(r.id) > 0 FROM Participant p INNER JOIN p.room r " +
+            "WHERE p.user = :participating_user " +
+            "AND ((r.endTime > :start_time AND r.endTime < :end_time) " +
+                "OR (r.startTime < :start_time AND r.startTime > :end_time) " +
+                "OR (r.startTime >= :start_time AND r.endTime <= :end_time) " +
+                "OR (r.startTime <= :start_time AND r.endTime >= :end_time))")
+    fun existsByParticipatingUserAndStartTimeAndEndTime(
+            @Param("participating_user") participatingUser: User,
+            @Param("start_time") startTime: LocalDateTime,
+            @Param("end_time") endTime: LocalDateTime
+    ): Boolean
+
+    @Query("SELECT COUNT(r.id) > 0 FROM Participant p INNER JOIN p.room r " +
+            "WHERE p.user = :participating_user " +
+            "AND r != :this_room " +
+            "AND ((r.endTime > :start_time AND r.endTime < :end_time) " +
+                "OR (r.startTime < :start_time AND r.startTime > :end_time) " +
+                "OR (r.startTime >= :start_time AND r.endTime <= :end_time) " +
+                "OR (r.startTime <= :start_time AND r.endTime >= :end_time))")
+    fun existsByParticipatingUserAndStartTimeAndEndTimeAndRoomNot(
+            @Param("participating_user") participatingUser: User,
+            @Param("start_time") startTime: LocalDateTime,
+            @Param("end_time") endTime: LocalDateTime,
+            @Param("this_room") thisRoom: Room
+    ): Boolean
 }

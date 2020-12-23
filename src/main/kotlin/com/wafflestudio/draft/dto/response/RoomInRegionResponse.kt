@@ -18,7 +18,7 @@ class RoomInRegionResponse(
         this.depth3 = region.depth3
         val roomResponses: MutableList<RoomResponse> = mutableListOf()
         region.courts.map { court ->
-            court.rooms?.map { roomResponses.add(RoomResponse(it)) }
+            court.rooms.map { roomResponses.add(RoomResponse(it)) }
         }
         this.rooms = roomResponses;
     }

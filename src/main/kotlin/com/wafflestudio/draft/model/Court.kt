@@ -11,9 +11,10 @@ class Court(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long? = null,
 
-        @ManyToOne
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "region_id", referencedColumnName = "id")
         var region: Region? = null,
+
         var name: String? = null,
 
         @field:Min(value = 0, message = "The value must be positive.")

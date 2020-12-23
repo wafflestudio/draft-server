@@ -1,23 +1,19 @@
 package com.wafflestudio.draft.service
 
+import com.wafflestudio.draft.error.CourtNotFoundException
 import com.wafflestudio.draft.model.Court
 import com.wafflestudio.draft.repository.CourtRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 @Transactional(readOnly = true)
-class CourtService {
-    @Autowired
-    private val courtRepository: CourtRepository? = null
-
-    fun getCourtById(id: Long?): Optional<Court?> {
-        return courtRepository!!.findById(id!!)
+class CourtService(private val courtRepository: CourtRepository) {
+    fun getCourtById(id: Long): Court {
+        return courtRepository.findById(id).orElseThrow(::CourtNotFoundException)!!
     }
 
     fun findCourtsByName(name: String?): List<Court>? {
-        return courtRepository!!.findByNameContaining(name)
+        return courtRepository.findByNameContaining(name)
     }
 }

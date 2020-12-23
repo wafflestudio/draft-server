@@ -6,12 +6,14 @@ data class CourtResponse(
         var id: Long? = null,
         var regionId: Long? = null,
         var name: String? = null,
-        var capacity: Int? = null
+        var capacity: Int? = null,
+        var location: Location? = null
 ) {
     constructor(court: Court) : this(
             court.id,
             court.region!!.id,
             court.name,
-            court.capacity
+            court.capacity,
+            Location(court.location)
     )
 }

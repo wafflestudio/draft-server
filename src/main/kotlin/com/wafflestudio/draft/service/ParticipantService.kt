@@ -14,16 +14,16 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class ParticipantService(private val participantRepository: ParticipantRepository) {
     fun getParticipants(room: Room?): ParticipantsResponse {
-        val participantsOfTeam1: MutableList<UserInformationResponse>? = participantRepository.getUsersInTeam(room, Team.A)
-        val participantsOfTeam2: MutableList<UserInformationResponse>? = participantRepository.getUsersInTeam(room, Team.B)
+        val participantsOfTeam1: List<UserInformationResponse> = participantRepository.getUsersInTeam(room, Team.A)
+        val participantsOfTeam2: List<UserInformationResponse> = participantRepository.getUsersInTeam(room, Team.B)
         return ParticipantsResponse(participantsOfTeam1, participantsOfTeam2)
     }
 
     fun addParticipants(room: Room, user: User): ParticipantsResponse {
-        val participantsOfTeam1 = participantRepository.getUsersInTeam(room, Team.A)
-        val participantsOfTeam2 = participantRepository.getUsersInTeam(room, Team.B)
+        val participantsOfTeam1 = participantRepository.getUsersInTeam(room, Team.A).toMutableList()
+        val participantsOfTeam2 = participantRepository.getUsersInTeam(room, Team.B).toMutableList()
         var teamOfNewParticipant = Team.A
-        if (participantsOfTeam1!!.size > participantsOfTeam2!!.size) {
+        if (participantsOfTeam1.size > participantsOfTeam2.size) {
             teamOfNewParticipant = Team.B
             participantsOfTeam2.add(UserInformationResponse(user))
         } else {

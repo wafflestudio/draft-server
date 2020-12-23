@@ -19,9 +19,13 @@ class Region(
         @Column(unique = true)
         var name: String? = null,
 
-        @OneToMany(mappedBy = "region", cascade = [CascadeType.ALL])
+        @OneToMany(mappedBy = "region", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
         var users: MutableList<User> = mutableListOf(),
 
-        @OneToMany(mappedBy = "region", cascade = [CascadeType.ALL])
+        @OneToMany(mappedBy = "region", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
         var courts: MutableList<Court> = mutableListOf()
+
+//        @OneToMany(fetch = FetchType.LAZY, mappedBy = "region")
+//        var rooms: MutableList<Room> = mutableListOf()
+
 )

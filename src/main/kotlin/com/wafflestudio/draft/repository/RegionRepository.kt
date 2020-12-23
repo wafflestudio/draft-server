@@ -1,5 +1,6 @@
 package com.wafflestudio.draft.repository
 
+import com.wafflestudio.draft.dto.RegionDTO
 import com.wafflestudio.draft.dto.response.RegionResponse
 import com.wafflestudio.draft.model.Region
 import org.locationtech.jts.geom.Point
@@ -10,7 +11,10 @@ import java.util.*
 
 interface RegionRepository : JpaRepository<Region?, Long?> {
     override fun findById(id: Long): Optional<Region?>
-    fun findByNameContaining(name: String?): List<RegionResponse>?
+
+    fun findByNameContaining(name: String?): List<RegionDTO.Info>?
+
+    fun findByDepth3Containing(depth3: String?): List<RegionDTO.Info>?
 
     @Query("SELECT r.id,r.name,r.depth1,r.depth2,r.depth3 FROM Region r " +
             "WHERE CONTAINS(r.polygon, ST_SetSRID(ST_MakePoint(:lon,:lat),4326))=true")
