@@ -18,9 +18,9 @@ interface RegionRepository : JpaRepository<Region?, Long?> {
 
     @Query("SELECT r.id,r.name,r.depth1,r.depth2,r.depth3 FROM Region r " +
             "WHERE CONTAINS(r.polygon, ST_SetSRID(ST_MakePoint(:lon,:lat),4326))=true")
-    fun findRegionByPolygonContainsCoordinate(@Param("lat") lat: Double, @Param("lon") lon: Double): List<RegionResponse>?
+    fun findRegionByPolygonContainsCoordinate(@Param("lat") lat: Double, @Param("lon") lon: Double): List<RegionDTO.Info>?
 
     @Query("SELECT r.id,r.name,r.depth1,r.depth2,r.depth3 FROM Region r " +
             "WHERE CONTAINS(r.polygon, :point)=true")
-    fun findRegionByPolygonContainsPoint(@Param("point") point: Point): List<RegionResponse>?
+    fun findRegionByPolygonContainsPoint(@Param("point") point: Point): List<RegionDTO.Info>?
 }
