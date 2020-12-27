@@ -9,9 +9,10 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     env:
+      IMAGE_TAG: latest
+      BUILD_NUMBER: ${{ github.run_number }}
       ECR_REGISTRY: 405906814034.dkr.ecr.ap-northeast-2.amazonaws.com
       ECR_REPOSITORY: draft
-      IMAGE_TAG: latest
       S3_BUCKET_NAME: draft-build
 
     steps:
@@ -32,15 +33,28 @@ jobs:
         path: Dockerrun.aws.json
 
     - name: Upload zip to S3
-      run: aws s3 cp deploy.zip s3://$S3_BUCKET_NAME/deploy.zip --region ap-northeast-2
+      run: aws s3 cp deploy.zip s3://$S3_BUCKET_NAME/deploy.zip
 
-    - name: Login to Amazon ECR
+    - name: Login to ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build, tag, and push image to Amazon ECR
+    - name: Docker Build, tag, and push image to ECR
       id: build-image
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+    - name: Deploy to ElasticBeanstalk
+      run: |
+        aws elasticbeanstalk create-application-version \
+          --region ap-northeast-2 \
+          --application-name draft-server \
+          --version-label $BUILD_NUMBER \
+          --description $BUILD_NUMBER \
+          --source-bundle S3Bucket='$S3_BUCKET_NAME',S3Key='deploy.zip'
+        aws elasticbeanstalk update-environment \
+          --region ap-northeast-2 \
+          --environment-name DraftServer-env \
+          --version-label $BUILD_NUMBER
