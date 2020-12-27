@@ -35,6 +35,11 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
+    - name: Delete old images in ECR
+      run: |
+        UNTAGGED_IMAGE=$( aws ecr list-images --repository-name $ECR_REPOSITORY --filter "tagStatus=UNTAGGED" --query 'imageIds[*]' --output json )
+        aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids "$UNTAGGED_IMAGE" || true
+
     - name: Docker Build, tag, and push image to ECR
       id: build-image
       run: |
