@@ -23,4 +23,5 @@ pipeline {
         sh "docker push ${ecrName}/${repoName}/${applicationName}:latest"
       }
     }
+  }
 }
