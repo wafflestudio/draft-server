@@ -12,7 +12,7 @@ jobs:
       IMAGE_TAG: latest
       BUILD_NUMBER: ${{ github.run_number }}
       ECR_REGISTRY: 405906814034.dkr.ecr.ap-northeast-2.amazonaws.com
-      ECR_REPOSITORY: draft
+      ECR_REPOSITORY: draft/draft-server
       S3_BUCKET_NAME: draft-build
 
     steps:
