@@ -11,7 +11,8 @@ jobs:
     env:
       ECR_REGISTRY: 405906814034.dkr.ecr.ap-northeast-2.amazonaws.com
       ECR_REPOSITORY: draft
-      IMAGE_TAG: ${{ github.sha }}
+      IMAGE_TAG: latest
+      S3_BUCKET_NAME: draft-build
 
     steps:
     - name: Checkout
@@ -24,6 +25,15 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-2
 
+    - name: Zip Dockerrun.aws.json
+      uses: thedoctor0/zip-release@master
+      with:
+        filename: deploy.zip
+        path: Dockerrun.aws.json
+
+    - name: Upload zip to S3
+      run: aws s3 cp deploy.zip s3://$S3_BUCKET_NAME/deploy.zip --region ap-northeast-2
+
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
@@ -34,4 +44,3 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-
