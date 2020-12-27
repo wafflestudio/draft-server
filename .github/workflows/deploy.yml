@@ -26,14 +26,10 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-2
 
-    - name: Zip Dockerrun.aws.json
-      uses: thedoctor0/zip-release@master
-      with:
-        filename: deploy.zip
-        path: Dockerrun.aws.json
-
-    - name: Upload zip to S3
-      run: aws s3 cp deploy.zip s3://$S3_BUCKET_NAME/deploy.zip
+    - name: Upload Dockerrun.aws.json to S3
+      run: |
+        zip deploy.zip Dockerrun.aws.json
+        aws s3 cp deploy.zip s3://$S3_BUCKET_NAME/deploy.zip
 
     - name: Login to ECR
       id: login-ecr
@@ -53,7 +49,7 @@ jobs:
           --application-name draft-server \
           --version-label $BUILD_NUMBER \
           --description $BUILD_NUMBER \
-          --source-bundle S3Bucket='$S3_BUCKET_NAME',S3Key='deploy.zip'
+          --source-bundle S3Bucket=$S3_BUCKET_NAME,S3Key='deploy.zip'
         aws elasticbeanstalk update-environment \
           --region ap-northeast-2 \
           --environment-name DraftServer-env \
