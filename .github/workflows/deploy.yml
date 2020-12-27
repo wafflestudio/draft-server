@@ -11,7 +11,7 @@ jobs:
     env:
       ECR_REGISTRY: 405906814034.dkr.ecr.ap-northeast-2.amazonaws.com
       ECR_REPOSITORY: draft
-      IMAGE_TAG: ${{ GITHUB_SHA }}
+      IMAGE_TAG: ${{ github.sha }}
 
     steps:
     - name: Checkout
