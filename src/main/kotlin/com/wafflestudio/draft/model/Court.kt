@@ -11,9 +11,9 @@ class Court(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long? = null,
 
-        @ManyToOne(fetch = FetchType.LAZY)
+        @ManyToOne(optional = false, fetch = FetchType.LAZY)
         @JoinColumn(name = "region_id", referencedColumnName = "id")
-        var region: Region? = null,
+        var region: Region?,
 
         var name: String? = null,
 
@@ -23,6 +23,6 @@ class Court(
         @Column(nullable = false, columnDefinition = "Geometry(Point,4326)")
         var location: Point,
 
-        @OneToMany(mappedBy = "court")
+        @OneToMany(mappedBy = "court", fetch = FetchType.LAZY)
         var rooms: MutableList<Room> = mutableListOf()
 )

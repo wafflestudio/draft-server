@@ -16,6 +16,6 @@ class CourtApiController(private val courtService: CourtService) {
     @GetMapping("/")
     fun getCourtsV1(@Valid @ModelAttribute request: GetCourtsRequest): ListResponse<CourtResponse> {
         val courts = courtService.findCourtsByName(request.name.orEmpty())
-        return ListResponse(courts?.map { CourtResponse(it) } ?: emptyList())
+        return ListResponse(courts.map { CourtResponse(it) })
     }
 }

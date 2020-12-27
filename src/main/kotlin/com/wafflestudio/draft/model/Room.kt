@@ -1,5 +1,6 @@
 package com.wafflestudio.draft.model
 
+import com.wafflestudio.draft.dto.RoomDTO
 import com.wafflestudio.draft.model.enums.RoomStatus
 import java.time.LocalDateTime
 import javax.persistence.*
@@ -31,4 +32,8 @@ class Room(
 //        @MapsId(value = "court_id")
 //        @ManyToOne(fetch = FetchType.LAZY)
 //        var region: Region? = null
-) : BaseTimeEntity()
+) : BaseTimeEntity() {
+    fun toResponse(): RoomDTO.Response {
+        return RoomDTO.Response(this)
+    }
+}

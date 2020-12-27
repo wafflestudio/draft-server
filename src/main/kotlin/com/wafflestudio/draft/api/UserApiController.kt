@@ -1,5 +1,6 @@
 package com.wafflestudio.draft.api
 
+import com.wafflestudio.draft.dto.RoomDTO
 import com.wafflestudio.draft.dto.request.*
 import com.wafflestudio.draft.dto.response.*
 import com.wafflestudio.draft.model.Device
@@ -85,7 +86,7 @@ class UserApiController(private val oAuth2Provider: OAuth2Provider,
     fun setPreferences(@RequestBody @Valid preferenceRequestList: List<SetPreferenceRequest>, @CurrentUser currentUser: UserPrincipal): ListResponse<PreferenceInRegionResponse> {
         return ListResponse(preferenceRequestList.map { preferenceRequest ->
             val region = regionService.findRegionById(preferenceRequest.regionId)
-            if (region!!.isEmpty) {
+            if (region.isEmpty) {
                 // FIXME: when a region is not found, we should not apply whole preferences of the request
                 throw ResponseStatusException(HttpStatus.NOT_FOUND)
             }
@@ -117,7 +118,7 @@ class UserApiController(private val oAuth2Provider: OAuth2Provider,
     fun getBelongingRooms(@CurrentUser currentUser: UserPrincipal): RoomsOfUserResponse? {
         val rooms: List<Room>? = roomService.findRoomsByUser(currentUser.user)
         val roomsOfUserResponse = RoomsOfUserResponse(currentUser.user)
-        roomsOfUserResponse.rooms = rooms?.map { RoomResponse(it) } ?: emptyList()
+        roomsOfUserResponse.rooms = rooms?.map { RoomDTO.Response(it) } ?: emptyList()
         return roomsOfUserResponse
     }
 }
