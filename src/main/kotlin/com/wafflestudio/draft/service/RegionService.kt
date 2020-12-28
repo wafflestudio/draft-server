@@ -23,7 +23,7 @@ class RegionService(private val regionRepository: RegionRepository) {
         return regionRepository.findByDepth3ContainingWithoutGeometryData(depth3)
     }
 
-    fun getRegions(): List<RegionDTO.SummaryWithCourts> {
+    fun getRegions(): List<RegionDTO.SummaryWithRooms> {
         return regionRepository.findAllRegionWithoutGeometryData()
     }
 }

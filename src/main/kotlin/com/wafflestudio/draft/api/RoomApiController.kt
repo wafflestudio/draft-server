@@ -56,7 +56,7 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
             @RequestParam name: String?, @RequestParam regionId: Long?
     ): ListResponse<RoomDTO.Response> {
         val rooms = roomService.findRooms(name.orEmpty(), regionId, startTime, endTime)
-        return ListResponse(rooms!!.map { RoomDTO.Response(it) })
+        return ListResponse(rooms!!.map { it.toResponse() })
     }
 
     @GetMapping(path = ["{id}"])

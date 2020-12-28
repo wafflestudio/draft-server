@@ -24,6 +24,22 @@ class RoomDTO {
             val status: RoomStatus? = null
     )
 
+    data class Summary(
+            var id: Long? = null,
+            var roomStatus: RoomStatus? = null,
+            var startTime: LocalDateTime? = null,
+            var endTime: LocalDateTime? = null,
+            var name: String? = null,
+            var createdAt: LocalDateTime? = null,
+            var ownerId: Long? = null,
+            var courtId: Long? = null,
+            var participants: MutableMap<Long, UserInformationResponse> = mutableMapOf()
+    ) {
+        fun toResponse(): Response {
+            return Response(id, roomStatus, startTime, endTime, name, createdAt, ownerId, courtId, participants.values.toList())
+        }
+    }
+
     data class Response(
             var id: Long? = null,
             var roomStatus: RoomStatus? = null,

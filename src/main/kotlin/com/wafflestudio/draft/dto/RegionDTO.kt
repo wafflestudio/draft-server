@@ -1,6 +1,5 @@
 package com.wafflestudio.draft.dto
 
-import com.wafflestudio.draft.model.Court
 import com.wafflestudio.draft.model.Region
 
 class RegionDTO {
@@ -16,18 +15,16 @@ class RegionDTO {
             val depth3: String?
     )
 
-    data class SummaryWithCourts(
-            val id: Long?,
-            val name: String?,
-            val depth1: String?,
-            val depth2: String?,
-            val depth3: String?,
-            var courts: List<Court>
+    data class SummaryWithRooms(
+            val id: Long? = null,
+            val name: String? = null,
+            val depth1: String? = null,
+            val depth2: String? = null,
+            val depth3: String? = null,
+            var rooms: MutableMap<Long, RoomDTO.Summary> = mutableMapOf()
     ) {
         fun toResponseWithRooms(): ResponseWithRooms {
-            val rooms = mutableListOf<RoomDTO.Response>()
-            courts.forEach { court -> rooms.addAll(court.rooms.map { it.toResponse() }) }
-            return ResponseWithRooms(id, name, depth1, depth2, depth3, rooms)
+            return ResponseWithRooms(id, name, depth1, depth2, depth3, rooms.values.map { it.toResponse() })
         }
     }
 

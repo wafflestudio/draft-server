@@ -24,10 +24,10 @@ class Region(
         var users: MutableList<User> = mutableListOf(),
 
         @OneToMany(mappedBy = "region", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-        var courts: MutableList<Court> = mutableListOf()
+        var courts: MutableList<Court> = mutableListOf(),
 
-//        @OneToMany(fetch = FetchType.LAZY, mappedBy = "region")
-//        var rooms: MutableList<Room> = mutableListOf()
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "region")
+        var rooms: MutableList<Room> = mutableListOf()
 
 ) {
     constructor(id: Long?, emdCode: Long?, depth1: String?, depth2: String?, depth3: String?, name: String?)

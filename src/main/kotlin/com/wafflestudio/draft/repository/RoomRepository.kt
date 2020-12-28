@@ -11,11 +11,10 @@ interface RoomRepository : JpaRepository<Room?, Long?> {
 
     @Query("SELECT r FROM Room r " +
             "INNER JOIN r.court c " +
-            "INNER JOIN c.region reg " +
             "WHERE r.name LIKE %:name% " +
             "AND (COALESCE(:start_time, null) is null or r.startTime >= :start_time) " +
             "AND (COALESCE(:end_time, null) is null or r.endTime <= :end_time) " +
-            "AND reg.id = :region_id ")
+            "AND c.region.id = :region_id ")
     fun findByNameAndOptionalRegionIdAndOptionalStartTimeAndOptionalEndTime(
             @Param("name") name: String?,
             @Param("region_id") regionId: Long?,
