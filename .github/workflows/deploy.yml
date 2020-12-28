@@ -68,3 +68,4 @@ jobs:
         SLACK_USERNAME: draft-server
         SLACK_ICON: https://user-images.githubusercontent.com/35535636/103177470-2237cb00-48be-11eb-9211-3ffa567c8ac3.png
         SLACK_MESSAGE: Check <https://ap-northeast-2.console.aws.amazon.com/elasticbeanstalk/home?region=ap-northeast-2#/environment/dashboard?applicationName=draft-server&environmentId=e-bfgt3iiu8p|EB> for updated environment
+        SLACK_FOOTER: https://draft.wafflestudio.com
