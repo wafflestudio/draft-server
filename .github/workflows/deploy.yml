@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ master ]
+    branches: [ '**' ]
 
 jobs:
   deploy:
@@ -50,14 +50,12 @@ jobs:
     - name: Deploy to ElasticBeanstalk
       run: |
         aws elasticbeanstalk create-application-version \
-          --region ap-northeast-2 \
           --application-name draft-server \
           --version-label $BUILD_NUMBER \
           --description $BUILD_NUMBER \
           --source-bundle S3Bucket=$S3_BUCKET_NAME,S3Key='deploy.zip'
         aws elasticbeanstalk update-environment \
-          --region ap-northeast-2 \
-          --environment-name DraftServer-env \
+          --environment-name draft-server-prod \
           --version-label $BUILD_NUMBER
 
     - name: Slack Notify
@@ -67,5 +65,5 @@ jobs:
         SLACK_TITLE: NEW RELEASE
         SLACK_USERNAME: draft-server
         SLACK_ICON: https://user-images.githubusercontent.com/35535636/103177470-2237cb00-48be-11eb-9211-3ffa567c8ac3.png
-        SLACK_MESSAGE: Check <https://ap-northeast-2.console.aws.amazon.com/elasticbeanstalk/home?region=ap-northeast-2#/environment/dashboard?applicationName=draft-server&environmentId=e-bfgt3iiu8p|EB> for updated environment
+        SLACK_MESSAGE: Check <https://ap-northeast-2.console.aws.amazon.com/elasticbeanstalk/home?region=ap-northeast-2#/environment/dashboard?applicationName=draft-server&environmentId=e-gnq4j7qhbk|EB> for updated environment
         SLACK_FOOTER: https://draft.wafflestudio.com
