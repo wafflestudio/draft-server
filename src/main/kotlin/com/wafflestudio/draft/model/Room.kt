@@ -16,10 +16,6 @@ class Room(
         var court: Court? = null,
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "region_id", referencedColumnName = "id")
-        var region: Region? = null,
-
-        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "owner_id", referencedColumnName = "id")
         var owner: User? = null,
 

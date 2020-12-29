@@ -28,7 +28,7 @@ class User(
         @OneToMany(mappedBy = "owner")
         var rooms: MutableList<Room> = mutableListOf(),
 
-        @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+        @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
         var devices: MutableList<Device> = mutableListOf(),
 
         @ManyToOne(fetch = FetchType.LAZY)

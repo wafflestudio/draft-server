@@ -13,8 +13,7 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/api/v1/region")
 class RegionApiController(
-        private val regionService: RegionService,
-        private val roomService: RoomService
+        private val regionService: RegionService
 ) {
     @GetMapping("/")
     fun getRegionsV1(@Valid @ModelAttribute request: RegionDTO.Request): ListResponse<RegionDTO.Response> {

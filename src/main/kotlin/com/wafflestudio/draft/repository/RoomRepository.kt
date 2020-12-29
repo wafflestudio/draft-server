@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 interface RoomRepository : JpaRepository<Room?, Long?> {
 
     @Query("SELECT r FROM Room r " +
-            "INNER JOIN r.court c " +
+            "INNER JOIN FETCH r.court c " +
             "WHERE r.name LIKE %:name% " +
             "AND (COALESCE(:start_time, null) is null or r.startTime >= :start_time) " +
             "AND (COALESCE(:end_time, null) is null or r.endTime <= :end_time) " +
