@@ -25,9 +25,9 @@ interface RegionRepository : JpaRepository<Region, Long>, CustomRegionRepository
 
     @Query("""SELECT new com.wafflestudio.draft.dto.RegionDTO${'$'}Summary(r.id, r.depth1, r.depth2, r.depth3, r.name) 
         FROM Region r WHERE CONTAINS(r.polygon, ST_SetSRID(ST_MakePoint(:lon,:lat),4326))=true""")
-    fun findRegionByPolygonContainsCoordinate(@Param("lat") lat: Double, @Param("lon") lon: Double): List<Region>?
+    fun findRegionByPolygonContainsCoordinate(@Param("lat") lat: Double, @Param("lon") lon: Double): List<RegionDTO.Summary>?
 
     @Query("""SELECT new com.wafflestudio.draft.dto.RegionDTO${'$'}Summary(r.id, r.depth1, r.depth2, r.depth3, r.name)
         FROM Region r WHERE CONTAINS(r.polygon, :point)=true""")
-    fun findRegionByPolygonContainsPoint(@Param("point") point: Point): List<Region>
+    fun findRegionByPolygonContainsPoint(@Param("point") point: Point): List<RegionDTO.Summary>
 }
