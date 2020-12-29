@@ -8,7 +8,7 @@
   "Ports": [
     {
       "ContainerPort": 8080,
-      "HostPort": 443
+      "HostPort": 80
     }
   ]
 }
