@@ -1,0 +1,14 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Logging": "/tmp/draft-server",
+  "Image": {
+    "Name": "405906814034.dkr.ecr.ap-northeast-2.amazonaws.com/draft/draft-server:latest",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": 8080,
+      "HostPort": 80
+    }
+  ]
+}
