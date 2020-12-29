@@ -11,10 +11,10 @@ class CustomRegionRepositoryImpl(private val entityManager: EntityManager) : Cus
     override fun findAllRegionWithoutGeometryData(): List<RegionDTO.SummaryWithRooms> {
         val results: List<Any?> = entityManager.createQuery("""
             SELECT rg.id AS rg_id,
-                   rg.name AS rg_name,
                    rg.depth1 AS rg_depth1,
                    rg.depth2 AS rg_depth2,
                    rg.depth3 AS rg_depth3,
+                   rg.name AS rg_name,
                    rm.id AS rm_id,
                    rm.status AS rm_status,
                    rm.startTime AS rm_start_time,

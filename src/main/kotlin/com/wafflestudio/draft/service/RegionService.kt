@@ -15,11 +15,11 @@ class RegionService(private val regionRepository: RegionRepository) {
         return regionRepository.findById(id!!)
     }
 
-    fun findRegionsByName(name: String?): List<Region>? {
+    fun findRegionsByName(name: String?): List<RegionDTO.Summary> {
         return regionRepository.findByNameContainingWithoutGeometryData(name)
     }
 
-    fun findRegionsByDepth3(depth3: String?): List<Region>? {
+    fun findRegionsByDepth3(depth3: String?): List<RegionDTO.Summary> {
         return regionRepository.findByDepth3ContainingWithoutGeometryData(depth3)
     }
 

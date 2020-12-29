@@ -19,7 +19,7 @@ class RegionApiController(
     fun getRegionsV1(@Valid @ModelAttribute request: RegionDTO.Request): ListResponse<RegionDTO.Response> {
         val depth3 = request.depth3.orEmpty()
         val regions = regionService.findRegionsByDepth3(depth3)
-        return ListResponse(regions?.map { it.toResponse() }.orEmpty())
+        return ListResponse(regions.map { it.toResponse() })
     }
 
     @GetMapping("/room/")

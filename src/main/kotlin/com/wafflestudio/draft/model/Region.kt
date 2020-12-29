@@ -31,7 +31,7 @@ class Region(
             : this(id, emdCode, depth1, depth2, depth3, name, null)
 
     fun toResponse(): RegionDTO.Response {
-        return RegionDTO.Response(id, name, depth1, depth2, depth3)
+        return RegionDTO.Response(id, depth1, depth2, depth3,name)
     }
 
     fun toResponseWithRooms(): RegionDTO.ResponseWithRooms {
