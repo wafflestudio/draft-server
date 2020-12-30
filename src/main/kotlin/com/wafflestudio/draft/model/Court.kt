@@ -13,7 +13,7 @@ class Court(
 
         @ManyToOne(optional = false, fetch = FetchType.LAZY)
         @JoinColumn(name = "region_id", referencedColumnName = "id")
-        var region: Region?,
+        var region: Region? = null,
 
         var name: String? = null,
 
@@ -21,7 +21,7 @@ class Court(
         var capacity: Int? = null,
 
         @Column(nullable = false, columnDefinition = "Geometry(Point,4326)")
-        var location: Point,
+        var location: Point? = null,
 
         @OneToMany(mappedBy = "court", fetch = FetchType.LAZY)
         var rooms: MutableList<Room> = mutableListOf()

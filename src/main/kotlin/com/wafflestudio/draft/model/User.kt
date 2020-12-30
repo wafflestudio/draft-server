@@ -6,10 +6,10 @@ import javax.persistence.*
 @Table(name = "draft_user")
 class User(
         @Column(unique = true)
-        var username: String,
+        var username: String = "",
 
         @Column(unique = true)
-        var email: String,
+        var email: String = "",
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)

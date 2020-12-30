@@ -1,13 +1,11 @@
-package com.wafflestudio.draft;
+package com.wafflestudio.draft
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class DraftApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
+internal class DraftApplicationTests {
+    @Test
+    fun contextLoads() {
+    }
 }
