@@ -2,12 +2,13 @@ package com.wafflestudio.draft.api
 
 import org.hamcrest.CoreMatchers
 import org.hamcrest.collection.IsCollectionWithSize
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.context.TestConstructor
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -17,16 +18,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 // @ActiveProfiles("test")
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @AutoConfigureMockMvc
 class RegionApiControllerTest(
         private val mockMvc: MockMvc
 ) {
-
-    @get:Throws(Exception::class)
-    @get:WithMockUser
-    @get:Test
-    val regionRoomTest: Unit
-        get() {
+    @Throws(Exception::class)
+    @WithMockUser
+    @Test
+    fun getRegionRoomTest(){
             mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/region/room/").contentType(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk)
                     .andExpect(MockMvcResultMatchers.jsonPath("$['results']", IsCollectionWithSize.hasSize<Any>(1)))

@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.context.TestConstructor
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -21,16 +22,16 @@ import java.time.format.DateTimeFormatter
 // @ActiveProfiles("test")
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @AutoConfigureMockMvc
 class RoomApiControllerTest(
         private val mockMvc: MockMvc
 ) {
 
-    @get:Throws(Exception::class)
-    @get:WithMockUser
-    @get:Test
-    val roomTest: Unit
-        get() {
+    @Throws(Exception::class)
+    @WithMockUser
+    @Test
+    fun getRoomTest(){
             mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/room/{roomId}", 1).contentType(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk)
                     .andExpect(MockMvcResultMatchers.jsonPath("$['id']", CoreMatchers.`is`(1)))
@@ -41,11 +42,10 @@ class RoomApiControllerTest(
                     .andExpect(MockMvcResultMatchers.status().isNotFound)
         }
 
-    @get:Throws(Exception::class)
-    @get:WithMockUser
-    @get:Test
-    val roomsTest: Unit
-        get() {
+    @Throws(Exception::class)
+    @WithMockUser
+    @Test
+    fun getRoomsTest(){
             mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/room/")
                     .param("name", "TEST_ROOM_3").contentType(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk)

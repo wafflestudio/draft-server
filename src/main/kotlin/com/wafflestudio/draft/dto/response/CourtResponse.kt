@@ -16,7 +16,7 @@ data class CourtResponse(
             court.region!!.id,
             court.name,
             court.capacity,
-            Location(court.location),
+            court.location?.let { Location(it) },
             court.rooms.map { it.toResponse() }
     )
 }
