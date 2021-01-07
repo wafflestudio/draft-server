@@ -1,15 +1,21 @@
 package com.wafflestudio.draft.api
 
-import com.wafflestudio.draft.dto.request.CreateRoomRequest
-import com.wafflestudio.draft.dto.request.PutRoomRequest
-import com.wafflestudio.draft.dto.response.*
-import com.wafflestudio.draft.error.*
+import com.wafflestudio.draft.dto.RoomDTO
+import com.wafflestudio.draft.dto.response.ListResponse
+import com.wafflestudio.draft.dto.response.ParticipantsResponse
+import com.wafflestudio.draft.error.AlreadyParticipatingRoomException
+import com.wafflestudio.draft.error.ConcurrentlyParticipatingOtherRoomException
+import com.wafflestudio.draft.error.RoomIsFullException
+import com.wafflestudio.draft.error.RoomIsNotWaitingException
 import com.wafflestudio.draft.model.Participant
 import com.wafflestudio.draft.model.Room
 import com.wafflestudio.draft.model.enums.RoomStatus
 import com.wafflestudio.draft.security.CurrentUser
 import com.wafflestudio.draft.security.password.UserPrincipal
-import com.wafflestudio.draft.service.*
+import com.wafflestudio.draft.service.CourtService
+import com.wafflestudio.draft.service.FCMService
+import com.wafflestudio.draft.service.ParticipantService
+import com.wafflestudio.draft.service.RoomService
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -24,7 +30,7 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    fun saveRoomV1(@RequestBody @Valid request: CreateRoomRequest, @CurrentUser currentUser: UserPrincipal): RoomResponse {
+    fun saveRoomV1(@RequestBody @Valid request: RoomDTO.CreateRequest, @CurrentUser currentUser: UserPrincipal): RoomDTO.Response {
         if (roomService.existsCurrentlyParticipating(currentUser.user, request.startTime, request.endTime)) {
             throw ConcurrentlyParticipatingOtherRoomException()
         }
@@ -40,26 +46,27 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         roomService.save(room)
 
         participantService.addParticipants(room, currentUser.user)
-        return RoomResponse(room)
+        return RoomDTO.Response(room)
     }
 
     @GetMapping("/")
-    fun getRoomsV1(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") startTime: LocalDateTime?,
-                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") endTime: LocalDateTime?,
-                   @RequestParam name: String?, @RequestParam regionId: Long?
-                   ): ListResponse<RoomResponse> {
+    fun getRoomsV1(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") startTime: LocalDateTime?,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") endTime: LocalDateTime?,
+            @RequestParam name: String?, @RequestParam regionId: Long?
+    ): ListResponse<RoomDTO.Response> {
         val rooms = roomService.findRooms(name.orEmpty(), regionId, startTime, endTime)
-        return  ListResponse(rooms!!.map { RoomResponse(it) })
+        return ListResponse(rooms!!.map { it.toResponse() })
     }
 
     @GetMapping(path = ["{id}"])
-    fun getRoomV1(@PathVariable("id") id: Long): RoomResponse {
+    fun getRoomV1(@PathVariable("id") id: Long): RoomDTO.Response {
         val room = roomService.findOne(id)
-        return RoomResponse(room)
+        return RoomDTO.Response(room)
     }
 
     @PostMapping(path = ["{id}/participant"])
-    fun participate(@PathVariable("id") id: Long, @CurrentUser currentUser: UserPrincipal): RoomResponse {
+    fun participate(@PathVariable("id") id: Long, @CurrentUser currentUser: UserPrincipal): RoomDTO.Response {
         val room: Room = roomService.findOne(id)
         if (room.status !== RoomStatus.WAITING) {
             throw RoomIsNotWaitingException()
@@ -81,7 +88,7 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         }
 
         participantService.addParticipants(room, currentUser.user)
-        return RoomResponse(room)
+        return RoomDTO.Response(room)
     }
 
     @GetMapping(path = ["{id}/participant/"])
@@ -110,16 +117,18 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
     }
 
     @PutMapping(path = ["{id}"])
-    fun putRoomV1(@PathVariable("id") id: Long,
-                  @RequestBody request: PutRoomRequest,
-                  @CurrentUser currentUser: UserPrincipal): RoomResponse {
+    fun putRoomV1(
+            @PathVariable("id") id: Long,
+            @RequestBody request: RoomDTO.UpdateRequest,
+            @CurrentUser currentUser: UserPrincipal
+    ): RoomDTO.Response {
         val room = roomService.findOne(id)
-        request.startTime?.let{ room.startTime = it }
-        request.endTime?.let{ room.endTime = it }
-        request.name?.let{ room.name = it }
+        request.startTime?.let { room.startTime = it }
+        request.endTime?.let { room.endTime = it }
+        request.name?.let { room.name = it }
         request.status?.let { room.status = it }
 
-        if(room.startTime != null && room.endTime != null
+        if (room.startTime != null && room.endTime != null
                 && roomService.existsCurrentlyParticipatingExcludingRoom(
                         currentUser.user, room.startTime!!, room.endTime!!, room
                 )) {
@@ -127,6 +136,6 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         }
 
         roomService.save(room)
-        return RoomResponse(room)
+        return RoomDTO.Response(room)
     }
 }

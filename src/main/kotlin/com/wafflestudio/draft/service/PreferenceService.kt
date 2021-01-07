@@ -14,13 +14,11 @@ import java.time.LocalTime
 
 @Service
 @Transactional
-class PreferenceService {
-    @Autowired
-    private val preferenceRepository: PreferenceRepository? = null
+class PreferenceService(private val preferenceRepository: PreferenceRepository) {
     fun setPreferences(user: User, region: Region, preferences: List<Preference>?) {
-        preferenceRepository!!.deleteAllByUser(user)
+        preferenceRepository.deleteAllByUser(user)
         // TODO: Add unsubscribing logic
-        val registrationTokens: List<String> = user.devices!!.map { obj: Device? -> obj!!.deviceToken }
+        val registrationTokens: List<String> = user.devices.map { obj: Device? -> obj!!.deviceToken }
         FirebaseMessaging.getInstance().subscribeToTopicAsync(registrationTokens, region.name)
         preferences?.forEach {
             preferenceRepository.save(it.apply {
@@ -31,6 +29,6 @@ class PreferenceService {
     }
 
     fun getPlayableUsers(region: String?, dayOfWeek: DayOfWeek?, start: LocalTime?, end: LocalTime?): List<Long?>? {
-        return preferenceRepository!!.getPlayableUsers(region, dayOfWeek, start, end)
+        return preferenceRepository.getPlayableUsers(region, dayOfWeek, start, end)
     }
 }

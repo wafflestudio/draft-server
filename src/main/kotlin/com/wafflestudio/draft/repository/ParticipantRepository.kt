@@ -14,10 +14,13 @@ interface ParticipantRepository : JpaRepository<Participant?, Long?> {
     fun getAllByRoom(room: Room?): List<Participant?>?
 
     @Query("SELECT new com.wafflestudio.draft.dto.response.UserInformationResponse(u.id,u.username,u.email,u.profileImage) " +
-            "from Participant p INNER JOIN p.user u WHERE p.room = :room AND p.team = :team")
+            "FROM Participant p " +
+            "INNER JOIN p.user u " +
+            "WHERE p.room = :room " +
+            "AND p.team = :team")
     fun getUsersInTeam(
             @Param("room") room: Room?,
-            @Param("team") team: Team): MutableList<UserInformationResponse>?
+            @Param("team") team: Team): List<UserInformationResponse>
 
     fun deleteParticipantByRoomAndUser(room: Room, user: User)
 }

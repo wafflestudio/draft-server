@@ -13,7 +13,11 @@ class CourtService(private val courtRepository: CourtRepository) {
         return courtRepository.findById(id).orElseThrow(::CourtNotFoundException)!!
     }
 
-    fun findCourtsByName(name: String?): List<Court>? {
+    fun findCourtsByName(name: String?): List<Court> {
         return courtRepository.findByNameContaining(name)
+    }
+
+    fun findCourtsByRegionId(id: Long): List<Court>? {
+        return courtRepository.findAllByRegion_Id(id)
     }
 }

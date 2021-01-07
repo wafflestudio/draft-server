@@ -37,7 +37,7 @@ class DataLoader(val userRepository: UserRepository, val regionRepository: Regio
         val gsf = GeometricShapeFactory()
         val testPolygon = gf.createMultiPolygon(arrayOf<Polygon>(gsf.createCircle(), gsf.createRectangle()))
         testPolygon.srid = 5179
-        val testRegion = Region(null, 99999999, null, null, "테스트", testPolygon, "TEST_REGION")
+        val testRegion = Region(null, 99999999, null, null, "테스트", "TEST_REGION", testPolygon)
         regionRepository.save(testRegion)
 
         val oauth2User = User(username = "OAUTH2_TESTUSER", email = "authuser@test.com")

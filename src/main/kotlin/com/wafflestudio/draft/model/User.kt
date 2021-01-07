@@ -6,10 +6,10 @@ import javax.persistence.*
 @Table(name = "draft_user")
 class User(
         @Column(unique = true)
-        var username: String,
+        var username: String = "",
 
         @Column(unique = true)
-        var email: String,
+        var email: String = "",
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ class User(
         @OneToMany(mappedBy = "owner")
         var rooms: MutableList<Room> = mutableListOf(),
 
-        @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+        @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
         var devices: MutableList<Device> = mutableListOf(),
 
         @ManyToOne(fetch = FetchType.LAZY)
