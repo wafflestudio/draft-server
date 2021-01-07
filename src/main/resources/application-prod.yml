@@ -1,0 +1,10 @@
+spring:
+  profiles: prod
+  datasource:
+    jdbc-url: jdbc:postgresql://draft-db.caxwrw8c4qqq.ap-northeast-2.rds.amazonaws.com/draft?serverTimezone=UTC
+    username: postgres
+    password: coffee-urban
+    initialization-mode: always
+    data:
+      - classpath:emd1.sql
+      - classpath:emd2.sql
