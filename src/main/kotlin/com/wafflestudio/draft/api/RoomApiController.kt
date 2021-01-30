@@ -1,5 +1,6 @@
 package com.wafflestudio.draft.api
 
+import com.wafflestudio.draft.dto.GameDTO
 import com.wafflestudio.draft.dto.RoomDTO
 import com.wafflestudio.draft.dto.response.ListResponse
 import com.wafflestudio.draft.dto.response.ParticipantsResponse
@@ -26,7 +27,7 @@ import javax.validation.Valid
 @RequestMapping("/api/v1/room")
 class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmService.send(message) when room create
                         private val courtService: CourtService, private val participantService: ParticipantService,
-                        private val roomService: RoomService) {
+                        private val roomService: RoomService, private val gameLogService: GameLogService) {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
@@ -36,10 +37,12 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
         }
 
         val room = Room()
-        room.owner = currentUser.user
-        room.startTime = request.startTime
-        room.endTime = request.endTime
-        room.name = request.name
+        room.apply {
+            owner = currentUser.user
+            startTime = request.startTime
+            endTime = request.endTime
+            name = request.name
+        }
 
         val court = courtService.getCourtById(request.courtId)
         room.court = court
@@ -123,10 +126,12 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
             @CurrentUser currentUser: UserPrincipal
     ): RoomDTO.Response {
         val room = roomService.findOne(id)
-        request.startTime?.let { room.startTime = it }
-        request.endTime?.let { room.endTime = it }
-        request.name?.let { room.name = it }
-        request.status?.let { room.status = it }
+        room.apply {
+            startTime = request.startTime ?: startTime
+            endTime = request.endTime ?: endTime
+            name = request.name ?: name
+            status = request.status ?: status
+        }
 
         if (room.startTime != null && room.endTime != null
                 && roomService.existsCurrentlyParticipatingExcludingRoom(
@@ -137,5 +142,13 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
 
         roomService.save(room)
         return RoomDTO.Response(room)
+    }
+
+    @PostMapping(path = ["{id}/result/"])
+    fun addGameResult(
+            @PathVariable("id") id: Long,
+            @RequestBody @Valid request: GameDTO.CreateRequest
+    ) {
+        gameLogService.setGameResult(id,request)
     }
 }

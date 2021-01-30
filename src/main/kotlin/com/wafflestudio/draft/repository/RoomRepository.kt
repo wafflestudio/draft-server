@@ -60,4 +60,7 @@ interface RoomRepository : JpaRepository<Room?, Long?> {
             @Param("end_time") endTime: LocalDateTime,
             @Param("this_room") thisRoom: Room
     ): Boolean
+
+    fun findRoomById(roomId:Long):Room?
+
 }
