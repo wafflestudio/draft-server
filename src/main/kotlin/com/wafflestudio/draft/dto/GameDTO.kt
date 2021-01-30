@@ -7,7 +7,7 @@ import javax.validation.constraints.Pattern
 class GameDTO {
     data class CreateRequest(
             val elapsedTime: Int? = null,
-            @Pattern(regexp = "[0-9]+:[0-9]+")
+            @field:Pattern(regexp = "[0-9]+:[0-9]+")
             val gameScore: String? = null
     )
     data class Response(

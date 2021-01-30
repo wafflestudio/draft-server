@@ -15,9 +15,9 @@ class RoomDTO {
     )
 
     data class UpdateRequest(
-            @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+            @field:DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
             val startTime: LocalDateTime? = null,
-            @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+            @field:DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
             val endTime: LocalDateTime? = null,
             val name: String? = null,
             val courtId: Long? = null,

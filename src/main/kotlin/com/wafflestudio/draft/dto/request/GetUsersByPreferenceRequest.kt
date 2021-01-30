@@ -8,9 +8,9 @@ class GetUsersByPreferenceRequest(
         var regionName: String? = null,
         var dayOfWeek: DayOfWeek? = null,
 
-        @DateTimeFormat(pattern = "HHmmss")
+        @field:DateTimeFormat(pattern = "HHmmss")
         var startTime: LocalTime? = null,
 
-        @DateTimeFormat(pattern = "HHmmss")
+        @field:DateTimeFormat(pattern = "HHmmss")
         var endTime: LocalTime? = null
 )
