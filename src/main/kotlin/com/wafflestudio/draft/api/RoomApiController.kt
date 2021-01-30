@@ -17,6 +17,7 @@ import com.wafflestudio.draft.service.CourtService
 import com.wafflestudio.draft.service.FCMService
 import com.wafflestudio.draft.service.ParticipantService
 import com.wafflestudio.draft.service.RoomService
+import com.wafflestudio.draft.service.GameLogService
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
