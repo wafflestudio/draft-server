@@ -148,8 +148,8 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
     @PostMapping(path = ["{id}/result/"])
     fun addGameResult(
             @PathVariable("id") id: Long,
-            @RequestBody @Valid request: GameDTO.CreateRequest
-    ) {
-        gameLogService.setGameResult(id,request)
+            @Valid @ModelAttribute request: GameDTO.CreateRequest
+    ): GameDTO.Response {
+        return gameLogService.setGameResult(id,request)
     }
 }
