@@ -13,11 +13,7 @@ import com.wafflestudio.draft.model.Room
 import com.wafflestudio.draft.model.enums.RoomStatus
 import com.wafflestudio.draft.security.CurrentUser
 import com.wafflestudio.draft.security.password.UserPrincipal
-import com.wafflestudio.draft.service.CourtService
-import com.wafflestudio.draft.service.FCMService
-import com.wafflestudio.draft.service.ParticipantService
-import com.wafflestudio.draft.service.RoomService
-import com.wafflestudio.draft.service.GameLogService
+import com.wafflestudio.draft.service.*
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -37,12 +33,11 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
             throw ConcurrentlyParticipatingOtherRoomException()
         }
 
-        val room = Room()
-        room.apply {
-            owner = currentUser.user
-            startTime = request.startTime
-            endTime = request.endTime
-            name = request.name
+        val room = Room().also {
+            it.owner = currentUser.user
+            it.startTime = request.startTime
+            it.endTime = request.endTime
+            it.name = request.name
         }
 
         val court = courtService.getCourtById(request.courtId)
@@ -126,12 +121,11 @@ class RoomApiController(private val fcmService: FCMService, // FIXME: Use fcmSer
             @RequestBody request: RoomDTO.UpdateRequest,
             @CurrentUser currentUser: UserPrincipal
     ): RoomDTO.Response {
-        val room = roomService.findOne(id)
-        room.apply {
-            startTime = request.startTime ?: startTime
-            endTime = request.endTime ?: endTime
-            name = request.name ?: name
-            status = request.status ?: status
+        val room = roomService.findOne(id).also {
+            it.startTime = request.startTime ?: it.startTime
+            it.endTime = request.endTime ?: it.endTime
+            it.name = request.name ?: it.name
+            it.status = request.status ?: it.status
         }
 
         if (room.startTime != null && room.endTime != null

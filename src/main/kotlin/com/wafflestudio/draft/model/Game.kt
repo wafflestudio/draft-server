@@ -18,11 +18,10 @@ class Game(
         val elapsedTime: Int? = null,
 
         val winningTeam: Team = Team.NONE,
-        // TODO: How can we store results and scores of Game well?
-        // ex > "3:5" (cf > score of UserGameLog)
-        val gameScore: String? = null
-) : BaseTimeEntity(){
-    fun toResponse():GameDTO.Response{
-        return GameDTO.Response(elapsedTime,winningTeam,gameScore)
+        val teamAScore: Int = 0,
+        val teamBScore: Int = 0
+) : BaseTimeEntity() {
+    fun toResponse(): GameDTO.Response {
+        return GameDTO.Response(elapsedTime, winningTeam, teamAScore, teamBScore)
     }
 }
