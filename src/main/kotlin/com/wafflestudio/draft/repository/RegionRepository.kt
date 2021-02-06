@@ -3,6 +3,8 @@ package com.wafflestudio.draft.repository
 import com.wafflestudio.draft.dto.RegionDTO
 import com.wafflestudio.draft.model.Region
 import org.locationtech.jts.geom.Point
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -21,7 +23,7 @@ interface RegionRepository : JpaRepository<Region, Long>, CustomRegionRepository
 
     @Query("""SELECT new com.wafflestudio.draft.dto.RegionDTO${'$'}Summary(r.id, r.depth1, r.depth2, r.depth3, r.name)
         FROM Region r WHERE r.depth3 LIKE CONCAT('%',:depth3,'%')""")
-    fun findByDepth3ContainingWithoutGeometryData(depth3: String?): List<RegionDTO.Summary>
+    fun findByDepth3ContainingWithoutGeometryData(depth3: String?, pageable: Pageable): Page<RegionDTO.Summary>
 
     @Query("""SELECT new com.wafflestudio.draft.dto.RegionDTO${'$'}Summary(r.id, r.depth1, r.depth2, r.depth3, r.name) 
         FROM Region r WHERE CONTAINS(r.polygon, ST_SetSRID(ST_MakePoint(:lon,:lat),4326))=true""")
