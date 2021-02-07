@@ -6,19 +6,15 @@ open class AuthenticationRequest(
         open var grantType: String? = null,
 
         @get:Nullable
-        @Nullable
         open var accessToken: String? = null,
 
         @get:Nullable
-        @Nullable
         open var authProvider: String? = null,
 
         ///
         @get:Nullable
-        @Nullable
         open var email: String? = null,
 
         @get:Nullable
-        @Nullable
         open var password: String? = null
 )
