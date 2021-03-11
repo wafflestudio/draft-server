@@ -38,9 +38,9 @@ interface RoomRepository : JpaRepository<Room?, Long?> {
     @Query("SELECT COUNT(r.id) > 0 FROM Participant p INNER JOIN p.room r " +
             "WHERE p.user = :participating_user " +
             "AND ((r.endTime > :start_time AND r.endTime < :end_time) " +
-                "OR (r.startTime < :start_time AND r.startTime > :end_time) " +
-                "OR (r.startTime >= :start_time AND r.endTime <= :end_time) " +
-                "OR (r.startTime <= :start_time AND r.endTime >= :end_time))")
+            "OR (r.startTime < :start_time AND r.startTime > :end_time) " +
+            "OR (r.startTime >= :start_time AND r.endTime <= :end_time) " +
+            "OR (r.startTime <= :start_time AND r.endTime >= :end_time))")
     fun existsByParticipatingUserAndStartTimeAndEndTime(
             @Param("participating_user") participatingUser: User,
             @Param("start_time") startTime: LocalDateTime,
@@ -51,9 +51,9 @@ interface RoomRepository : JpaRepository<Room?, Long?> {
             "WHERE p.user = :participating_user " +
             "AND r != :this_room " +
             "AND ((r.endTime > :start_time AND r.endTime < :end_time) " +
-                "OR (r.startTime < :start_time AND r.startTime > :end_time) " +
-                "OR (r.startTime >= :start_time AND r.endTime <= :end_time) " +
-                "OR (r.startTime <= :start_time AND r.endTime >= :end_time))")
+            "OR (r.startTime < :start_time AND r.startTime > :end_time) " +
+            "OR (r.startTime >= :start_time AND r.endTime <= :end_time) " +
+            "OR (r.startTime <= :start_time AND r.endTime >= :end_time))")
     fun existsByParticipatingUserAndStartTimeAndEndTimeAndRoomNot(
             @Param("participating_user") participatingUser: User,
             @Param("start_time") startTime: LocalDateTime,
@@ -61,6 +61,6 @@ interface RoomRepository : JpaRepository<Room?, Long?> {
             @Param("this_room") thisRoom: Room
     ): Boolean
 
-    fun findRoomById(roomId:Long):Room?
+    fun findRoomById(roomId: Long): Room?
 
 }
