@@ -1,5 +1,7 @@
 # draft-server [![Build Status](https://travis-ci.com/wafflestudio/draft-server.svg?token=siV9jNpC1p2FuLSyqUnp&branch=master)](https://travis-ci.com/wafflestudio/draft-server)
 
+### Temporarily Discontinued
+
 - How to set up?
 ```
 psql -c 'CREATE DATABASE draft;' -U postgres

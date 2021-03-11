@@ -12,7 +12,6 @@ import org.springframework.data.repository.query.Param
 
 interface ParticipantRepository : JpaRepository<Participant?, Long?> {
     fun getAllByRoom(room: Room?): List<Participant>
-
     @Query("SELECT new com.wafflestudio.draft.dto.response.UserInformationResponse(u.id,u.username,u.email,u.profileImage) " +
             "FROM Participant p " +
             "INNER JOIN p.user u " +

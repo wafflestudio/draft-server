@@ -4,7 +4,8 @@ import com.wafflestudio.draft.model.Region
 
 class RegionDTO {
     data class Request(
-            val depth3: String?
+            val depth3: String?,
+            val page: Int = 0
     )
 
     data class Response(
