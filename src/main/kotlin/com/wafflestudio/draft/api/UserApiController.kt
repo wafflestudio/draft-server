@@ -35,7 +35,7 @@ class UserApiController(private val oAuth2Provider: OAuth2Provider,
                         private val jwtTokenProvider: JwtTokenProvider) {
     @PostMapping("/signup/")
     @Throws(IOException::class)
-    fun createUser(@RequestBody @Valid signUpRequest: SignUpRequest, response: HttpServletResponse): ResponseEntity<User?>? {
+    fun createUser(@ModelAttribute @Valid signUpRequest: SignUpRequest, response: HttpServletResponse): ResponseEntity<User?>? {
         val user: User?
         val username: String = signUpRequest.username
         if (userService.existsUserByUsername(username)) {
