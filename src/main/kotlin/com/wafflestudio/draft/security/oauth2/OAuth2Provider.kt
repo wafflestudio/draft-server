@@ -16,10 +16,13 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import java.util.*
 
-class OAuth2Provider : AuthenticationProvider {
-    @Autowired
-    val authUserService: AuthUserService? = null
+class OAuth2Provider(
+    val authUserService: AuthUserService? = null,
     val oAuth2ClientMap: MutableMap<String, OAuth2Client> = HashMap()
+)  : AuthenticationProvider{
+//    @Autowired
+//    val authUserService: AuthUserService? = null
+//    val oAuth2ClientMap: MutableMap<String, OAuth2Client> = HashMap()
 
     @Throws(AuthenticationException::class)
     override fun authenticate(authentication: Authentication): Authentication {

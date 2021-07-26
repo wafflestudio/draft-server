@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class UserService {
-    @Autowired
-    private val userRepository: UserRepository? = null
+class UserService(private val userRepository: UserRepository? = null) {
+//    @Autowired
+//    private val userRepository: UserRepository? = null
     fun findUserByEmail(email: String?): User? {
         return userRepository!!.findByEmail(email)
     }

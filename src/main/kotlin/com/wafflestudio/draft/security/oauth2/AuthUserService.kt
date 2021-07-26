@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class AuthUserService {
-    @Autowired
-    private val userRepository: UserRepository? = null
+class AuthUserService(private val userRepository: UserRepository? = null) {
+//    @Autowired
+//    private val userRepository: UserRepository? = null
 
     @Transactional
     fun loadUserByEmail(email: String?): User? {
