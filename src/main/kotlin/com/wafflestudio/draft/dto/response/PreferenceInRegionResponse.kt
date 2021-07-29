@@ -1,5 +1,6 @@
 package com.wafflestudio.draft.dto.response
 
+import com.wafflestudio.draft.dto.PreferenceDTO
 import com.wafflestudio.draft.model.Preference
 import com.wafflestudio.draft.model.Region
 
@@ -9,7 +10,7 @@ class PreferenceInRegionResponse(
         var depth1: String? = null,
         var depth2: String? = null,
         var depth3: String? = null,
-        var preferences: List<PreferenceResponse>? = null
+        var preferences: List<PreferenceDTO.Response>? = null
 ) {
     constructor(region: Region, preferences: List<Preference?>?) : this(
             region.id,
@@ -17,6 +18,6 @@ class PreferenceInRegionResponse(
             region.depth1,
             region.depth2,
             region.depth3,
-            preferences?.map { PreferenceResponse(it) }
+            preferences?.map { PreferenceDTO.Response(it) }
     )
 }
